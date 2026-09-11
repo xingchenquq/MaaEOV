@@ -1,0 +1,39 @@
+# =====================
+# MaaEOV .gitignore
+# 只提交源码与素材（resource/agent/config/interface.json/README/LICENSE 等），
+# 排除发布版二进制运行时与调试产物。
+# =====================
+
+# ---- 发布版二进制 / 运行时（非源码） ----
+*.exe
+*.dll
+*.pdb
+*.node
+*.pyd
+*.so
+*.bak
+
+# 内嵌 Python 解释器（随发布包分发，非项目源码）
+/python/
+
+# Agent 运行时二进制
+/MaaAgentBinary/
+
+# GUI 运行时附属文件
+/SukiUI.xml
+/MFAUpdater.runtimeconfig.json
+
+# ---- 调试 / 日志 / 缓存 ----
+/debug/
+/logs/
+.nicegui/
+__pycache__/
+*.pyc
+
+# ---- 本地工作区配置 / 记忆（不入库） ----
+/.workbuddy/
+
+# ---- 操作系统 / 编辑器 ----
+.DS_Store
+Thumbs.db
+*.swp

@@ -1,0 +1,20 @@
+{
+    "resource": "官服",
+    "controller": "ADB 默认方式",
+    "adb": {
+        "adb_path": "D:/MuMu/nx_main/adb.exe",
+        "address": "127.0.0.1:16384",
+        "screencap": "64",
+        "input": "18446744073709551607",
+        "config": {
+            "extras": {
+                "mumu": {
+                    "enable": true,
+                    "index": 0,
+                    "path": "D:/MuMu"
+                }
+            }
+        }
+    },
+    "task": []
+}
