@@ -247,7 +247,16 @@ for fn, d in pipelines.items():
         nxt = (node or {}).get("next")
         if isinstance(nxt, list):
             for t in nxt:
-                if isinstance(t, str) and t and t not in all_nodes:
+                if not isinstance(t, str) or not t:
+                    continue
+                # MaaFramework v5：next 支持 [JumpBack] / [Anchor] 等前缀修饰，
+                # 校验目标是否存在时必须先剥离前缀（v5.1 起 interrupt 已由 [JumpBack] 取代）。
+                base = t
+                for pfx in ("[JumpBack]", "[Anchor]"):
+                    if base.startswith(pfx):
+                        base = base[len(pfx):]
+                        break
+                if base not in all_nodes:
                     dangling.append((fn, name, t))
 if dangling:
     ok = False

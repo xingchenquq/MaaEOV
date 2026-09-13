@@ -7,7 +7,7 @@
 
 基于 [MaaFramework](https://github.com/MaaXYZ/MaaFramework) 的 [异象回声](https://eov.astral-vector.com/) 小助手。  
 旨在自动化完成日常任务，避免错过/忘记/懒得做日常。图像技术 + 模拟控制，解放双手！  
-<a href="https://github.com/Tigerisu/MaaEOV" target="_blank" style="font-weight: bold;">🔗 本项目 GitHub 仓库</a><br>  
+<a href="https://github.com/xingchenquq/MaaEOV" target="_blank" style="font-weight: bold;">🔗 本项目 GitHub 仓库</a><br>  
 🌟喜欢本项目就在仓库右上角点个星星吧🌟
 
 </div>
@@ -15,11 +15,11 @@
 <p align="center">
   <img alt="Python" src="https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white">
   <img alt="platform" src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blueviolet">
-  <img alt="license" src="https://img.shields.io/github/license/Tigerisu/MaaEOV">
+  <img alt="license" src="https://img.shields.io/github/license/xingchenquq/MaaEOV">
   <br>
-  <img alt="commit" src="https://img.shields.io/github/commit-activity/m/Tigerisu/MaaEOV">
-  <img alt="stars" src="https://img.shields.io/github/stars/Tigerisu/MaaEOV">
-  <img alt="downloads" src="https://img.shields.io/github/downloads/Tigerisu/MaaEOV/total">
+  <img alt="commit" src="https://img.shields.io/github/commit-activity/m/xingchenquq/MaaEOV">
+  <img alt="stars" src="https://img.shields.io/github/stars/xingchenquq/MaaEOV">
+  <img alt="downloads" src="https://img.shields.io/github/downloads/xingchenquq/MaaEOV/total">
   <!-- <a href="https://mirrorchyan.com/zh/projects?rid=M9A&source=m9agh-badge" target="_blank"><img alt="mirrorc" src="https://img.shields.io/badge/Mirror%E9%85%B1-%239af3f6?logo=countingworkspro&logoColor=4f46e5"></a> -->
 </p>
 
@@ -99,4 +99,4 @@
 
 <!-- 感谢以下开发者对本项目作出的贡献:
 
-[![Contributors](https://contrib.rocks/image?repo=Tigerisu/MaaEOV&max=1000)](https://github.com/Tigerisu/MaaEOV/graphs/contributors) -->
+[![Contributors](https://contrib.rocks/image?repo=xingchenquq/MaaEOV&max=1000)](https://github.com/xingchenquq/MaaEOV/graphs/contributors) -->

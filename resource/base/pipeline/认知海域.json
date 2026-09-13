@@ -58,16 +58,16 @@
         },
         "action": "Click",
         "post_delay": 1000,
-        "next": ["SoCSelectLayer"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp",
-            "_NavigateBCR",
-            "_BCRHead",
-            "_BCRTail",
-            "_NavigateHomepage"
+        "next": [
+            "SoCSelectLayer",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_NavigateBCR",
+            "[JumpBack]_BCRHead",
+            "[JumpBack]_BCRTail",
+            "[JumpBack]_NavigateHomepage"
         ]
     },
 
@@ -84,13 +84,14 @@
         },
         "action": "Click",
         "post_delay": 800,
-        "next": ["SoCDeepDive", "SoCTeamEnter"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp",
-            "_SoCNoTicket"
+        "next": [
+            "SoCDeepDive",
+            "SoCTeamEnter",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SoCNoTicket"
         ]
     },
 
@@ -106,13 +107,13 @@
         },
         "action": "Click",
         "post_delay": 800,
-        "next": ["SoCTeamEnter"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp",
-            "_SoCNoTicket"
+        "next": [
+            "SoCTeamEnter",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SoCNoTicket"
         ]
     },
 
@@ -128,13 +129,13 @@
         },
         "action": "Click",
         "post_delay": 1500,
-        "next": ["SoCInspirationNode"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp",
-            "_SoCNoTicket"
+        "next": [
+            "SoCInspirationNode",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SoCNoTicket"
         ]
     },
 
@@ -149,13 +150,13 @@
         },
         "action": "Click",
         "post_delay": 1200,
-        "next": ["SoCGBLoop"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp",
-            "_SeaOfCognitionReward"
+        "next": [
+            "SoCGBLoop",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SeaOfCognitionReward"
         ]
     },
 
@@ -182,12 +183,12 @@
         },
         "action": "Click",
         "post_delay": 800,
-        "next": ["SoCGBLoop"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp"
+        "next": [
+            "SoCGBLoop",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp"
         ]
     },
 
@@ -202,12 +203,12 @@
         },
         "action": "Click",
         "post_delay": 800,
-        "next": ["SoCGBLoop"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp"
+        "next": [
+            "SoCGBLoop",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp"
         ]
     },
 
@@ -222,12 +223,12 @@
         },
         "action": "Click",
         "post_delay": 800,
-        "next": ["SoCGBLoop"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp"
+        "next": [
+            "SoCGBLoop",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp"
         ]
     },
 
@@ -242,12 +243,12 @@
         },
         "action": "Click",
         "post_delay": 800,
-        "next": ["SoCGBLoop"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp"
+        "next": [
+            "SoCGBLoop",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp"
         ]
     },
 
@@ -262,12 +263,12 @@
         },
         "action": "Click",
         "post_delay": 800,
-        "next": ["SoCGBLoop"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp"
+        "next": [
+            "SoCGBLoop",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp"
         ]
     },
 
@@ -301,13 +302,13 @@
             }
         },
         "post_delay": 600,
-        "next": ["SoCInBattleBuffPos2"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp",
-            "_SeaOfCognitionReward"
+        "next": [
+            "SoCInBattleBuffPos2",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SeaOfCognitionReward"
         ]
     },
 
@@ -337,13 +338,13 @@
         },
         "action": "Click",
         "post_delay": 1500,
-        "next": ["SoCStartBattle"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp",
-            "_SeaOfCognitionReward"
+        "next": [
+            "SoCStartBattle",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SeaOfCognitionReward"
         ]
     },
 
@@ -358,13 +359,13 @@
         },
         "action": "Click",
         "post_delay": 1000,
-        "next": ["SoCAutoBattle"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp",
-            "_SeaOfCognitionReward"
+        "next": [
+            "SoCAutoBattle",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SeaOfCognitionReward"
         ]
     },
 
@@ -381,13 +382,13 @@
         },
         "reco_timeout": 300000,
         "post_delay": 500,
-        "next": ["SoCContinue"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp",
-            "_SeaOfCognitionReward"
+        "next": [
+            "SoCContinue",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SeaOfCognitionReward"
         ]
     },
 
@@ -402,13 +403,13 @@
         },
         "action": "Click",
         "post_delay": 1000,
-        "next": ["SoCNodeLoop"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp",
-            "_SeaOfCognitionReward"
+        "next": [
+            "SoCNodeLoop",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SeaOfCognitionReward"
         ]
     },
 
@@ -424,14 +425,15 @@
         },
         "action": "Click",
         "post_delay": 1200,
-        "next": ["_NavigateBCR", "SoCAtBCR"],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_LevelUp",
-            "_CloseWindows",
-            "_SeaOfCognitionReward"
+        "next": [
+            "_NavigateBCR",
+            "SoCAtBCR",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_CloseWindows",
+            "[JumpBack]_SeaOfCognitionReward"
         ]
     },
 

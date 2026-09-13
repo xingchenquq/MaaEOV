@@ -2564,12 +2564,9 @@
             }
         },
         "next": [
-            "_SweepConfirm"
-        ],
-        "interrupt": [
-            // popup
-            "_ConfrimReconnect",
-            "_ConfirmSweepResult"
+            "_SweepConfirm",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmSweepResult"
         ]
     },
     "_SweepMin": {
@@ -2597,12 +2594,9 @@
             }
         },
         "next": [
-            "_SweepConfirm"
-        ],
-        "interrupt": [
-            // popup
-            "_ConfrimReconnect",
-            "_ConfirmSweepResult"
+            "_SweepConfirm",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmSweepResult"
         ]
     },
     "_SweepConfirm": {
@@ -3217,41 +3211,33 @@
         },
         "inverse": true,
         "next": [
-            "_EnsureHomepage"
-        ],
-        "interrupt": [
-            // override
-            "_UpdateGame",
-            "_UnfinishedGame",
-            "_ConfirmExitTheRoom",
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_CancelGeneral",
-            "_Cancel1",
-            "_Cancel2",
-            "_Cancel3",
-            "_Cancel4",
-            "_ConfirmGeneral",
-            "_ConfirmMiddle",
-            "_ConfirmSweepResult",
-            "_CloseWindowsGeneral",
-            "_CloseWindow1",
-            "_CloseWindow2",
-            // overlay
-            "_SkipButton",
-            "_LevelUp",
-            // base,
-            "_HomeButton",
-            "_BackButton",
-            "_Login",
-            "_EnterGame",
-            "_ExitTheRoom",
-            // other
-            "_Loading",
-            "_StartUpLoading",
-            // escape
-            "_Escape"
+            "_EnsureHomepage",
+            "[JumpBack]_UpdateGame",
+            "[JumpBack]_UnfinishedGame",
+            "[JumpBack]_ConfirmExitTheRoom",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_CancelGeneral",
+            "[JumpBack]_Cancel1",
+            "[JumpBack]_Cancel2",
+            "[JumpBack]_Cancel3",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_ConfirmGeneral",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_ConfirmSweepResult",
+            "[JumpBack]_CloseWindowsGeneral",
+            "[JumpBack]_CloseWindow1",
+            "[JumpBack]_CloseWindow2",
+            "[JumpBack]_SkipButton",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_HomeButton",
+            "[JumpBack]_BackButton",
+            "[JumpBack]_Login",
+            "[JumpBack]_EnterGame",
+            "[JumpBack]_ExitTheRoom",
+            "[JumpBack]_Loading",
+            "[JumpBack]_StartUpLoading",
+            "[JumpBack]_Escape"
         ]
     },
     "_EnsureHomepage": {
@@ -3293,21 +3279,13 @@
         },
         "inverse": true,
         "next": [
-            "~BCR"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_BCRFromHome",
-            // to parent
-            "_NavigateHomepage"
+            "~BCR",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_BCRFromHome",
+            "[JumpBack]_NavigateHomepage"
         ]
     },
     "_BCRFromHome": {
@@ -3350,21 +3328,13 @@
         },
         "inverse": true,
         "next": [
-            "~Prepared"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_PreparedFromBCR",
-            // to parent
-            "_NavigateBCR"
+            "~Prepared",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_PreparedFromBCR",
+            "[JumpBack]_NavigateBCR"
         ]
     },
     "_PreparedFromBCR": {
@@ -3401,21 +3371,13 @@
         },
         "inverse": true,
         "next": [
-            "~PreparedFund"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_FundFromPrepared",
-            // to parent
-            "_NavigatePrepared"
+            "~PreparedFund",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_FundFromPrepared",
+            "[JumpBack]_NavigatePrepared"
         ]
     },
     "_FundFromPrepared": {
@@ -3453,21 +3415,13 @@
         },
         "inverse": true,
         "next": [
-            "~PreparedTape"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_TapeFromPrepared",
-            // to parent
-            "_NavigatePrepared"
+            "~PreparedTape",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_TapeFromPrepared",
+            "[JumpBack]_NavigatePrepared"
         ]
     },
     "_TapeFromPrepared": {
@@ -3505,21 +3459,13 @@
         },
         "inverse": true,
         "next": [
-            "~PreparedDust"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_DustFromPrepared",
-            // to parent
-            "_NavigatePrepared"
+            "~PreparedDust",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_DustFromPrepared",
+            "[JumpBack]_NavigatePrepared"
         ]
     },
     "_DustFromPrepared": {
@@ -3560,21 +3506,13 @@
         },
         "inverse": true,
         "next": [
-            "~Appraisal"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_AppraisalFromBCR",
-            // to parent
-            "_NavigateBCR"
+            "~Appraisal",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR"
         ]
     },
     "_AppraisalFromBCR": {
@@ -3655,23 +3593,14 @@
         },
         "inverse": true,
         "next": [
-            "~AppraisalDisc"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_DiscFromAppraisal",
-            // adjust position
-            "_ApprasialHead",
-            // to parent
-            "_NavigateAppraisal"
+            "~AppraisalDisc",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_DiscFromAppraisal",
+            "[JumpBack]_ApprasialHead",
+            "[JumpBack]_NavigateAppraisal"
         ]
     },
     "_DiscFromAppraisal": {
@@ -3708,21 +3637,13 @@
         },
         "inverse": true,
         "next": [
-            "~G601"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_G601FromAppraisalDisc",
-            // to parent
-            "_NavigateAppraisalDisc"
+            "~G601",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_G601FromAppraisalDisc",
+            "[JumpBack]_NavigateAppraisalDisc"
         ]
     },
     "_G601FromAppraisalDisc": {
@@ -3758,21 +3679,13 @@
         },
         "inverse": true,
         "next": [
-            "~G602"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_G602FromAppraisalDisc",
-            // to parent
-            "_NavigateAppraisalDisc"
+            "~G602",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_G602FromAppraisalDisc",
+            "[JumpBack]_NavigateAppraisalDisc"
         ]
     },
     "_G602FromAppraisalDisc": {
@@ -3808,21 +3721,13 @@
         },
         "inverse": true,
         "next": [
-            "~G603"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_G603FromAppraisalDisc",
-            // to parent
-            "_NavigateAppraisalDisc"
+            "~G603",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_G603FromAppraisalDisc",
+            "[JumpBack]_NavigateAppraisalDisc"
         ]
     },
     "_G603FromAppraisalDisc": {
@@ -3858,21 +3763,13 @@
         },
         "inverse": true,
         "next": [
-            "~G604"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_G604FromAppraisalDisc",
-            // to parent
-            "_NavigateAppraisalDisc"
+            "~G604",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_G604FromAppraisalDisc",
+            "[JumpBack]_NavigateAppraisalDisc"
         ]
     },
     "_G604FromAppraisalDisc": {
@@ -3911,23 +3808,14 @@
         },
         "inverse": true,
         "next": [
-            "~AppraisalLion"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_LionFromAppraisal",
-            // adjust position
-            "_ApprasialHead",
-            // to parent
-            "_NavigateAppraisal"
+            "~AppraisalLion",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_LionFromAppraisal",
+            "[JumpBack]_ApprasialHead",
+            "[JumpBack]_NavigateAppraisal"
         ]
     },
     "_LionFromAppraisal": {
@@ -3965,21 +3853,13 @@
         },
         "inverse": true,
         "next": [
-            "~G301"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_G301FromAppraisalLion",
-            // to parent
-            "_NavigateAppraisalLion"
+            "~G301",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_G301FromAppraisalLion",
+            "[JumpBack]_NavigateAppraisalLion"
         ]
     },
     "_G301FromAppraisalLion": {
@@ -4016,21 +3896,13 @@
         },
         "inverse": true,
         "next": [
-            "~G302"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_G302FromAppraisalLion",
-            // to parent
-            "_NavigateAppraisalLion"
+            "~G302",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_G302FromAppraisalLion",
+            "[JumpBack]_NavigateAppraisalLion"
         ]
     },
     "_G302FromAppraisalLion": {
@@ -4069,23 +3941,14 @@
         },
         "inverse": true,
         "next": [
-            "~AppraisalWolf"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_WolfFromAppraisal",
-            // adjust position
-            "_ApprasialHead",
-            // to parent
-            "_NavigateAppraisal"
+            "~AppraisalWolf",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_WolfFromAppraisal",
+            "[JumpBack]_ApprasialHead",
+            "[JumpBack]_NavigateAppraisal"
         ]
     },
     "_WolfFromAppraisal": {
@@ -4123,21 +3986,13 @@
         },
         "inverse": true,
         "next": [
-            "~G401"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_G401FromAppraisalWolf",
-            // to parent
-            "_NavigateAppraisalWolf"
+            "~G401",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_G401FromAppraisalWolf",
+            "[JumpBack]_NavigateAppraisalWolf"
         ]
     },
     "_G401FromAppraisalWolf": {
@@ -4174,21 +4029,13 @@
         },
         "inverse": true,
         "next": [
-            "~G402"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_G402FromAppraisalWolf",
-            // to parent
-            "_NavigateAppraisalWolf"
+            "~G402",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_G402FromAppraisalWolf",
+            "[JumpBack]_NavigateAppraisalWolf"
         ]
     },
     "_G402FromAppraisalWolf": {
@@ -4227,23 +4074,14 @@
         },
         "inverse": true,
         "next": [
-            "~AppraisalEagle"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_EagleFromAppraisal",
-            // adjust position
-            "_ApprasialTail",
-            // to parent
-            "_NavigateAppraisal"
+            "~AppraisalEagle",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_EagleFromAppraisal",
+            "[JumpBack]_ApprasialTail",
+            "[JumpBack]_NavigateAppraisal"
         ]
     },
     "_EagleFromAppraisal": {
@@ -4281,21 +4119,13 @@
         },
         "inverse": true,
         "next": [
-            "~G501"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_G501FromAppraisalEagle",
-            // to parent
-            "_NavigateAppraisalEagle"
+            "~G501",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_G501FromAppraisalEagle",
+            "[JumpBack]_NavigateAppraisalEagle"
         ]
     },
     "_G501FromAppraisalEagle": {
@@ -4332,21 +4162,13 @@
         },
         "inverse": true,
         "next": [
-            "~G502"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_G502FromAppraisalEagle",
-            // to parent
-            "_NavigateAppraisalEagle"
+            "~G502",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_G502FromAppraisalEagle",
+            "[JumpBack]_NavigateAppraisalEagle"
         ]
     },
     "_G502FromAppraisalEagle": {
@@ -4383,21 +4205,13 @@
         },
         "inverse": true,
         "next": [
-            "~SideQuest"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_SideQuestFromBCR",
-            // to parent
-            "_NavigateBCR"
+            "~SideQuest",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SideQuestFromBCR",
+            "[JumpBack]_NavigateBCR"
         ]
     },
     "_SideQuestFromBCR": {
@@ -4433,21 +4247,13 @@
         },
         "inverse": true,
         "next": [
-            "~CrisisMission"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_CrisisMissionFromSideQuest",
-            // to parent
-            "_NavigateSideQuest"
+            "~CrisisMission",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_CrisisMissionFromSideQuest",
+            "[JumpBack]_NavigateSideQuest"
         ]
     },
     "_CrisisMissionFromSideQuest": {
@@ -4483,21 +4289,13 @@
         },
         "inverse": true,
         "next": [
-            "~OngoingMission"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_OngoingMissionFromCrisisMission",
-            // to parent
-            "_NavigateCrisisMission"
+            "~OngoingMission",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_OngoingMissionFromCrisisMission",
+            "[JumpBack]_NavigateCrisisMission"
         ]
     },
     "_OngoingMissionFromCrisisMission": {
@@ -4537,23 +4335,14 @@
         },
         "inverse": true,
         "next": [
-            "~S001"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S001FromOngoingMission",
-            // adjust position
-            "_CrisisMissionHead",
-            // to parent
-            "_NavigateOngoingMission"
+            "~S001",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S001FromOngoingMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateOngoingMission"
         ]
     },
     "_S001FromOngoingMission": {
@@ -4592,23 +4381,14 @@
         },
         "inverse": true,
         "next": [
-            "~S002"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S002FromOngoingMission",
-            // adjust position
-            "_CrisisMissionHead",
-            // to parent
-            "_NavigateOngoingMission"
+            "~S002",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S002FromOngoingMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateOngoingMission"
         ]
     },
     "_S002FromOngoingMission": {
@@ -4647,23 +4427,14 @@
         },
         "inverse": true,
         "next": [
-            "~S003"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S003FromOngoingMission",
-            // adjust position
-            "_CrisisMissionHead",
-            // to parent
-            "_NavigateOngoingMission"
+            "~S003",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S003FromOngoingMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateOngoingMission"
         ]
     },
     "_S003FromOngoingMission": {
@@ -4702,23 +4473,14 @@
         },
         "inverse": true,
         "next": [
-            "~S101"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S101FromOngoingMission",
-            // adjust position
-            "_CrisisMissionHead",
-            // to parent
-            "_NavigateOngoingMission"
+            "~S101",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S101FromOngoingMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateOngoingMission"
         ]
     },
     "_S101FromOngoingMission": {
@@ -4757,23 +4519,14 @@
         },
         "inverse": true,
         "next": [
-            "~S102"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S102FromOngoingMission",
-            // adjust position
-            "_CrisisMissionHead",
-            // to parent
-            "_NavigateOngoingMission"
+            "~S102",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S102FromOngoingMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateOngoingMission"
         ]
     },
     "_S102FromOngoingMission": {
@@ -4812,23 +4565,14 @@
         },
         "inverse": true,
         "next": [
-            "~S103"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S103FromOngoingMission",
-            // adjust position
-            "_CrisisMissionHead",
-            // to parent
-            "_NavigateOngoingMission"
+            "~S103",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S103FromOngoingMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateOngoingMission"
         ]
     },
     "_S103FromOngoingMission": {
@@ -4867,23 +4611,14 @@
         },
         "inverse": true,
         "next": [
-            "~S201"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S201FromOngoingMission",
-            // adjust position
-            "_CrisisMissionTail",
-            // to parent
-            "_NavigateOngoingMission"
+            "~S201",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S201FromOngoingMission",
+            "[JumpBack]_CrisisMissionTail",
+            "[JumpBack]_NavigateOngoingMission"
         ]
     },
     "_S201FromOngoingMission": {
@@ -4922,23 +4657,14 @@
         },
         "inverse": true,
         "next": [
-            "~S202"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S202FromOngoingMission",
-            // adjust position
-            "_CrisisMissionTail",
-            // to parent
-            "_NavigateOngoingMission"
+            "~S202",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S202FromOngoingMission",
+            "[JumpBack]_CrisisMissionTail",
+            "[JumpBack]_NavigateOngoingMission"
         ]
     },
     "_S202FromOngoingMission": {
@@ -4977,23 +4703,14 @@
         },
         "inverse": true,
         "next": [
-            "~S203"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S203FromOngoingMission",
-            // adjust position
-            "_CrisisMissionTail",
-            // to parent
-            "_NavigateOngoingMission"
+            "~S203",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S203FromOngoingMission",
+            "[JumpBack]_CrisisMissionTail",
+            "[JumpBack]_NavigateOngoingMission"
         ]
     },
     "_S203FromOngoingMission": {
@@ -5032,23 +4749,14 @@
         },
         "inverse": true,
         "next": [
-            "~S301"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S301FromOngoingMission",
-            // adjust position
-            "_CrisisMissionTail",
-            // to parent
-            "_NavigateOngoingMission"
+            "~S301",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S301FromOngoingMission",
+            "[JumpBack]_CrisisMissionTail",
+            "[JumpBack]_NavigateOngoingMission"
         ]
     },
     "_S301FromOngoingMission": {
@@ -5087,23 +4795,14 @@
         },
         "inverse": true,
         "next": [
-            "~S302"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S302FromOngoingMission",
-            // adjust position
-            "_CrisisMissionTail",
-            // to parent
-            "_NavigateOngoingMission"
+            "~S302",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S302FromOngoingMission",
+            "[JumpBack]_CrisisMissionTail",
+            "[JumpBack]_NavigateOngoingMission"
         ]
     },
     "_S302FromOngoingMission": {
@@ -5143,23 +4842,14 @@
         },
         "inverse": true,
         "next": [
-            "~S303"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S303FromOngoingMission",
-            // adjust position
-            "_CrisisMissionTail",
-            // to parent
-            "_NavigateOngoingMission"
+            "~S303",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S303FromOngoingMission",
+            "[JumpBack]_CrisisMissionTail",
+            "[JumpBack]_NavigateOngoingMission"
         ]
     },
     "_S303FromOngoingMission": {
@@ -5197,23 +4887,14 @@
         },
         "inverse": true,
         "next": [
-            "~EventLevel"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_FindEventLevelFromOngoingMission",
-            // adjust position
-            "_CrisisMissionHead",
-            // to parent
-            "_NavigateOngoingMission"
+            "~EventLevel",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_FindEventLevelFromOngoingMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateOngoingMission"
         ]
     },
     "_FindEventLevelFromOngoingMission": {
@@ -5290,21 +4971,13 @@
         },
         "inverse": true,
         "next": [
-            "~EliteMission"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_EliteMissionFromCrisisMission",
-            // to parent
-            "_NavigateCrisisMission"
+            "~EliteMission",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_EliteMissionFromCrisisMission",
+            "[JumpBack]_NavigateCrisisMission"
         ]
     },
     "_EliteMissionFromCrisisMission": {
@@ -5344,23 +5017,14 @@
         },
         "inverse": true,
         "next": [
-            "~S401"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S401FromEliteMission",
-            // adjust position
-            "_CrisisMissionHead",
-            // to parent
-            "_NavigateEliteMission"
+            "~S401",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S401FromEliteMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateEliteMission"
         ]
     },
     "_S401FromEliteMission": {
@@ -5399,23 +5063,14 @@
         },
         "inverse": true,
         "next": [
-            "~S402"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S402FromEliteMission",
-            // adjust position
-            "_CrisisMissionHead",
-            // to parent
-            "_NavigateEliteMission"
+            "~S402",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S402FromEliteMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateEliteMission"
         ]
     },
     "_S402FromEliteMission": {
@@ -5454,23 +5109,14 @@
         },
         "inverse": true,
         "next": [
-            "~S501"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S501FromEliteMission",
-            // adjust position
-            "_CrisisMissionHead",
-            // to parent
-            "_NavigateEliteMission"
+            "~S501",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S501FromEliteMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateEliteMission"
         ]
     },
     "_S501FromEliteMission": {
@@ -5509,23 +5155,14 @@
         },
         "inverse": true,
         "next": [
-            "~S502"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S502FromEliteMission",
-            // adjust position
-            "_CrisisMissionHead",
-            // to parent
-            "_NavigateEliteMission"
+            "~S502",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S502FromEliteMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateEliteMission"
         ]
     },
     "_S502FromEliteMission": {
@@ -5563,23 +5200,14 @@
         },
         "inverse": true,
         "next": [
-            "~S701"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_S701FromEliteMission",
-            // adjust position
-            "_CrisisMissionTail",
-            // to parent
-            "_NavigateEliteMission"
+            "~S701",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S701FromEliteMission",
+            "[JumpBack]_CrisisMissionTail",
+            "[JumpBack]_NavigateEliteMission"
         ]
     },
     "_S701FromEliteMission": {
@@ -5617,21 +5245,13 @@
         },
         "inverse": true,
         "next": [
-            "~LiminalZone"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_LiminalZoneFromBCR",
-            // to parent
-            "_NavigateBCR"
+            "~LiminalZone",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_LiminalZoneFromBCR",
+            "[JumpBack]_NavigateBCR"
         ]
     },
     "_LiminalZoneFromBCR": {
@@ -5702,22 +5322,14 @@
         },
         "inverse": true,
         "next": [
-            "~ReceptionRoom"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_ReceptionRoomFromLiminalZone",
-            "_LiminalZoneHead",
-            // to parent
-            "_NavigateLiminalZone"
+            "~ReceptionRoom",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_ReceptionRoomFromLiminalZone",
+            "[JumpBack]_LiminalZoneHead",
+            "[JumpBack]_NavigateLiminalZone"
         ]
     },
     "_ReceptionRoomFromLiminalZone": {
@@ -5756,22 +5368,14 @@
         },
         "inverse": true,
         "next": [
-            "~ObsoleteNexus"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_ObsoleteNexusFromLiminalZone",
-            "_LiminalZoneHead",
-            // to parent
-            "_NavigateLiminalZone"
+            "~ObsoleteNexus",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_ObsoleteNexusFromLiminalZone",
+            "[JumpBack]_LiminalZoneHead",
+            "[JumpBack]_NavigateLiminalZone"
         ]
     },
     "_ObsoleteNexusFromLiminalZone": {
@@ -5810,21 +5414,13 @@
         },
         "inverse": true,
         "next": [
-            "~Corridor"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_LevelUp",
-            // base
-            // other
-            // from parent
-            "_FindCorridorFromLiminalZone",
-            // to parent
-            "_NavigateLiminalZone"
+            "~Corridor",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_FindCorridorFromLiminalZone",
+            "[JumpBack]_NavigateLiminalZone"
         ]
     },
     "_FindCorridorFromLiminalZone": {
@@ -5842,16 +5438,11 @@
         },
         "next": [
             "_CorridorFromLiminalZone",
-            "_CorridorNA"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // swipe
-            "_LiminalZoneTail",
-            // to parent
-            "_NavigateLiminalZone"
+            "_CorridorNA",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_LiminalZoneTail",
+            "[JumpBack]_NavigateLiminalZone"
         ]
     },
     "_CorridorFromLiminalZone": {
@@ -5908,20 +5499,12 @@
         },
         "inverse": true,
         "next": [
-            "~JointBlockade"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // base
-            // other
-            // from parent
-            "_JointBlockadeFromBCR",
-            // to parent
-            "_NavigateBCR"
+            "~JointBlockade",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_JointBlockadeFromBCR",
+            "[JumpBack]_NavigateBCR"
         ]
     },
     "_JointBlockadeFromBCR": {
@@ -5960,30 +5543,22 @@
         },
         "inverse": true,
         "next": [
-            "_EnsureTheRoom"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_CancelExitTheRoom",
-            "_CancelKey2ArchivePieces",
-            "_CancelKey2Agent",
-            "_CloseSellAmulet",
-            // overlay
-            "_ConfirmMiddle",
-            "_CloseMeditationLog",
-            "_CloseRitualResult",
-            "_ExitTheRoomStorage",
-            // base
-            "_ExitRitual",
-            "_ExitRitualAgentSelect",
-            // other
-            "_Loading",
-            // from parent
-            "_TheRoomFromHome",
-            // to parent
-            "_NavigateHomepage"
+            "_EnsureTheRoom",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_CancelExitTheRoom",
+            "[JumpBack]_CancelKey2ArchivePieces",
+            "[JumpBack]_CancelKey2Agent",
+            "[JumpBack]_CloseSellAmulet",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_CloseMeditationLog",
+            "[JumpBack]_CloseRitualResult",
+            "[JumpBack]_ExitTheRoomStorage",
+            "[JumpBack]_ExitRitual",
+            "[JumpBack]_ExitRitualAgentSelect",
+            "[JumpBack]_Loading",
+            "[JumpBack]_TheRoomFromHome",
+            "[JumpBack]_NavigateHomepage"
         ]
     },
     "_EnsureTheRoom": {
@@ -6052,26 +5627,18 @@
         },
         "inverse": true,
         "next": [
-            "~Ritual"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_CancelExitTheRoom",
-            "_CancelKey2ArchivePieces",
-            "_CancelKey2Agent",
-            // overlay
-            "_ConfirmMiddle",
-            "_CloseMeditationLog",
-            "_CloseRitualResult",
-            // base
-            "_ExitRitualAgentSelect",
-            // other
-            // from parent
-            "_RitualFromTheRoom",
-            // to parent
-            "_NavigateTheRoom"
+            "~Ritual",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_CancelExitTheRoom",
+            "[JumpBack]_CancelKey2ArchivePieces",
+            "[JumpBack]_CancelKey2Agent",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_CloseMeditationLog",
+            "[JumpBack]_CloseRitualResult",
+            "[JumpBack]_ExitRitualAgentSelect",
+            "[JumpBack]_RitualFromTheRoom",
+            "[JumpBack]_NavigateTheRoom"
         ]
     },
     "_RitualFromTheRoom": {
@@ -6108,19 +5675,12 @@
         },
         "inverse": true,
         "next": [
-            "~RitualAgentSelect"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // base
-            // from parent
-            "_AgentSelectFromRitual",
-            // to parent
-            "_NavigateRitual"
+            "~RitualAgentSelect",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_AgentSelectFromRitual",
+            "[JumpBack]_NavigateRitual"
         ]
     },
     "_AgentSelectFromRitual": {
@@ -6166,19 +5726,12 @@
             }
         },
         "next": [
-            "~RitualUseKeys"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // base
-            // from parent
-            "_UseKeysFromRitual",
-            // to parent
-            "_NavigateRitual"
+            "~RitualUseKeys",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_UseKeysFromRitual",
+            "[JumpBack]_NavigateRitual"
         ]
     },
     "_UseKeysFromRitual": {
@@ -6216,21 +5769,14 @@
         },
         "inverse": true,
         "next": [
-            "~TheRoomStorage"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_CloseSellAmulet",
-            "_CancelExitTheRoom",
-            // overlay
-            "_ConfirmMiddle",
-            // base
-            // from parent
-            "_StorageFromTheRoom",
-            // to parent
-            "_NavigateTheRoom"
+            "~TheRoomStorage",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_CloseSellAmulet",
+            "[JumpBack]_CancelExitTheRoom",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_StorageFromTheRoom",
+            "[JumpBack]_NavigateTheRoom"
         ]
     },
     "_StorageFromTheRoom": {
@@ -6268,18 +5814,12 @@
         },
         "inverse": true,
         "next": [
-            "~Recruit"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_RecruitFromHome",
-            // to parent
-            "_NavigateHomepage"
+            "~Recruit",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_RecruitFromHome",
+            "[JumpBack]_NavigateHomepage"
         ]
     },
     "_RecruitFromHome": {
@@ -6392,19 +5932,13 @@
         },
         "inverse": true,
         "next": [
-            "~ExternalRecruit"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_CancelExternalRecruitPopup",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_FindExternalRecruitFromRecruit",
-            // to parent
-            "_NavigateRecruit"
+            "~ExternalRecruit",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_CancelExternalRecruitPopup",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_FindExternalRecruitFromRecruit",
+            "[JumpBack]_NavigateRecruit"
         ]
     },
     "_FindExternalRecruitFromRecruit": {
@@ -6424,19 +5958,13 @@
         },
         "next": [
             "~ExternalRecruit",
-            "_ExternalRecruitFromRecruit"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_CancelExternalRecruitPopup",
-            // overlay
-            "_ConfirmMiddle",
-            // swipe
-            "_RecruitTail",
-            // to parent
-            "_NavigateRecruit"
+            "_ExternalRecruitFromRecruit",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_CancelExternalRecruitPopup",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_RecruitTail",
+            "[JumpBack]_NavigateRecruit"
         ]
     },
     "_ExternalRecruitFromRecruit": {
@@ -6473,19 +6001,13 @@
         },
         "inverse": true,
         "next": [
-            "~Supplies"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_Cancel4",
-            // overlay
-            "_CancelFilmRedeem",
-            // from parent
-            "_SuppliesFromHome",
-            // to parent
-            "_NavigateHomepage"
+            "~Supplies",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_CancelFilmRedeem",
+            "[JumpBack]_SuppliesFromHome",
+            "[JumpBack]_NavigateHomepage"
         ]
     },
     "_SuppliesFromHome": {
@@ -6529,20 +6051,14 @@
         },
         "inverse": true,
         "next": [
-            "~ReinforcementSupplies"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_Cancel4",
-            // overlay
-            "_ConfirmMiddle",
-            "_CancelFilmRedeem",
-            // from parent
-            "_ReinforcementSuppliesFromSupplies",
-            // to parent
-            "_NavigateSupplies"
+            "~ReinforcementSupplies",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_CancelFilmRedeem",
+            "[JumpBack]_ReinforcementSuppliesFromSupplies",
+            "[JumpBack]_NavigateSupplies"
         ]
     },
     "_ReinforcementSuppliesFromSupplies": {
@@ -6582,19 +6098,13 @@
         },
         "inverse": true,
         "next": [
-            "~EventSupplies"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_Cancel4",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_EventSuppliesFromSupplies",
-            // to parent
-            "_NavigateSupplies"
+            "~EventSupplies",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_EventSuppliesFromSupplies",
+            "[JumpBack]_NavigateSupplies"
         ]
     },
     "_EventSuppliesFromSupplies": {
@@ -6633,19 +6143,13 @@
         },
         "inverse": true,
         "next": [
-            "~MeritRedeem"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_Cancel4",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_MeritRedeemFromSupplies",
-            // to parent
-            "_NavigateSupplies"
+            "~MeritRedeem",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_MeritRedeemFromSupplies",
+            "[JumpBack]_NavigateSupplies"
         ]
     },
     "_MeritRedeemFromSupplies": {
@@ -6687,19 +6191,13 @@
         "inverse": true,
         "next": [
             "_OutOfFilm",
-            "~FilmRedeem"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_Cancel4",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_FilmRedeemFromMeritRedeem",
-            // to parent
-            "_NavigateMeritRedeem"
+            "~FilmRedeem",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_FilmRedeemFromMeritRedeem",
+            "[JumpBack]_NavigateMeritRedeem"
         ]
     },
     "_OutOfFilm": {
@@ -6750,19 +6248,13 @@
         },
         "inverse": true,
         "next": [
-            "~SilverMedal"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_Cancel4",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_SilverMedalFromMeritRedeem",
-            // to parent
-            "_NavigateMeritRedeem"
+            "~SilverMedal",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_SilverMedalFromMeritRedeem",
+            "[JumpBack]_NavigateMeritRedeem"
         ]
     },
     "_SilverMedalFromMeritRedeem": {
@@ -6864,19 +6356,13 @@
         },
         "inverse": true,
         "next": [
-            "~VioletMedal"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_Cancel4",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_VioletMedalFromMeritRedeem",
-            // to parent
-            "_NavigateMeritRedeem"
+            "~VioletMedal",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_VioletMedalFromMeritRedeem",
+            "[JumpBack]_NavigateMeritRedeem"
         ]
     },
     "_VioletMedalFromMeritRedeem": {
@@ -6980,19 +6466,13 @@
         },
         "inverse": true,
         "next": [
-            "~Mission"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_CloseMutualAid",
-            // from parent
-            "_MissionFromHome",
-            // to parent
-            "_NavigateHomepage"
+            "~Mission",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_CloseMutualAid",
+            "[JumpBack]_MissionFromHome",
+            "[JumpBack]_NavigateHomepage"
         ]
     },
     "_MissionFromHome": {
@@ -7031,19 +6511,13 @@
         },
         "inverse": true,
         "next": [
-            "~DailyMission"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_CloseMutualAid",
-            // from parent
-            "_DailyFromMission",
-            // to parent
-            "_NavigateMission"
+            "~DailyMission",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_CloseMutualAid",
+            "[JumpBack]_DailyFromMission",
+            "[JumpBack]_NavigateMission"
         ]
     },
     "_DailyFromMission": {
@@ -7079,19 +6553,13 @@
         },
         "inverse": true,
         "next": [
-            "~WeeklyMission"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_CloseMutualAid",
-            // from parent
-            "_WeeklyFromMission",
-            // to parent
-            "_NavigateMission"
+            "~WeeklyMission",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_CloseMutualAid",
+            "[JumpBack]_WeeklyFromMission",
+            "[JumpBack]_NavigateMission"
         ]
     },
     "_WeeklyFromMission": {
@@ -7127,19 +6595,13 @@
         },
         "inverse": true,
         "next": [
-            "~UrbanPatrol"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            "_CloseMutualAid",
-            // from parent
-            "_UrbanPatrolFromMission",
-            // to parent
-            "_NavigateMission"
+            "~UrbanPatrol",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_CloseMutualAid",
+            "[JumpBack]_UrbanPatrolFromMission",
+            "[JumpBack]_NavigateMission"
         ]
     },
     "_UrbanPatrolFromMission": {
@@ -7175,18 +6637,12 @@
         },
         "inverse": true,
         "next": [
-            "~MutualAid"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_MutualAidFromUrbanPatrol",
-            // to parent
-            "_NavigateUrbanPatrol"
+            "~MutualAid",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_MutualAidFromUrbanPatrol",
+            "[JumpBack]_NavigateUrbanPatrol"
         ]
     },
     "_MutualAidFromUrbanPatrol": {
@@ -7224,18 +6680,12 @@
         },
         "inverse": true,
         "next": [
-            "~Protocol"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_FindProtocolFromHome",
-            // to parent
-            "_NavigateHomepage"
+            "~Protocol",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_FindProtocolFromHome",
+            "[JumpBack]_NavigateHomepage"
         ]
     },
     "_FindProtocolFromHome": {
@@ -7312,18 +6762,12 @@
         },
         "inverse": true,
         "next": [
-            "~ProtocolMission"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_MissionFromProtocol",
-            // to parent
-            "_NavigateProtocol"
+            "~ProtocolMission",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_MissionFromProtocol",
+            "[JumpBack]_NavigateProtocol"
         ]
     },
     "_MissionFromProtocol": {
@@ -7361,18 +6805,12 @@
         },
         "inverse": true,
         "next": [
-            "~ProtocolWeekly"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_WeeklyFromProtocolMission",
-            // to parent
-            "_NavigateProtocolMission"
+            "~ProtocolWeekly",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_WeeklyFromProtocolMission",
+            "[JumpBack]_NavigateProtocolMission"
         ]
     },
     "_WeeklyFromProtocolMission": {
@@ -7408,18 +6846,12 @@
         },
         "inverse": true,
         "next": [
-            "~ProtocolSpecial"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_SpecialFromProtocolMission",
-            // to parent
-            "_NavigateProtocolMission"
+            "~ProtocolSpecial",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_SpecialFromProtocolMission",
+            "[JumpBack]_NavigateProtocolMission"
         ]
     },
     "_SpecialFromProtocolMission": {
@@ -7455,18 +6887,12 @@
         },
         "inverse": true,
         "next": [
-            "~ProtocolReward"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_RewardFromProtocol",
-            // to parent
-            "_NavigateProtocol"
+            "~ProtocolReward",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_RewardFromProtocol",
+            "[JumpBack]_NavigateProtocol"
         ]
     },
     "_RewardFromProtocol": {
@@ -7503,17 +6929,11 @@
         },
         "inverse": true,
         "next": [
-            "~System"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            // from parent
-            "_SystemFromHome",
-            // to parent
-            "_NavigateHomepage"
+            "~System",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_SystemFromHome",
+            "[JumpBack]_NavigateHomepage"
         ]
     },
     "_SystemFromHome": {
@@ -7552,18 +6972,12 @@
         },
         "inverse": true,
         "next": [
-            "~Mailbox"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_MailboxFromHome",
-            // to parent
-            "_NavigateHomepage"
+            "~Mailbox",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_MailboxFromHome",
+            "[JumpBack]_NavigateHomepage"
         ]
     },
     "_MailboxFromHome": {
@@ -7603,18 +7017,12 @@
         },
         "inverse": true,
         "next": [
-            "~Event"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_EventFromHome",
-            // to parent
-            "_NavigateHomepage"
+            "~Event",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_EventFromHome",
+            "[JumpBack]_NavigateHomepage"
         ]
     },
     "_EventFromHome": {
@@ -7654,20 +7062,13 @@
         },
         "inverse": true,
         "next": [
-            "~DailyStaminaBonus"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_StaminaBonusFromEvent",
-            // exception
-            "_DailyStaminaBonusNA",
-            // to parent
-            "_NavigateEvent"
+            "~DailyStaminaBonus",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_StaminaBonusFromEvent",
+            "[JumpBack]_DailyStaminaBonusNA",
+            "[JumpBack]_NavigateEvent"
         ]
     },
     // Daily Stamina Bonus Event Not Exist
@@ -7744,20 +7145,13 @@
         },
         "inverse": true,
         "next": [
-            "~ShortTermCheckIn"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // from parent
-            "_ShortTermCheckInFromEvent",
-            // exception
-            "_ShortTermCheckInNA",
-            // to parent
-            "_NavigateEvent"
+            "~ShortTermCheckIn",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_ShortTermCheckInFromEvent",
+            "[JumpBack]_ShortTermCheckInNA",
+            "[JumpBack]_NavigateEvent"
         ]
     },
     // Daily Stamina Bonus Event Not Exist
@@ -7844,10 +7238,8 @@
     // Logic
     "Farm": {
         "next": [
-            "SelectLevelFromBCR"
-        ],
-        "interrupt": [
-            "_NavigateBCR"
+            "SelectLevelFromBCR",
+            "[JumpBack]_NavigateBCR"
         ]
     },
     "SelectLevelFromBCR": {
@@ -7868,10 +7260,8 @@
         "next": [
             "~LevelNA",
             "~LiminalZoneNA",
-            "FarmFromLevel"
-        ],
-        "interrupt": [
-            "FarmSelectLevel"
+            "FarmFromLevel",
+            "[JumpBack]FarmSelectLevel"
         ]
     },
     "FarmFromLevel": {
@@ -7892,22 +7282,16 @@
             }
         },
         "next": [
-            "_False"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmSweepResult",
-            "_ConfirmLiminalZoneOverflow",
-            "FarmOutOfStamina",
-            // overlay
-            "_LevelUp",
-            // main logic
-            "_SweepMax",
-            "_SweepFromLevel",
-            // to parent
-            "FarmSelectLevel"
+            "_False",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmSweepResult",
+            "[JumpBack]_ConfirmLiminalZoneOverflow",
+            "[JumpBack]FarmOutOfStamina",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SweepMax",
+            "[JumpBack]_SweepFromLevel",
+            "[JumpBack]FarmSelectLevel"
         ]
     },
     // Option
@@ -8028,10 +7412,8 @@
     // Logic
     "CrisisMissionTickets": {
         "next": [
-            "CrisisMissionTicketsFromBCR"
-        ],
-        "interrupt": [
-            "_NavigateBCR"
+            "CrisisMissionTicketsFromBCR",
+            "[JumpBack]_NavigateBCR"
         ]
     },
     "CrisisMissionTicketsFromBCR": {
@@ -8051,10 +7433,8 @@
         },
         "next": [
             "~LevelNA",
-            "CrisisMissionTicketsFromLevel"
-        ],
-        "interrupt": [
-            "CrisisMissionTicketsSelectLevel"
+            "CrisisMissionTicketsFromLevel",
+            "[JumpBack]CrisisMissionTicketsSelectLevel"
         ]
     },
     "CrisisMissionTicketsFromLevel": {
@@ -8073,20 +7453,14 @@
             }
         },
         "next": [
-            "CrisisMissionTicketsCompletedFromLevel"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmSweepResult",
-            // overlay
-            "_LevelUp",
-            // main logic
-            "CrisisMissonTicketsSweepStrategy",
-            "_SweepFromLevel",
-            // to parent
-            "CrisisMissionTicketsSelectLevel"
+            "CrisisMissionTicketsCompletedFromLevel",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmSweepResult",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]CrisisMissonTicketsSweepStrategy",
+            "[JumpBack]_SweepFromLevel",
+            "[JumpBack]CrisisMissionTicketsSelectLevel"
         ]
     },
     // Option
@@ -8141,10 +7515,8 @@
     "LiminalZone": {
         "next": [
             "LiminalZoneCompletedFromSystem",
-            "LiminalZoneFromSystem"
-        ],
-        "interrupt": [
-            "_NavigateSystem"
+            "LiminalZoneFromSystem",
+            "[JumpBack]_NavigateSystem"
         ]
     },
     "LiminalZoneFromSystem": {
@@ -8173,10 +7545,8 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "SelectLevelFromLiminalZone"
-        ],
-        "interrupt": [
-            "_NavigateLiminalZone"
+            "SelectLevelFromLiminalZone",
+            "[JumpBack]_NavigateLiminalZone"
         ]
     },
     "SelectLevelFromLiminalZone": {
@@ -8194,10 +7564,8 @@
         },
         "next": [
             "~LiminalZoneNA",
-            "LiminalZoneFromLevel"
-        ],
-        "interrupt": [
-            "LiminalZoneSelectLevel"
+            "LiminalZoneFromLevel",
+            "[JumpBack]LiminalZoneSelectLevel"
         ]
     },
     "LiminalZoneFromLevel": {
@@ -8218,21 +7586,15 @@
         },
         "next": [
             "_CancelLiminalZoneOverflow",
-            "LiminalZoneCompletedFromLevel"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmLiminalZoneResult",
-            "LiminalZoneOutOfStamina",
-            // overlay
-            "_LevelUp",
-            // main logic
-            "_SweepMax",
-            "_SweepFromLevel",
-            // to parent
-            "FarmSelectLevel"
+            "LiminalZoneCompletedFromLevel",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmLiminalZoneResult",
+            "[JumpBack]LiminalZoneOutOfStamina",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SweepMax",
+            "[JumpBack]_SweepFromLevel",
+            "[JumpBack]FarmSelectLevel"
         ]
     },
     // Option
@@ -8324,24 +7686,19 @@
     // Logic
     "Ritual": {
         "next": [
-            "RitualCompleted", // Success
-            "RitualCompleted_NoKey2Archive", // Success if not use key
+            "RitualCompleted",
+            "RitualCompleted_NoKey2Archive",
             "RitualCompleted_NoKey2Agent",
-            "RitualNoAmulet" // Exception: out of amulet
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "Key2Agent",
-            "RitualUseAllKeys",
-            "Key2ArchivePieces",
-            // overlay
-            "_CloseRitualResult",
-            // base
-            "RitualRewardSelect",
-            "NextRitual",
-            "_NavigateRitual"
+            "RitualNoAmulet",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]Key2Agent",
+            "[JumpBack]RitualUseAllKeys",
+            "[JumpBack]Key2ArchivePieces",
+            "[JumpBack]_CloseRitualResult",
+            "[JumpBack]RitualRewardSelect",
+            "[JumpBack]NextRitual",
+            "[JumpBack]_NavigateRitual"
         ]
     },
     // Ritual Proceed
@@ -8371,12 +7728,10 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "RitualRewardSelect"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateRitualSelectAgent"
+            "RitualRewardSelect",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
     // Option: Ritual Reward Select
@@ -8396,12 +7751,10 @@
             }
         },
         "next": [
-            "RitualRewardDust"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateRitualSelectAgent"
+            "RitualRewardDust",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
     // Fund
@@ -8433,12 +7786,10 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "ConfirmRitual"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateRitualSelectAgent"
+            "ConfirmRitual",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
     // Tape
@@ -8470,12 +7821,10 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "ConfirmRitual"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateRitualSelectAgent"
+            "ConfirmRitual",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
     // Star Dust
@@ -8507,12 +7856,10 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "ConfirmRitual"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateRitualSelectAgent"
+            "ConfirmRitual",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
     // Sample
@@ -8544,12 +7891,10 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "ConfirmRitual"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateRitualSelectAgent"
+            "ConfirmRitual",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
     "ConfirmRitual": {
@@ -8617,12 +7962,10 @@
         "action": "Click",
         "post_wait_freezes": 1000,
         "next": [
-            "RitualUseAllKeys"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateRitual"
+            "RitualUseAllKeys",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitual"
         ]
     },
     "RitualUseAllKeys": {
@@ -8651,12 +7994,10 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "ConfirmRitualUseKeys"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateRitualUseKeys"
+            "ConfirmRitualUseKeys",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitualUseKeys"
         ]
     },
     "ConfirmRitualUseKeys": {
@@ -8794,14 +8135,12 @@
     "SellAmulet": {
         // "enabled": false,
         "next": [
-            "AmuletSoldOut"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "NextAmulet",
-            "_NavigateTheRoomStorage"
+            "AmuletSoldOut",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]NextAmulet",
+            "[JumpBack]_NavigateTheRoomStorage"
         ]
     },
     "AmuletSoldOut": {
@@ -8849,12 +8188,10 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "EnterSellAmulet"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateTheRoomStorage"
+            "EnterSellAmulet",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateTheRoomStorage"
         ]
     },
     "EnterSellAmulet": {
@@ -8883,13 +8220,11 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "SelectAmuletCount"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "NextAmulet",
-            "_NavigateTheRoomStorage"
+            "SelectAmuletCount",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]NextAmulet",
+            "[JumpBack]_NavigateTheRoomStorage"
         ]
     },
     "SelectAmuletCount": {
@@ -8921,13 +8256,11 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "ConfirmSellAmulet"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "NextAmulet",
-            "_NavigateTheRoomStorage"
+            "ConfirmSellAmulet",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]NextAmulet",
+            "[JumpBack]_NavigateTheRoomStorage"
         ]
     },
     "ConfirmSellAmulet": {
@@ -8965,24 +8298,20 @@
     // Entry
     "#UrbanPatrol": {
         "next": [
-            "UrbanPatrol"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateUrbanPatrol"
+            "UrbanPatrol",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateUrbanPatrol"
         ]
     },
     // Logic
     "UrbanPatrol": {
         "next": [
-            "DailyCollabPtsCollected"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "CollectDailyCollabPts",
-            "_NavigateUrbanPatrol"
+            "DailyCollabPtsCollected",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]CollectDailyCollabPts",
+            "[JumpBack]_NavigateUrbanPatrol"
         ]
     },
     "CollectDailyCollabPts": {
@@ -9028,13 +8357,11 @@
             }
         },
         "next": [
-            "_False"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "SelectAllFriends",
-            "_NavigateMutualAid"
+            "_False",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]SelectAllFriends",
+            "[JumpBack]_NavigateMutualAid"
         ]
     },
     "SelectAllFriends": {
@@ -9063,14 +8390,12 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "_False"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "SendCollabPts",
-            "_NavigateMutualAid"
+            "_False",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]SendCollabPts",
+            "[JumpBack]_NavigateMutualAid"
         ]
     },
     "SendCollabPts": {
@@ -9099,14 +8424,12 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "_False"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "CollectCollabPts",
-            "_NavigateMutualAid"
+            "_False",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]CollectCollabPts",
+            "[JumpBack]_NavigateMutualAid"
         ]
     },
     "CollectCollabPts": {
@@ -9135,14 +8458,12 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "_False"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "UrbanPatrolPuchase",
-            "_NavigateUrbanPatrol"
+            "_False",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]UrbanPatrolPuchase",
+            "[JumpBack]_NavigateUrbanPatrol"
         ]
     },
     "UrbanPatrolPuchase": {
@@ -9171,11 +8492,9 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "_False"
-        ],
-        "interrupt": [
-            "_ConfirmMiddle",
-            "_StopTask"
+            "_False",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_StopTask"
         ]
     },
     // Collect Rewards =================================
@@ -9188,12 +8507,10 @@
     // Logic
     "DailyReward": {
         "next": [
-            "CollectDailyReward"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateDailyMission"
+            "CollectDailyReward",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateDailyMission"
         ]
     },
     "CollectDailyReward": {
@@ -9222,12 +8539,10 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "CollectWeeklyReward"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateWeeklyMission"
+            "CollectWeeklyReward",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateWeeklyMission"
         ]
     },
     "CollectWeeklyReward": {
@@ -9267,12 +8582,10 @@
     "CountermeasureProtocol": {
         "next": [
             "ProtocolFullLevel",
-            "CollectProtocolWeekly"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateProtocolWeekly"
+            "CollectProtocolWeekly",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateProtocolWeekly"
         ]
     },
     "ProtocolFullLevel": {
@@ -9320,12 +8633,10 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "CollectProtocolSpecial"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateProtocolSpecial"
+            "CollectProtocolSpecial",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateProtocolSpecial"
         ]
     },
     "CollectProtocolSpecial": {
@@ -9354,12 +8665,10 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "CollectProtocolReward"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateProtocolReward"
+            "CollectProtocolReward",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateProtocolReward"
         ]
     },
     "CollectProtocolReward": {
@@ -9398,12 +8707,10 @@
     // Logic
     "Mailbox": {
         "next": [
-            "CollectMail"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateMailbox"
+            "CollectMail",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateMailbox"
         ]
     },
     "CollectMail": {
@@ -9432,12 +8739,10 @@
     // Logic
     "ExternalRecruit": {
         "next": [
-            "ManageExternalRecruit"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateExternalRecruit"
+            "ManageExternalRecruit",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateExternalRecruit"
         ]
     },
     "ManageExternalRecruit": {
@@ -9456,22 +8761,16 @@
             }
         },
         "next": [
-            "ExternalRecruitOutofOffer"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            // overlay
-            "_ConfirmMiddle",
-            // main logic
-            "_RecruitResult",
-            "ExternalRecruitMax",
-            "ExternalRecruitProceed",
-            "ExternalRecruitAcc",
+            "ExternalRecruitOutofOffer",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_RecruitResult",
+            "[JumpBack]ExternalRecruitMax",
+            "[JumpBack]ExternalRecruitProceed",
+            "[JumpBack]ExternalRecruitAcc",
             "ExternalRecruitQueueFull",
-            // to parent
-            "_NavigateExternalRecruit"
+            "[JumpBack]_NavigateExternalRecruit"
         ]
     },
     // End
@@ -9489,7 +8788,8 @@
             }
         },
         "next": [
-            "_StopTask"
+            "_NavigateHomepage",
+            "~Homepage"
         ]
     },
     "ExternalRecruitQueueFull": {
@@ -9508,7 +8808,8 @@
             }
         },
         "next": [
-            "_StopTask"
+            "_NavigateHomepage",
+            "~Homepage"
         ]
     },
     // Proceed
@@ -9603,14 +8904,12 @@
     // Logic
     "Supplies": {
         "next": [
-            "DailyGiftCollected"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "DailyGift",
-            "_NavigateReinforcementSupplies"
+            "DailyGiftCollected",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]DailyGift",
+            "[JumpBack]_NavigateReinforcementSupplies"
         ]
     },
     "DailyGift": {
@@ -9629,14 +8928,12 @@
             }
         },
         "next": [
-            "CollectDailyGift"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "DailyGift",
-            "_NavigateReinforcementSupplies"
+            "CollectDailyGift",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]DailyGift",
+            "[JumpBack]_NavigateReinforcementSupplies"
         ]
     },
     "CollectDailyGift": {
@@ -9674,7 +8971,6 @@
         },
         "next": [
             "EventSupplies",
-            "FilmRedeem",
             "SilverMedalRedeemRecord",
             "SilverMedalRedeemOffer",
             "SilverMedalRedeemAcc",
@@ -9699,13 +8995,11 @@
             }
         },
         "next": [
-            "FindEventGift"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_NavigateEventSupplies"
+            "FindEventGift",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_NavigateEventSupplies"
         ]
     },
     "FindEventGift": {
@@ -9725,14 +9019,12 @@
             }
         },
         "next": [
-            "NoEventGift"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "CollectEventGift",
-            "_NavigateEventSupplies"
+            "NoEventGift",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]CollectEventGift",
+            "[JumpBack]_NavigateEventSupplies"
         ]
     },
     "CollectEventGift": {
@@ -9770,7 +9062,6 @@
         },
         "inverse": true,
         "next": [
-            "FilmRedeem",
             "SilverMedalRedeemRecord",
             "SilverMedalRedeemOffer",
             "SilverMedalRedeemAcc",
@@ -9780,14 +9071,12 @@
     "FilmRedeem": {
         // "enabled": false,
         "next": [
-            "FilmRedeemOutOfFilm"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "ConfirmFilmRedeem",
-            "_NavigateFilmRedeem"
+            "FilmRedeemOutOfFilm",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]ConfirmFilmRedeem",
+            "[JumpBack]_NavigateFilmRedeem"
         ]
     },
     "ConfirmFilmRedeem": {
@@ -9843,17 +9132,15 @@
         // "enabled": false,
         "next": [
             "SilverMedalRedeemRecordOutOfMedal",
-            "SilverMedalRedeemRecordComplete"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "SilverMedalRedeemRecordMax",
-            "SilverMedalRedeemRecordFound",
-            "_Cancel4",
-            "_SilverMedalTail",
-            "_NavigateSilverMedal"
+            "SilverMedalRedeemRecordComplete",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]SilverMedalRedeemRecordMax",
+            "[JumpBack]SilverMedalRedeemRecordFound",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_SilverMedalTail",
+            "[JumpBack]_NavigateSilverMedal"
         ]
     },
     "SilverMedalRedeemRecordComplete": {
@@ -9954,13 +9241,11 @@
         },
         "next": [
             "SilverMedalRedeemRecordConfirm",
-            "SilverMedalRedeemRecord"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_NavigateSilverMedal"
+            "SilverMedalRedeemRecord",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_NavigateSilverMedal"
         ]
     },
     "SilverMedalRedeemRecordConfirm": {
@@ -9994,17 +9279,15 @@
         // "enabled": false,
         "next": [
             "SilverMedalRedeemOfferOutOfMedal",
-            "SilverMedalRedeemOfferComplete"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "SilverMedalRedeemOfferMax",
-            "SilverMedalRedeemOfferFound",
-            "_Cancel4",
-            "_SilverMedalTail",
-            "_NavigateSilverMedal"
+            "SilverMedalRedeemOfferComplete",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]SilverMedalRedeemOfferMax",
+            "[JumpBack]SilverMedalRedeemOfferFound",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_SilverMedalTail",
+            "[JumpBack]_NavigateSilverMedal"
         ]
     },
     "SilverMedalRedeemOfferComplete": {
@@ -10103,13 +9386,11 @@
         },
         "next": [
             "SilverMedalRedeemOfferConfirm",
-            "SilverMedalRedeemOffer"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_NavigateSilverMedal"
+            "SilverMedalRedeemOffer",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_NavigateSilverMedal"
         ]
     },
     "SilverMedalRedeemOfferConfirm": {
@@ -10143,17 +9424,15 @@
         // "enabled": false,
         "next": [
             "SilverMedalRedeemAccOutOfMedal",
-            "SilverMedalRedeemAccComplete"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "SilverMedalRedeemAccMax",
-            "SilverMedalRedeemAccFound",
-            "_Cancel4",
-            "_SilverMedalTail",
-            "_NavigateSilverMedal"
+            "SilverMedalRedeemAccComplete",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]SilverMedalRedeemAccMax",
+            "[JumpBack]SilverMedalRedeemAccFound",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_SilverMedalTail",
+            "[JumpBack]_NavigateSilverMedal"
         ]
     },
     "SilverMedalRedeemAccComplete": {
@@ -10250,13 +9529,11 @@
         },
         "next": [
             "SilverMedalRedeemAccConfirm",
-            "SilverMedalRedeemAcc"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_NavigateSilverMedal"
+            "SilverMedalRedeemAcc",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_NavigateSilverMedal"
         ]
     },
     "SilverMedalRedeemAccConfirm": {
@@ -10289,13 +9566,11 @@
     "VioletMedalRedeemRecord": {
         // "enabled": false,
         "next": [
-            "VioletMedalRedeemRecordAtVioletMedal"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_NavigateVioletMedal"
+            "VioletMedalRedeemRecordAtVioletMedal",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_NavigateVioletMedal"
         ]
     },
     "VioletMedalRedeemRecordAtVioletMedal": {
@@ -10313,17 +9588,15 @@
         },
         "next": [
             "VioletMedalRedeemRecordOutOfMedal",
-            "VioletMedalRedeemRecordComplete"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "VioletMedalRedeemRecordMax",
-            "VioletMedalRedeemRecordFound",
-            "_Cancel4",
-            "_VioletMedalTail",
-            "_NavigateVioletMedal"
+            "VioletMedalRedeemRecordComplete",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]VioletMedalRedeemRecordMax",
+            "[JumpBack]VioletMedalRedeemRecordFound",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_VioletMedalTail",
+            "[JumpBack]_NavigateVioletMedal"
         ]
     },
     "VioletMedalRedeemRecordComplete": {
@@ -10414,14 +9687,12 @@
         },
         "next": [
             "VioletMedalRedeemRecordConfirm",
-            "VioletMedalRedeemRecord"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_ConfirmMiddle",
-            "_VioletMedalTail",
-            "_NavigateVioletMedal"
+            "VioletMedalRedeemRecord",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_VioletMedalTail",
+            "[JumpBack]_NavigateVioletMedal"
         ]
     },
     "VioletMedalRedeemRecordConfirm": {
@@ -10461,12 +9732,10 @@
     // Logic
     "DailyStaminaBonus": {
         "next": [
-            "CollectStaminaBonusNoon"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateStaminaBonus"
+            "CollectStaminaBonusNoon",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateStaminaBonus"
         ]
     },
     "CollectStaminaBonusNoon": {
@@ -10497,12 +9766,10 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "CollectStaminaBonusEvening"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateStaminaBonus"
+            "CollectStaminaBonusEvening",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateStaminaBonus"
         ]
     },
     "CollectStaminaBonusEvening": {
@@ -10544,12 +9811,10 @@
     "ShortTermCheckIn": {
         "next": [
             "CollectShortTermCheckIn",
-            "~ShortTermCheckIn"
-        ],
-        "interrupt": [
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "_NavigateShortTermCheckIn"
+            "~ShortTermCheckIn",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateShortTermCheckIn"
         ]
     },
     "CollectShortTermCheckIn": {
@@ -10581,10 +9846,8 @@
     "JointBlockade": {
         "next": [
             "JointBlockadeCompleteFromSystem",
-            "JointBlockadeFromSystem"
-        ],
-        "interrupt": [
-            "_NavigateSystem"
+            "JointBlockadeFromSystem",
+            "[JumpBack]_NavigateSystem"
         ]
     },
     "JointBlockadeFromSystem": {
@@ -10607,20 +9870,15 @@
         "next": [
             "~JointBlockadeNA",
             "JointBlockadeCompleteFromLevel",
-            "JointBlockadeTicketsCompleteFromLevel"
-        ],
-        "interrupt": [
-            // popup
-            "_ServerMaintenance",
-            "_ConfrimReconnect",
-            "ConfirmDiscardJointBlockadeUnfinishedGame",
-            // main logic
-            "_ConfirmJointBlockadeResult",
-            "_SweepConfirm",
-            "_SweepFromLevel",
-            "JointBlockadeUnfinishedGame",
-            // to parent
-            "_NavigateJointBlockade"
+            "JointBlockadeTicketsCompleteFromLevel",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]ConfirmDiscardJointBlockadeUnfinishedGame",
+            "[JumpBack]_ConfirmJointBlockadeResult",
+            "[JumpBack]_SweepConfirm",
+            "[JumpBack]_SweepFromLevel",
+            "[JumpBack]JointBlockadeUnfinishedGame",
+            "[JumpBack]_NavigateJointBlockade"
         ]
     },
     // Exception

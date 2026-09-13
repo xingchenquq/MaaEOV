@@ -40,6 +40,15 @@ __pycache__/
 /scripts/parse_mmor.py
 /scripts/validate_pipeline.py
 
+# ---- GUI 升级引入的运行时目录 / 构建产物 / 回滚备份 ----
+/libs/
+/runtimes/
+/plugins/
+/.mfa_build/
+/backup/
+/resource/mfa_layout.json
+/DependencySetup_*.bat
+
 # ---- 操作系统 / 编辑器 ----
 .DS_Store
 Thumbs.db

@@ -1,5 +1,6 @@
 {
-    "logging": true,
-    "save_draw": false,
-    "stdout_level": 2
+  "logging": true,
+  "save_draw": true,
+  "stdout_level": 2,
+  "show_hit_box": true
 }

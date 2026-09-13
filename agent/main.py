@@ -15,10 +15,31 @@ import auto_battle
 import past_event
 
 
+def _resolve_socket_id() -> str:
+    """解析 Agent 的 socket_id。
+
+    MFAAvalonia 2.x 的启动命令形如：
+        python main.py <ClientId> socket_id=<ClientId> instance_id=<id> instance_name=<name>
+    而 1.x（旧版）只有：
+        python main.py <ClientId>
+
+    所以不能再用 `sys.argv[-1]`（新版下会取到 instance_name=...，导致 socket 名不匹配、
+    C# 端永远等不到连接，表现为卡在「正在启动 Agent」）。
+    这里优先取显式的 `socket_id=` 参数，其次退回到第一个不含 '=' 的位置参数。
+    """
+    for arg in sys.argv[1:]:
+        if arg.startswith("socket_id="):
+            return arg.split("=", 1)[1]
+    for arg in sys.argv[1:]:
+        if "=" not in arg:
+            return arg
+    return sys.argv[-1]
+
+
 def main():
     Toolkit.init_option("./")
 
-    socket_id = sys.argv[-1]
+    socket_id = _resolve_socket_id()
 
     AgentServer.start_up(socket_id)
     AgentServer.join()
