@@ -1,0 +1,454 @@
+{
+    // ============================================================
+    // 认知海域（Sea of Cognition）独立任务 pipeline（v0.2 多节点循环）
+    // 基准分辨率：1280×720
+    //
+    // 玩法：双周本 · 自走棋式自动战斗。3 层递进：朦胧层→深潜层→梦渊层。
+    //       只有「深潜指引」入口给意识碎片奖励（自由探索无奖励）。
+    //       每 14 天刷新 7 张入场券；梦渊层单次 355 分，约 2 次跑满奖励。
+    //
+    // 真实流程（按用户提供截图 + 操作描述）：
+    //   主界面 → 导航到 BCR → 点「认知海域」图标（选层界面底部）
+    //     → 选层（梦渊层）→ 选「深潜指引」（当期未完成时）/ 自由探索
+    //     → 点「进入海域」（配队界面，不调队）→ 进入后展示梦渊层节点
+    //     → 点「灵感节点」→ 【全局 Buff 选择，仅一次：往左滑看 Buff，选一个】
+    //     → 进入战斗节点 → 【局内 Buff 选取：图中两个位置，点「激发」】
+    //     → 点「开始战斗」→ 自动战斗（无需开 AUTO）
+    //     → 结算（07_settle）点右下「继续」→ 下一节点（循环：局内 Buff→开始战斗→…）
+    //     → 全部节点打完 → 领奖 → 循环下一轮（入场券耗尽即停）
+    //
+    // 战斗中达到积分会出现奖励弹窗（复用 _SeaOfCognitionReward 关闭）。
+    //
+    // 设计说明：
+    // - 所有确定性按钮用 OCR 识别文字 + 自动点击匹配文字（无需精确坐标）。
+    // - 两个图标用模板：SeaOfCognition/认知海域图标.png（选层界面底部入口）、SeaOfCognition/进入海域.png（配队界面进入按钮）。
+    // - 导航复用 Tasks.json 共享节点：_NavigateBCR / _BCRHead / _BCRTail /
+    //   _NavigateHomepage / _ServerMaintenance / _ConfrimReconnect /
+    //   _ConfirmMiddle / _LevelUp / _CloseWindows / _SeaOfCognitionReward。
+    //
+    // ⚠️ 待用户实跑复核（坐标/模板已实现，首次跑建议盯一遍）：
+    //   - 全局 Buff（仅一次，共 5 次选取）：同一固定界面，每期不变。
+    //     优先级 能量涌流>战前准备>环境遮蔽>应急护盾>身心调和（模板均已就位）。
+    //     依次尝试，命中即点，点完回环到 SoCGBLoop；5 个都不命中→SoCGBDone→进战斗。
+    //     「未被选走」判定：当前用 Buff 亮卡模板识别（已选走卡片视觉变暗→不再匹配→
+    //     自然跳过，等价于「卡片下方无未激活」）。若实测已选走卡仍匹配亮卡致重复点，
+    //     需改为每节点加 OCR「未激活」+ 该卡下方 ROI（布局固定可量）。
+    //   - 局内 Buff（每个战斗节点一次）：左卡[356,205,232,278]中心≈[472,344]、
+    //     右卡[682,207,233,274]中心≈[798,344]；「激发」在[682,207,233,274]。
+    //     当前流程：识别「激发」→点左卡→点右卡→点「激发」确认（即盲点两卡=「随机点左右」）。
+    //     若游戏实为「二选一」只需点一张，告知我，我改成随机点单张。
+    //   - 入场券耗尽弹窗文字（当前用「入场券不足」/「入场券数量不足」）。
+    // ============================================================
+
+    // ---------- 任务入口 ----------
+    "#SeaOfCognition": {
+        "next": ["_NavigateBCR", "SoCAtBCR"]
+    },
+
+    // ---------- 进入认知海域：选层界面底部「认知海域」图标 ----------
+    // 模板 SeaOfCognition/认知海域图标.png（用户给定）。图标在选层界面底部，ROI 取下半屏。
+    "SoCAtBCR": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [0, 500, 1280, 220],
+                "template": "SeaOfCognition/认知海域图标.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_delay": 1000,
+        "next": ["SoCSelectLayer"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp",
+            "_NavigateBCR",
+            "_BCRHead",
+            "_BCRTail",
+            "_NavigateHomepage"
+        ]
+    },
+
+    // ---------- 选层：默认梦渊层（选项可切 朦胧层/深潜层/梦渊层） ----------
+    // 选完层后：若当期未完成会出现「深潜指引/自由探索」二选一 → 走 SoCDeepDive；
+    // 若当期已完成（深潜指引不显示）→ 直接落到 SoCTeamEnter。
+    "SoCSelectLayer": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "expected": ["梦渊层"]
+            }
+        },
+        "action": "Click",
+        "post_delay": 800,
+        "next": ["SoCDeepDive", "SoCTeamEnter"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp",
+            "_SoCNoTicket"
+        ]
+    },
+
+    // ---------- 选「深潜指引」（有意识碎片奖励）；自由探索无奖励不点 ----------
+    // 当期已完成时本节点识别不到「深潜指引」→ 自动落到 SoCTeamEnter。
+    "SoCDeepDive": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "expected": ["深潜指引"]
+            }
+        },
+        "action": "Click",
+        "post_delay": 800,
+        "next": ["SoCTeamEnter"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp",
+            "_SoCNoTicket"
+        ]
+    },
+
+    // ---------- 配队界面「进入海域」（不调队，直接进入） ----------
+    "SoCTeamEnter": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "template": "SeaOfCognition/进入海域.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_delay": 1500,
+        "next": ["SoCInspirationNode"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp",
+            "_SoCNoTicket"
+        ]
+    },
+
+    // ---------- 节点界面：点「灵感节点」进入（首节点触发全局 Buff） ----------
+    "SoCInspirationNode": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "expected": ["灵感节点"]
+            }
+        },
+        "action": "Click",
+        "post_delay": 1200,
+        "next": ["SoCGBLoop"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp",
+            "_SeaOfCognitionReward"
+        ]
+    },
+
+    // ---------- 全局 Buff：同一界面内共 5 次选取（仅一次） ----------
+    // 优先级固定：能量涌流 > 战前准备 > 环境遮蔽 > 应急护盾 > 身心调和。
+    // 每轮取「当前最高优先级、且未被选走」的 Buff 点选；5 个都选完即进入战斗。
+    // 判断「未被选走」：卡片下方有「未激活」=可点；无「未激活」=已被选走（跳过）。
+    // 实现：用 Buff 名模板逐个识别；已选走卡片视觉变化→不再匹配亮卡模板→自然跳过
+    //   （等价于「无未激活」判断）。若实测已选走卡片仍匹配模板导致重复点，
+    //   改为每个 SoCGB 节点加 OCR「未激活」+ ROI 限定到该卡片下方（布局固定可量 ROI）。
+    // 布局固定（每期不变），5 个 Buff 同屏，无需左右滑。
+    "SoCGBLoop": {
+        "next": ["SoCGB1", "SoCGB2", "SoCGB3", "SoCGB4", "SoCGB5", "SoCGBDone"]
+    },
+
+    "SoCGB1": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "template": "SeaOfCognition/能量涌流.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_delay": 800,
+        "next": ["SoCGBLoop"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp"
+        ]
+    },
+
+    "SoCGB2": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "template": "SeaOfCognition/战前准备.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_delay": 800,
+        "next": ["SoCGBLoop"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp"
+        ]
+    },
+
+    "SoCGB3": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "template": "SeaOfCognition/环境遮蔽.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_delay": 800,
+        "next": ["SoCGBLoop"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp"
+        ]
+    },
+
+    "SoCGB4": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "template": "SeaOfCognition/应急护盾.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_delay": 800,
+        "next": ["SoCGBLoop"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp"
+        ]
+    },
+
+    "SoCGB5": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "template": "SeaOfCognition/身心调和.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_delay": 800,
+        "next": ["SoCGBLoop"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp"
+        ]
+    },
+
+    "SoCGBDone": {
+        "recognition": "DirectHit",
+        "next": ["SoCNodeLoop"]
+    },
+
+    // ---------- 战斗节点循环入口 ----------
+    // 优先找局内 Buff（「激发」出现）→ 打下一节点；
+    // 找不到（全部节点打完，到领奖界面）→ 落到 SoCClaim。
+    "SoCNodeLoop": {
+        "next": ["SoCInBattleBuff", "SoCClaim"]
+    },
+
+    // ---------- 局内 Buff：点左卡（图中两个位置之左） ----------
+    // 识别「激发」即代表处在局内 Buff 界面；先点左卡中心 [472,344]。
+    // 左卡 ROI=[356,205,232,278]（用户给定），ROI 限右半屏避免误匹配卡内「激发」字样。
+    "SoCInBattleBuff": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [600, 160, 680, 360],
+                "expected": ["激发"]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [472, 344, 1, 1]
+            }
+        },
+        "post_delay": 600,
+        "next": ["SoCInBattleBuffPos2"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp",
+            "_SeaOfCognitionReward"
+        ]
+    },
+
+    // ---------- 局内 Buff：点右卡（图中两个位置之右） ----------
+    // 右卡 ROI=[682,207,233,274]（用户给定），中心≈[798,344]。
+    "SoCInBattleBuffPos2": {
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [798, 344, 1, 1]
+            }
+        },
+        "post_delay": 600,
+        "next": ["SoCInBattleBuffConfirm"]
+    },
+
+    // ---------- 局内 Buff：点「激发」确认 ----------
+    // 「激发」位置用户给定为 [682,207,233,274]（即右卡区域），ROI 限右半屏精确命中按钮。
+    "SoCInBattleBuffConfirm": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [600, 160, 680, 360],
+                "expected": ["激发"]
+            }
+        },
+        "action": "Click",
+        "post_delay": 1500,
+        "next": ["SoCStartBattle"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp",
+            "_SeaOfCognitionReward"
+        ]
+    },
+
+    // ---------- 战斗界面：点「开始战斗」 ----------
+    "SoCStartBattle": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "expected": ["开始战斗"]
+            }
+        },
+        "action": "Click",
+        "post_delay": 1000,
+        "next": ["SoCAutoBattle"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp",
+            "_SeaOfCognitionReward"
+        ]
+    },
+
+    // ---------- 自动战斗：等待结算（右下「继续」出现即战斗结束） ----------
+    // 战斗中奖励弹窗（达到积分）由 interrupt _SeaOfCognitionReward 关闭。
+    // reco_timeout 给足（自走棋战斗可能数分钟）。
+    "SoCAutoBattle": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [900, 600, 380, 120],
+                "expected": ["继续"]
+            }
+        },
+        "reco_timeout": 300000,
+        "post_delay": 500,
+        "next": ["SoCContinue"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp",
+            "_SeaOfCognitionReward"
+        ]
+    },
+
+    // ---------- 结算：点右下「继续」进入下一节点 ----------
+    "SoCContinue": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [900, 600, 380, 120],
+                "expected": ["继续"]
+            }
+        },
+        "action": "Click",
+        "post_delay": 1000,
+        "next": ["SoCNodeLoop"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp",
+            "_SeaOfCognitionReward"
+        ]
+    },
+
+    // ---------- 领奖：点「领取」/「确认」→ 循环下一轮 ----------
+    // 回到 BCR 再点认知海域图标，自动跑满（梦渊层约 2 次）。
+    "SoCClaim": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "expected": ["领取", "确认"]
+            }
+        },
+        "action": "Click",
+        "post_delay": 1200,
+        "next": ["_NavigateBCR", "SoCAtBCR"],
+        "interrupt": [
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_ConfirmMiddle",
+            "_LevelUp",
+            "_CloseWindows",
+            "_SeaOfCognitionReward"
+        ]
+    },
+
+    // ---------- 入场券耗尽：检测到「入场券不足」类弹窗 → 正常结束 ----------
+    "_SoCNoTicket": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "expected": ["入场券不足", "入场券数量不足"]
+            }
+        },
+        "next": ["SoCDone"]
+    },
+
+    // ---------- 任务成功结束 ----------
+    "SoCDone": {
+        "recognition": "DirectHit"
+    }
+}
