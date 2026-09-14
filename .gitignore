@@ -39,6 +39,19 @@ __pycache__/
 /scripts/fix_template_paths.py
 /scripts/parse_mmor.py
 /scripts/validate_pipeline.py
+/scripts/check_roi.py
+/scripts/check_versions.py
+/scripts/grid_view.py
+/scripts/loadres.py
+/scripts/loadres2.py
+/scripts/post_upgrade_tidy.py
+/scripts/fix_soc_dive_flow.py
+/scripts/fix_soc_entry_nav.py
+/scripts/fix_soc_ocr_variants.py
+/scripts/fix_soc_templates.py
+
+# ---- 原始素材截图（裁模板用的源图，不随发布包分发） ----
+/resource/base/image/SeaOfCognition/raw/
 
 # ---- GUI 升级引入的运行时目录 / 构建产物 / 回滚备份 ----
 /libs/

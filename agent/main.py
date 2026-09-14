@@ -13,6 +13,7 @@ from maa.toolkit import Toolkit
 # import my_reco
 import auto_battle
 import past_event
+import soc_actions
 
 
 def _resolve_socket_id() -> str:

@@ -2803,22 +2803,37 @@
         ]
     },
     // Close Sea of Cognition Reward Popup
+    // ⚠️ 旧实现用 SeaOfCognition/Reward.png（ROI 左上 [46,230,190,192]）匹配新版本弹窗
+    //   永远失败（日志见 maafw.bak 2026.09.13）。新弹窗：空白界面随机点一下才出现顶部居中
+    //   的「获取物资」标题，再点底部中央对号(✓)关闭。故改为 OCR「获取物资」+ 点 ✓。
+    //   作为 [JumpBack] 中断节点使用：命中后点 ✓，结束后自动回到被中断的节点。
     "_SeaOfCognitionReward": {
         "recognition": {
-            "type": "TemplateMatch",
+            "type": "OCR",
             "param": {
                 "roi": [
-                    46,
-                    230,
-                    190,
-                    192
+                    380,
+                    30,
+                    520,
+                    190
                 ],
-                "template": "SeaOfCognition/Reward.png"
+                "expected": [
+                    "获取物资"
+                ]
             }
         },
-        "next": [
-            "_CloseWindows"
-        ]
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    640,
+                    650,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1500
     },
     // Cancel External Recruit Start
     "_CancelExternalRecruitPopup": {

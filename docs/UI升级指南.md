@@ -250,3 +250,10 @@ System.ArgumentException: Startup hook assembly 'libloader' failed to load.
    **不能挂"会继续执行"的收尾动作**（如 `_NavigateHomepage`）。
    因为 `[JumpBack]` 执行完会**跳回发起节点**，收尾动作等于被放进循环体，会导致死循环。
    （v1.2 修复过一次这样的问题：外部招募「任务已满」出口。）
+4. **入口节点引用导航节点必须带 `[JumpBack]`**。项目惯例：
+   `"next": ["<首个动作节点>", ..., "[JumpBack]_NavigateX"]`（动作优先、导航兜底），
+   **绝不能裸写 `_NavigateX`**：裸用不带跳回语义，导航节点命中后进入它自己的链，
+   走到终点（如 `~BCR`）就直接**结束整个任务**，不会回到入口继续下一步。
+   （表现：任务「开始」后几秒即报「任务已全部完成」。v1.2 后排查过：认知海域入口误写成
+   `["_NavigateBCR","SoCAtBCR"]`。正确参照 Tasks.json 的 `#UrbanPatrol`：
+   `["UrbanPatrol", "[JumpBack]_ServerMaintenance", …, "[JumpBack]_NavigateUrbanPatrol"]`。）

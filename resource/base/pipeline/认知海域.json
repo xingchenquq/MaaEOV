@@ -8,9 +8,10 @@
     //       每 14 天刷新 7 张入场券；梦渊层单次 355 分，约 2 次跑满奖励。
     //
     // 真实流程（按用户提供截图 + 操作描述）：
-    //   主界面 → 导航到 BCR → 点「认知海域」图标（选层界面底部）
-    //     → 选层（梦渊层）→ 选「深潜指引」（当期未完成时）/ 自由探索
-    //     → 点「进入海域」（配队界面，不调队）→ 进入后展示梦渊层节点
+    //   主界面 → 导航到 BCR → 点「认知海域」图标（层选择界面）
+    //     → 点「梦渊层」节点选中 → 点右下「开始下潜」
+    //     → 下潜方式二选一：优先「深潜指引」（给意识碎片）；当期已完成时右卡「暂不可用」→ 点「自由探索」
+    //     → 配队界面点「进入海域」（不调队）→ 进入后展示梦渊层节点
     //     → 点「灵感节点」→ 【全局 Buff 选择，仅一次：往左滑看 Buff，选一个】
     //     → 进入战斗节点 → 【局内 Buff 选取：图中两个位置，点「激发」】
     //     → 点「开始战斗」→ 自动战斗（无需开 AUTO）
@@ -29,10 +30,10 @@
     // ⚠️ 待用户实跑复核（坐标/模板已实现，首次跑建议盯一遍）：
     //   - 全局 Buff（仅一次，共 5 次选取）：同一固定界面，每期不变。
     //     优先级 能量涌流>战前准备>环境遮蔽>应急护盾>身心调和（模板均已就位）。
-    //     依次尝试，命中即点，点完回环到 SoCGBLoop；5 个都不命中→SoCGBDone→进战斗。
-    //     「未被选走」判定：当前用 Buff 亮卡模板识别（已选走卡片视觉变暗→不再匹配→
-    //     自然跳过，等价于「卡片下方无未激活」）。若实测已选走卡仍匹配亮卡致重复点，
-    //     需改为每节点加 OCR「未激活」+ 该卡下方 ROI（布局固定可量）。
+    //     按优先级逐个尝试，命中即点，点完回环 SoCGBLoop；每轮左滑前进一张。
+    //     ⚠️ 选满判定：调试截图证实选中后卡片底部「未激发」文字**不消失**（仅加 ✓ 金边），
+    //       故「模板不再匹配 / 卡片变暗」都不可靠；改用模板「剩余可选灵感0.png」(5 名额用完，取自 autodori)
+    //       作为唯一可靠的选满信号（见 SoCGBAllDone）。「继续」按钮从进入就一直在，不能当信号。
     //   - 局内 Buff（每个战斗节点一次）：左卡[356,205,232,278]中心≈[472,344]、
     //     右卡[682,207,233,274]中心≈[798,344]；「激发」在[682,207,233,274]。
     //     当前流程：识别「激发」→点左卡→点右卡→点「激发」确认（即盲点两卡=「随机点左右」）。
@@ -42,12 +43,143 @@
 
     // ---------- 任务入口 ----------
     "#SeaOfCognition": {
-        "next": ["_NavigateBCR", "SoCAtBCR"]
+        "focus": {
+            "Node.PipelineNode.Starting": "认知海域 · 任务开始"
+        },
+        "next": [
+            "SoCResume",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_NavigateBCR"
+        ]
+    },
+
+    // ---------- 任务入口：检测当前流程位置（支持从任意中途界面续跑） ----------
+    // DirectHit 路由节点：依次检查各中途状态，第一个匹配即续跑；都不匹配 → SoCFallbackStart 从 BCR 开始。
+    // 顺序（由流程下游到上游）：领奖 → 结算(继续) → 开始作战 → 局内 Buff → 全局 Buff → 默认从头。
+    // ⚠️ 各候选节点自身带识别+动作，命中后会直接执行该步（如点继续/点开始作战/点左卡）并沿原流程继续，
+    //   因此「检测」同时也是「续跑」——无需额外跳转。
+    "SoCResume": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 0／检测当前流程位置"
+        },
+        "recognition": "DirectHit",
+        "post_delay": 300,
+        "next": [
+            "SoCClaim",
+            "SoCContinue",
+            "SoCStartBattle",
+            "SoCInBattleBuff",
+            "SoCInBattleBuffOCR",
+            "SoCInspirationNode",
+            "SoCInspirationNodeOCR",
+            "SoCState_GB1",
+            "SoCState_GB0",
+            "SoCContinueDive",
+            "SoCDeepDive",
+            "SoCDeepDiveFree",
+            "SoCFallbackStart",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_NavigateBCR"
+        ]
+    },
+
+    // ---------- 全局 Buff 入口屏检测：「灵感节点 选择」卡片（最优先） ----------
+    // ⚠️ 这是全局 Buff 选择阶段的**入口屏**（从配队/继续下潜后直接出现），检测优先级最高。
+    //   模板用 autodori 的「认知海域灵感节点.png」（高清整卡裁切）；同时配 OCR 文字「灵感节点」双保险。
+    //   命中（模板或文字任一）→ **显式点击「灵感节点」进入节点**（SoCInspirationClick）→ 再由 SoCGBLoop 处理全局 Buff 选择。
+    //   「剩余可选灵感1/0」(SoCState_GB1/GB0) 作兜底：入口屏之后底部数字才出现。
+    "SoCInspirationNode": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 0／检测到入口屏（灵感节点模板）→ 点击进入"
+        },
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": "SeaOfCognition/认知海域灵感节点.png",
+                "threshold": 0.8,
+                "roi": [192, 159, 358, 556]
+            }
+        },
+        "next": ["SoCInspirationClick"]
+    },
+
+    // ---------- 入口屏文字识别兜底：OCR「灵感节点」（与模板双保险） ----------
+    //   同指向上方的入口屏；当 autodori 模板因分辨率/UI 微调分数不足时，OCR 仍可命中。
+    //   两者在 SoCResume / SoCTeamEnter 的 next 中并列，任一命中即进入点击流程。
+    "SoCInspirationNodeOCR": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 0／检测到入口屏（灵感节点文字）→ 点击进入"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [192, 159, 358, 556],
+                "expected": ["[灵靈]感[节節][点點]"],
+                "threshold": 0.8
+            }
+        },
+        "next": ["SoCInspirationClick"]
+    },
+
+    // ---------- 全局 Buff 界面检测：剩余可选灵感 = 1（还有名额） ----------
+    "SoCState_GB1": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 0／检测到全局 Buff 选择（剩余可选灵感）"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [400, 560, 500, 110],
+                "expected": ["剩余可选灵感"],
+                "threshold": 0.8
+            }
+        },
+        "next": ["SoCGBSwipe"]
+    },
+
+    // ---------- 全局 Buff 界面检测：剩余可选灵感 = 0（已选满） ----------
+    "SoCState_GB0": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 0／检测到全局 Buff 选择（已选满）"
+        },
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": "SeaOfCognition/剩余可选灵感0.png",
+                "threshold": 0.8
+            }
+        },
+        "next": ["SoCGBLoop"]
+    },
+
+    // ---------- 未识别到中途状态：从 BCR 选层界面开始（默认从头） ----------
+    "SoCFallbackStart": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 0／未识别中途状态 → 从 BCR 开始"
+        },
+        "recognition": "DirectHit",
+        "next": [
+            "SoCAtBCR",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_NavigateBCR"
+        ]
     },
 
     // ---------- 进入认知海域：选层界面底部「认知海域」图标 ----------
     // 模板 SeaOfCognition/认知海域图标.png（用户给定）。图标在选层界面底部，ROI 取下半屏。
     "SoCAtBCR": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 1／点「认知海域」图标（选层界面）"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -71,22 +203,23 @@
         ]
     },
 
-    // ---------- 选层：默认梦渊层（选项可切 朦胧层/深潜层/梦渊层） ----------
-    // 选完层后：若当期未完成会出现「深潜指引/自由探索」二选一 → 走 SoCDeepDive；
-    // 若当期已完成（深潜指引不显示）→ 直接落到 SoCTeamEnter。
+    // ---------- 选层：点「梦渊层」节点选中（右侧显示层详情、右下出现「开始下潜」） ----------
     "SoCSelectLayer": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 2／选层：梦渊层"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
                 "roi": [0, 0, 1280, 720],
-                "expected": ["梦渊层"]
+                "expected": ["[梦夢][渊淵][层層]"]
             }
         },
         "action": "Click",
         "post_delay": 800,
         "next": [
-            "SoCDeepDive",
-            "SoCTeamEnter",
+            "SoCStartDive",
+            "SoCContinueDive",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_ConfirmMiddle",
@@ -95,30 +228,147 @@
         ]
     },
 
-    // ---------- 选「深潜指引」（有意识碎片奖励）；自由探索无奖励不点 ----------
-    // 当期已完成时本节点识别不到「深潜指引」→ 自动落到 SoCTeamEnter。
+    // ---------- 点右下角「开始下潜」→ 弹出「自由探索 / 深潜指引」二选一 ----------
+    // ⚠️ 已有进行中的海域时，按钮文字变为「继续下潜」（非「开始下潜」），由 SoCContinueDive 处理。
+    "SoCStartDive": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 3／点「开始下潜」"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [820, 545, 460, 175],
+                "expected": ["开始下[潜潛]"]
+            }
+        },
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "SoCResume",
+            "SoCDeepDive",
+            "SoCDeepDiveFree",
+            "SoCDeepDiveFallback",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp"
+        ]
+    },
+
+    // ---------- 点右下角「继续下潜」（已有进行中的海域时出现） ----------
+    // 与「开始下潜」互斥：首次进入显示「开始下潜」，中途返回/续跑显示「继续下潜」。
+    // ⚠️ 续跑流程**不弹二选一**：点完直接进入「灵感节点入口屏」或「战斗节点屏」，无自由探索/深潜指引选择。
+    //   故 next 用专属重检链（不含 SoCDeepDive/Free/Fallback），与 SoCStartDive 的二选一链分离。
+    "SoCContinueDive": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 3／点「继续下潜」（已有进行中）"
+        },
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [820, 545, 460, 175],
+                "template": "SeaOfCognition/认知海域继续下潜.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "SoCInspirationNode",
+            "SoCInspirationNodeOCR",
+            "SoCState_GB1",
+            "SoCState_GB0",
+            "SoCInBattleBuff",
+            "SoCInBattleBuffOCR",
+            "SoCStartBattle",
+            "SoCClaim",
+            "SoCContinue",
+            "SoCInspirationFallback",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_NavigateBCR"
+        ]
+    },
+
+    // ---------- 下潜方式二选一：优先「深潜指引」（给意识碎片）；当期已完成时右卡显示
+    //            「暂不可用」识别不到 → 自动退回点左卡「自由探索」 ----------
     "SoCDeepDive": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 4／下潜方式 → 深潜指引（有意识碎片）"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
                 "roi": [0, 0, 1280, 720],
-                "expected": ["深潜指引"]
+                "expected": ["深[潜潛]指引"]
             }
         },
         "action": "Click",
-        "post_delay": 800,
+        "post_delay": 1000,
         "next": [
             "SoCTeamEnter",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_ConfirmMiddle",
-            "[JumpBack]_LevelUp",
-            "[JumpBack]_SoCNoTicket"
+            "[JumpBack]_LevelUp"
+        ]
+    },
+
+    "SoCDeepDiveFree": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 4／下潜方式 → 自由探索（深潜指引不可用）"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "expected": ["自由探索", "自由", "探索"]
+            }
+        },
+        "action": "Click",
+        "post_delay": 1000,
+        "next": [
+            "SoCTeamEnter",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp"
+        ]
+    },
+
+    // ---------- 下潜方式保底：二选一弹窗但「深潜指引/自由探索」都未识别到 ----------
+    // 点「开始下潜/继续下潜」后弹出「自由探索/深潜指引」二选一，但 OCR 有时识别不到这两张卡文案
+    // （导致 SoCResume 里 SoCDeepDive/SoCDeepDiveFree 都 miss → 卡住）。
+    // 保底：DirectHit（必定命中）直接点 [351,581]（深潜指引卡中心，1280×720 基准）→ 进入配队。
+    // ⚠️ 排在 SoCDeepDive/SoCDeepDiveFree **之后**，仅当两者都没识别到才触发。
+    "SoCDeepDiveFallback": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 4／下潜方式保底 → 点深潜指引 [351,581]"
+        },
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [351, 581, 1, 1]
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "SoCTeamEnter",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp"
         ]
     },
 
     // ---------- 配队界面「进入海域」（不调队，直接进入） ----------
     "SoCTeamEnter": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 5／配队界面 → 进入海域"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -131,6 +381,7 @@
         "post_delay": 1500,
         "next": [
             "SoCInspirationNode",
+            "SoCInspirationNodeOCR",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_ConfirmMiddle",
@@ -140,12 +391,17 @@
     },
 
     // ---------- 节点界面：点「灵感节点」进入（首节点触发全局 Buff） ----------
-    "SoCInspirationNode": {
+    // ⚠️ 注意：此节点原名 SoCInspirationNode，与上方「全局 Buff 入口屏检测」节点重名（MaaFramework 拒绝重复 key → 资源加载失败），
+    //   故改名为 SoCInspirationClick 以消重。当前「进入海域」后由 SoCInspirationNode(入口屏检测) 经滑动进入 GB，本节点暂作独立节点保留。
+    "SoCInspirationClick": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 6／节点界面 → 点「灵感节点」"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
                 "roi": [0, 0, 1280, 720],
-                "expected": ["灵感节点"]
+                "expected": ["[灵靈]感[节節][点點]"]
             }
         },
         "action": "Click",
@@ -160,139 +416,191 @@
         ]
     },
 
-    // ---------- 全局 Buff：同一界面内共 5 次选取（仅一次） ----------
+    // ---------- 灵感节点入口屏保底：模板+文字都 miss（说明当前是「战斗节点」屏）→ 直接点 [351,581] 进战斗 ----------
+    // 场景（用户 17:14 确认）：点「继续下潜」后当前屏是**战斗节点**（不是灵感节点选择入口，也无需二选一/进入海域），
+    //   SoCInspirationNode(template) / SoCInspirationNodeOCR(text) 都识别不到「灵感节点」→ 直接点 [351,581] 进入该战斗节点
+    //   → 转战斗界面（局内 Buff 选择 SoCInBattleBuff）。
+    // ⚠️ 此节点 DirectHit 必定命中，必须排在 SoCResume.next 的**最后**（SoCDeepDiveFallback 之后、SoCFallbackStart 之前），
+    //   确保「二选一 / 灵感节点入口 / 全局 Buff 屏 / 战斗屏」全都 miss 才触发，绝不在全局 Buff 屏上误点 [351,581]。
+    "SoCInspirationFallback": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 5b／灵感节点保底 → 点 [351,581] 进战斗节点"
+        },
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [351, 581, 1, 1]
+            }
+        },
+        "post_delay": 1200,
+        "next": [
+            "SoCInBattleBuff",
+            "SoCInBattleBuffOCR",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp"
+        ]
+    },
+
+    // ---------- 全局 Buff：横排 Carousel，共 5 次选取（仅一次，每局开头） ----------
     // 优先级固定：能量涌流 > 战前准备 > 环境遮蔽 > 应急护盾 > 身心调和。
-    // 每轮取「当前最高优先级、且未被选走」的 Buff 点选；5 个都选完即进入战斗。
-    // 判断「未被选走」：卡片下方有「未激活」=可点；无「未激活」=已被选走（跳过）。
-    // 实现：用 Buff 名模板逐个识别；已选走卡片视觉变化→不再匹配亮卡模板→自然跳过
-    //   （等价于「无未激活」判断）。若实测已选走卡片仍匹配模板导致重复点，
-    //   改为每个 SoCGB 节点加 OCR「未激活」+ ROI 限定到该卡片下方（布局固定可量 ROI）。
-    // 布局固定（每期不变），5 个 Buff 同屏，无需左右滑。
+    // 布局：5 张 Buff 卡横排（≈y230-530），屏幕只能同时显示 ~2.5 张。
+    //   高优先级 Buff 在右侧（「后面」），需要**左滑**才能看到并点击。
+    // 每轮：SoCGBLoop → SoCGBSwipe（左滑）→ 按优先级逐个 TemplateMatch → 命中即 Click → 回 SoCGBLoop 继续下一张。
+    // 自然终止：模板截自「未激活」状态；选中后卡片变亮+「未激活」消失 → 模板不再匹配 → 全部跳过 → SoCGBDone。
+    //   若 5 张都选完（或当前视图内无未激活 Buff），一次 swipe+try-all 后无命中 → SoCGBDone → 进入战斗。
+    // ---------- 全局 Buff：循环入口（右区识别 + 点匹配位置 + 滑动重试） ----------
+    // ⚠️ 关键约束（用户实测）：「继续」按钮从进入 Buff 界面起**就一直存在**，
+    //   因此「继续」不能当作「选完」的信号，否则一进来就点继续、跳过选 Buff。
+    // ✅ 可靠终止信号 = 模板「剩余可选灵感0.png」（名额用完，选完即退出）。
+    // ⚠️ 动态池约束（用户 13:22 确认）：「每次先前节点选过的 Buff 就不会再出现」，
+    //   即全局 Buff 池随进度收缩，实际出现的卡不全是 GB1~5 那 5 个已知名。
+    // ✅ 策略（用户 13:57 修正）：左滑后目标卡出现在**右侧区域**，在右区识别点卡本身、不写死坐标。
+//   GB1~5 的识别 ROI 限定到**卡片区域** [548,209,732,296]（x:548~1280, y:209~505）；
+//   命中后 action="Click"（不带 param.target）→ 框架**点击匹配框中心**（即点中该卡本身），无硬编码坐标。
+    //   顺序：GB1~5 在 next 列表里按匹配先后取最右出现的那张 → 点它 → 回 Loop 查 AllDone。
+    // 循环逻辑（2026-09-14 重写为单节点 SoCGBPickAvailable 内部轮询）：
+    //     SoCGBLoop → SoCGBPickAvailable（DirectHit 进动作）
+    //       动作内每轮：先查「剩余可选灵感0」模板（名额耗尽→返回去点继续）
+    //                 → 否则 OCR「未激发」找可激活卡→点其上方卡片中心
+    //                 → 都找不到且名额未耗尽→左滑一次露出更多
+    //                 → 达 max_iter 兜底返回，绝不死循环。
+    //   原 GB1~5 模板逐张匹配会误点已选卡（标题完全一致）→ 死循环，已弃用。
+    //   滑动参数：[1270,360]→[870,360]，400px，duration 800，end_hold 300（慢速防阻尼，仅入口 SoCState_GB1 一次）。
     "SoCGBLoop": {
-        "next": ["SoCGB1", "SoCGB2", "SoCGB3", "SoCGB4", "SoCGB5", "SoCGBDone"]
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 7／全局 Buff 选择中…"
+        },
+        // PickAvailable 返回 True(选完/有选卡)→ SoCGBContinue 点继续；
+        // 返回 False(0 张选中)→ 框架试下一项 SoCGBSwipe 滑一下再回来重试。
+        "next": ["SoCGBPickAvailable", "SoCGBSwipe"]
     },
 
-    "SoCGB1": {
-        "recognition": {
-            "type": "TemplateMatch",
-            "param": {
-                "roi": [0, 0, 1280, 720],
-                "template": "SeaOfCognition/能量涌流.png",
-                "threshold": 0.8
-            }
+    // ---------- 全局 Buff：单节点选卡（CustomAction 内部轮询） ----------
+    // 只 OCR「未激发」标签点可激活卡，已选卡无标签 → 天然排除 → 不死循环。
+    // 名额耗尽（剩余可选灵感0）或视野无可点卡(左滑兜底) 或达 max_iter → 返回去点「继续」。
+    "SoCGBPickAvailable": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 7／全局 Buff：选可激活卡"
         },
-        "action": "Click",
-        "post_delay": 800,
-        "next": [
-            "SoCGBLoop",
-            "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
-            "[JumpBack]_ConfirmMiddle",
-            "[JumpBack]_LevelUp"
-        ]
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Custom",
+            "custom_action": "SoCGBPickAvailable"
+        },
+        "next": ["SoCGBContinue"]
     },
 
-    "SoCGB2": {
-        "recognition": {
-            "type": "TemplateMatch",
+    // ---------- 全局 Buff：选卡已改为 SoCGBPickAvailable（CustomAction 内部轮询） ----------
+    // 旧实现（SoCGBAllDone / SoCGB1~5 / SoCGBCount0/1 模板匹配）会误点已选卡 → 死循环，已弃用。
+    // 名额耗尽 / 视野无可点卡（左滑兜底）/ 达 max_iter → 统一在 SoCGBPickAvailable 内处理。
+    // SoCGBSwipe 仍作为入口一次性左滑（SoCState_GB1 → SoCGBSwipe）保留，循环内不再滑。
+    "SoCGBSwipe": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 7／全局 Buff：左滑查看更多"
+        },
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Swipe",
             "param": {
-                "roi": [0, 0, 1280, 720],
-                "template": "SeaOfCognition/战前准备.png",
-                "threshold": 0.8
+                "begin": [1270, 360],
+                "end": [870, 360],
+                "duration": 800,
+                "end_hold": 300
             }
         },
-        "action": "Click",
-        "post_delay": 800,
-        "next": [
-            "SoCGBLoop",
-            "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
-            "[JumpBack]_ConfirmMiddle",
-            "[JumpBack]_LevelUp"
-        ]
-    },
-
-    "SoCGB3": {
-        "recognition": {
-            "type": "TemplateMatch",
-            "param": {
-                "roi": [0, 0, 1280, 720],
-                "template": "SeaOfCognition/环境遮蔽.png",
-                "threshold": 0.8
-            }
-        },
-        "action": "Click",
-        "post_delay": 800,
-        "next": [
-            "SoCGBLoop",
-            "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
-            "[JumpBack]_ConfirmMiddle",
-            "[JumpBack]_LevelUp"
-        ]
-    },
-
-    "SoCGB4": {
-        "recognition": {
-            "type": "TemplateMatch",
-            "param": {
-                "roi": [0, 0, 1280, 720],
-                "template": "SeaOfCognition/应急护盾.png",
-                "threshold": 0.8
-            }
-        },
-        "action": "Click",
-        "post_delay": 800,
-        "next": [
-            "SoCGBLoop",
-            "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
-            "[JumpBack]_ConfirmMiddle",
-            "[JumpBack]_LevelUp"
-        ]
-    },
-
-    "SoCGB5": {
-        "recognition": {
-            "type": "TemplateMatch",
-            "param": {
-                "roi": [0, 0, 1280, 720],
-                "template": "SeaOfCognition/身心调和.png",
-                "threshold": 0.8
-            }
-        },
-        "action": "Click",
-        "post_delay": 800,
-        "next": [
-            "SoCGBLoop",
-            "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
-            "[JumpBack]_ConfirmMiddle",
-            "[JumpBack]_LevelUp"
-        ]
+        "post_delay": 1000,
+        "next": ["SoCGBLoop"]
     },
 
     "SoCGBDone": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 7／全局 Buff 选完 → 点「继续」出发"
+        },
         "recognition": "DirectHit",
-        "next": ["SoCNodeLoop"]
+        "next": ["SoCGBContinue"]
+    },
+
+    // ---------- 全局 Buff：全部选完后点底部「继续」进入战斗节点 ----------
+    // 「继续」按钮模板来自用户实测（autodori/buff继续.png，145×38，位置 [564,644,145,38]）。
+    // 用模板匹配（比 OCR 更稳，避免「继续」文案识别波动）。
+    // ⚠️ 点「继续」后**直接进入战斗节点**（已定位到具体节点，不需要 SoCNodeLoop 去搜索），
+    //   故 next 直接连 SoCInBattleBuff（局内 Buff 选取），跳过 SoCNodeLoop 搜索入口。
+    "SoCGBContinue": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 7全局 Buff → 点「继续」出发"
+        },
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [450, 600, 380, 100],
+                "template": "SeaOfCognition/BuffContinue.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_delay": 1500,
+        "next": [
+            "SoCInBattleBuff",
+            "SoCInBattleBuffOCR",
+            "[JumpBack]_SoCGBAbandonConfirm",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp"
+        ]
+    },
+
+    // ---------- 全局 Buff：「未选择灵感／是否放弃激发？」弹窗处理 ----------
+    // 没选卡（clicked=0）就点「继续」时游戏弹此窗。点 ✓ [760,520] 确认放弃，
+    // 回到 SoCGBLoop 重新尝试选卡（而非回退父 next 的 SoCGBContinue → 死循环）。
+    // ↓ 原本定义在 Tasks.json 公共 JumpBack，但 next 引用 SoCGBLoop 属 GB 流程私有，
+    //   故移到本文件使引用同文件、可通过 verify_feature 校验。
+    "_SoCGBAbandonConfirm": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [200, 200, 880, 320],
+                "expected": ["未选择灵感", "放弃激发"]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [760, 520, 1, 1]
+            }
+        },
+        "post_delay": 1000,
+        "next": ["SoCGBLoop"]
     },
 
     // ---------- 战斗节点循环入口 ----------
     // 优先找局内 Buff（「激发」出现）→ 打下一节点；
     // 找不到（全部节点打完，到领奖界面）→ 落到 SoCClaim。
     "SoCNodeLoop": {
-        "next": ["SoCInBattleBuff", "SoCClaim"]
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 8／循环 → 找下一个战斗节点"
+        },
+        "next": ["SoCInBattleBuff", "SoCInBattleBuffOCR", "SoCClaim"]
     },
 
-    // ---------- 局内 Buff：点左卡（图中两个位置之左） ----------
-    // 识别「激发」即代表处在局内 Buff 界面；先点左卡中心 [472,344]。
-    // 左卡 ROI=[356,205,232,278]（用户给定），ROI 限右半屏避免误匹配卡内「激发」字样。
+    // ---------- 局内 Buff：识别界面 + 点左卡 ----------
+    // 模板匹配「局内buff选择.png」（按用户实测 ROI=[517,130,249,35] 从 战斗节点开始.png 重裁，249×35，「请选择一个短暂灵感」标题）= 已进入战斗节点的局内 Buff 选择界面。
+    // ⚠️ 之前用 OCR「激发」在 ROI [600,160,680,360] 匹配失败（20s 超时→任务失败），
+    //   改用模板匹配此界面标题文字，比 OCR 稳定得多。
+    // 识别成功后点左卡中心 [472,344]（左卡 ROI=[352,205,239,278]）；当前只点左卡两下确保选中，右卡点击留待后续加优先级。
     "SoCInBattleBuff": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 8a／局内 Buff → 识别界面 + 点左卡"
+        },
+        "reco_timeout": 60000,
         "recognition": {
-            "type": "OCR",
+            "type": "TemplateMatch",
             "param": {
-                "roi": [600, 160, 680, 360],
-                "expected": ["激发"]
+                "template": "SeaOfCognition/局内buff选择.png",
+                "threshold": 0.8
             }
         },
         "action": {
@@ -301,9 +609,9 @@
                 "target": [472, 344, 1, 1]
             }
         },
-        "post_delay": 600,
+        "post_delay": 800,
         "next": [
-            "SoCInBattleBuffPos2",
+            "SoCInBattleBuff2nd",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_ConfirmMiddle",
@@ -312,28 +620,72 @@
         ]
     },
 
-    // ---------- 局内 Buff：点右卡（图中两个位置之右） ----------
-    // 右卡 ROI=[682,207,233,274]（用户给定），中心≈[798,344]。
-    "SoCInBattleBuffPos2": {
+    // ---------- 局内 Buff：OCR 兜底（模板因背景/分辨率变化失配时启用） ----------
+    //   与 SoCInBattleBuff 同 action + next，仅识别方式不同。
+    //   挂在 SoCNodeLoop.next 的 SoCInBattleBuff 之后，仅当模板 miss 才触发。
+    "SoCInBattleBuffOCR": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 8a／局内 Buff → OCR 兜底识别 + 点左卡"
+        },
+        "reco_timeout": 60000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [850, 0, 430, 50],
+                "expected": ["请选择一个短暂灵感"],
+                "threshold": 0.8
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [472, 344, 1, 1]
+            }
+        },
+        "post_delay": 800,
+        "next": [
+            "SoCInBattleBuff2nd",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SeaOfCognitionReward"
+        ]
+    },
+
+    // ---------- 局内 Buff：点左卡 第2下（确保选中，无状态校验的兜底） ----------
+    // 当前只点左卡（用户确认「选择一个」，先默认左卡）；右卡点击留待后续加局内 Buff 优先级时再做。
+    // 点两下 + 隔 1s 再点激发：即便首点因动画/卡顿没生效，第2下也能补上选中。
+    // 左卡 ROI=[352,205,239,278]，中心≈[472,344]。
+    "SoCInBattleBuff2nd": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 8b／局内 Buff → 点左卡 第2下 [472,344]"
+        },
+        "reco_timeout": 60000,
         "recognition": "DirectHit",
         "action": {
             "type": "Click",
             "param": {
-                "target": [798, 344, 1, 1]
+                "target": [472, 344, 1, 1]
             }
         },
-        "post_delay": 600,
+        "post_delay": 1000,
         "next": ["SoCInBattleBuffConfirm"]
     },
 
     // ---------- 局内 Buff：点「激发」确认 ----------
-    // 「激发」位置用户给定为 [682,207,233,274]（即右卡区域），ROI 限右半屏精确命中按钮。
+    // 模板匹配「QiFa.png」（激发按钮，按用户实测 ROI=[562,529,151,38] 重裁，151×38）。
+    // ⚠️ 之前用 OCR「激发」同样可能失败；改用已裁好的按钮模板。
     "SoCInBattleBuffConfirm": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 8c／局内 Buff → 点「激发」"
+        },
+        "reco_timeout": 60000,
         "recognition": {
-            "type": "OCR",
+            "type": "TemplateMatch",
             "param": {
-                "roi": [600, 160, 680, 360],
-                "expected": ["激发"]
+                "template": "SeaOfCognition/QiFa.png",
+                "threshold": 0.8
             }
         },
         "action": "Click",
@@ -348,17 +700,24 @@
         ]
     },
 
-    // ---------- 战斗界面：点「开始战斗」 ----------
+    // ---------- 战斗界面：点「开始作战」 ----------
+    // ⚠️ 按钮实际文字是「开始**作**战」；OCR 逐字匹配容易因字体/误识别失败。
+    //   改用模板匹配「认知海域开始作战.png」（取自 autodori，126×43），比 OCR 稳定。
+    //   action 用裸 Click：TemplateMatch 命中后裸 Click 会点模板中心（同 QiFa 节点已验证）。
     "SoCStartBattle": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 9／开始作战"
+        },
         "recognition": {
-            "type": "OCR",
+            "type": "TemplateMatch",
             "param": {
-                "roi": [0, 0, 1280, 720],
-                "expected": ["开始战斗"]
+                "template": "SeaOfCognition/认知海域开始作战.png",
+                "threshold": 0.8
             }
         },
         "action": "Click",
         "post_delay": 1000,
+        "reco_timeout": 600000,
         "next": [
             "SoCAutoBattle",
             "[JumpBack]_ServerMaintenance",
@@ -369,19 +728,31 @@
         ]
     },
 
-    // ---------- 自动战斗：等待结算（右下「继续」出现即战斗结束） ----------
-    // 战斗中奖励弹窗（达到积分）由 interrupt _SeaOfCognitionReward 关闭。
-    // reco_timeout 给足（自走棋战斗可能数分钟）。
+    // ---------- 自动战斗：轮询等待结算 + 关闭「获取物资」奖励弹窗 ----------
+    // 战斗结束偶尔会弹「获取物资」奖励界面（先空白、随机点一下才出现标题，再点底部中央
+    //   对号(✓)关闭，之后才出现右下「继续」结算按钮）。这种「先空白后弹窗」的时序无法用
+    //   单一模板死等，故改用 CustomAction SoCAwaitBattle 做轮询：
+    //     进入后静等 init_wait(30s) → 每 poll(5s) 截屏一次：
+    //       · OCR「获取物资」→ 点底部中央 ✓ 关闭，下一轮继续找「继续」；
+    //       · 模板匹配右下「继续」(战斗完成继续.png) → 返回 True，交回 SoCContinue 点击；
+    //       · 都没有 → 双击屏幕中央跳过空白结束/过场界面。
+    //   上限 max_wait(540s) 兜底，避免永久卡死。
+    // ⚠️ reco_timeout/timeout 都给 600s：本节点会轮询最长 ~570s，而前序 SoCStartBattle
+    //   的超时(默认 20s，已提到 600s)会穿透到下游，必须保证链路首节点预算充足。
     "SoCAutoBattle": {
-        "recognition": {
-            "type": "OCR",
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 10／自动战斗中（轮询等待结算 + 关闭奖励）"
+        },
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Custom",
             "param": {
-                "roi": [900, 600, 380, 120],
-                "expected": ["继续"]
+                "custom_action": "SoCAwaitBattle",
+                "custom_action_param": "{\"init_wait\":30,\"poll\":5,\"gap\":1,\"max_wait\":540,\"gift_roi\":[380,30,520,190],\"check_btn\":[640,650],\"tap\":[1250,510],\"task_done_roi\":[88,592,247,83]}"
             }
         },
-        "reco_timeout": 300000,
-        "post_delay": 500,
+        "reco_timeout": 600000,
+        "timeout": 600000,
         "next": [
             "SoCContinue",
             "[JumpBack]_ServerMaintenance",
@@ -393,18 +764,48 @@
     },
 
     // ---------- 结算：点右下「继续」进入下一节点 ----------
+    // 同上，改用模板匹配「战斗完成继续.png」。roi 同样约束右下角，避免战斗中右上「继续」误匹配。
     "SoCContinue": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 11／结算 → 点「继续」"
+        },
         "recognition": {
-            "type": "OCR",
+            "type": "TemplateMatch",
             "param": {
-                "roi": [900, 600, 380, 120],
-                "expected": ["继续"]
+                "roi": [950, 600, 330, 120],
+                "template": "SeaOfCognition/战斗完成继续.png",
+                "threshold": 0.8
             }
         },
         "action": "Click",
         "post_delay": 1000,
         "next": [
+            "SoCAfterContinue",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SeaOfCognitionReward"
+        ]
+    },
+
+    // ---------- 继续后：检测是「战斗节点」还是「全局 Buff 选择节点」 ----------
+    // 点「继续」后下一屏可能是：
+    //   (a) 战斗节点（节点界面/局内 Buff）→ SoCNodeLoop 处理；
+    //   (b) 全局 Buff 选择节点（出现「剩余可选灵感」）→ SoCGBLoop 处理。
+    // 先查全局 Buff（有「剩余可选灵感」即命中），否则默认走 SoCNodeLoop（战斗节点）。
+    // 复用 SoCState_GB1/GB0 检测器（路由到 SoCGBLoop）。
+    "SoCAfterContinue": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 11b／继续后：检测战斗节点 or 全局 Buff"
+        },
+        "recognition": "DirectHit",
+        "post_delay": 300,
+        "next": [
+            "SoCState_GB1",
+            "SoCState_GB0",
             "SoCNodeLoop",
+            "[JumpBack]_SoCGBAbandonConfirm",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_ConfirmMiddle",
@@ -416,29 +817,35 @@
     // ---------- 领奖：点「领取」/「确认」→ 循环下一轮 ----------
     // 回到 BCR 再点认知海域图标，自动跑满（梦渊层约 2 次）。
     "SoCClaim": {
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 12／领奖"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
                 "roi": [0, 0, 1280, 720],
-                "expected": ["领取", "确认"]
+                "expected": ["[领領]取", "[确確][认認]"]
             }
         },
         "action": "Click",
         "post_delay": 1200,
         "next": [
-            "_NavigateBCR",
             "SoCAtBCR",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
             "[JumpBack]_CloseWindows",
-            "[JumpBack]_SeaOfCognitionReward"
+            "[JumpBack]_SeaOfCognitionReward",
+            "[JumpBack]_NavigateBCR"
         ]
     },
 
     // ---------- 入场券耗尽：检测到「入场券不足」类弹窗 → 正常结束 ----------
     "_SoCNoTicket": {
+        "focus": {
+            "Node.PipelineNode.Starting": "入场券不足 → 结束任务"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
@@ -451,6 +858,9 @@
 
     // ---------- 任务成功结束 ----------
     "SoCDone": {
+        "focus": {
+            "Node.PipelineNode.Starting": "认知海域 · 任务结束"
+        },
         "recognition": "DirectHit"
     }
 }

@@ -16,8 +16,8 @@
       "Id": "settings",
       "Col": 4,
       "ColSpan": 4,
-      "RowSpan": 4,
-      "ExpandedRowSpan": 4,
+      "RowSpan": 3,
+      "ExpandedRowSpan": 3,
       "ExpandedColSpan": 4,
       "MaximizedRowSpan": 1,
       "MaximizedColSpan": 1
@@ -34,10 +34,10 @@
     {
       "Id": "task_desc",
       "Col": 4,
-      "Row": 4,
+      "Row": 3,
       "ColSpan": 4,
-      "RowSpan": 4,
-      "ExpandedRowSpan": 4,
+      "RowSpan": 5,
+      "ExpandedRowSpan": 5,
       "ExpandedColSpan": 4,
       "MaximizedRowSpan": 1,
       "MaximizedColSpan": 1
