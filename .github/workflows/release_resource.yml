@@ -1,0 +1,62 @@
+name: release_resource
+
+# 资源更新发布：打 tag（形如 v1.12）推送后，自动打包 MaaEOV-resource.zip
+# 并作为该 tag Release 的唯一 asset 上传。MFAAvalonia 会据此向用户推送资源更新。
+#
+# 也可在 GitHub 网页 Actions -> release_resource -> Run workflow 手动指定 tag 触发。
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag，例如 v1.12"
+        required: true
+        default: "v1.12"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve tag
+        id: tag
+        shell: bash
+        run: |
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            echo "tag=${{ github.event.inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 包内 interface.json 的 version 会被改写为 tag，确保与 release tag 一致
+      - name: Build resource package
+        run: |
+          python3 scripts/pack_resource.py \
+            --version "${{ steps.tag.outputs.tag }}" \
+            --out MaaEOV-resource.zip
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: MaaEOV ${{ steps.tag.outputs.tag }}
+          # Release 正文会作为 MFAAvalonia 的更新日志/公告展示，可发布后在网页上再编辑
+          generate_release_notes: true
+          files: |
+            MaaEOV-resource.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
