@@ -1,10 +1,10 @@
 {
   "name": "MaaEOV",
   "interface_version": 2,
-  "version": "v1.12",
+  "version": "v1.13",
   "url": "https://github.com/xingchenquq/MaaEOV",
   "github": "https://github.com/xingchenquq/MaaEOV",
-  "custom_title": "MaaEOV v1.12 | 异象回声小助手",
+  "custom_title": "MaaEOV v1.13 | 异象回声小助手",
   "message": "异象回声小助手",
   "controller": [
     {

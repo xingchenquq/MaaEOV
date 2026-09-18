@@ -313,19 +313,26 @@
             }
         }
     },
+    // 合并屏(资源筹备+晋阶考核)判定：旧 OCR ROI 已失效，改用素材卡模板（离线实测 0.98+）
     "~Prepared": {
         "recognition": {
-            "type": "OCR",
+            "type": "TemplateMatch",
             "param": {
                 "roi": [
-                    118,
-                    407,
-                    255,
-                    142
+                    0,
+                    0,
+                    1280,
+                    720
                 ],
-                "expected": [
-                    "公平交易"
-                ]
+                "template": [
+                    "公平交易.png",
+                    "共时性.png",
+                    "诡形物语.png",
+                    "火线特攻.png",
+                    "虎胆龙威.png",
+                    "巅峰时刻.png"
+                ],
+                "threshold": 0.8
             }
         }
     },
@@ -366,10 +373,10 @@
             "type": "OCR",
             "param": {
                 "roi": [
-                    821,
-                    70,
-                    240,
-                    115
+                    0,
+                    0,
+                    1280,
+                    120
                 ],
                 "expected": [
                     "诡形物语"
@@ -3328,17 +3335,23 @@
     // Navigate to BCR -> Prepared
     "_NavigatePrepared": {
         "recognition": {
-            "type": "OCR",
+            "type": "TemplateMatch",
             "param": {
                 "roi": [
-                    118,
-                    407,
-                    255,
-                    142
+                    0,
+                    0,
+                    1280,
+                    720
                 ],
-                "expected": [
-                    "公平交易"
-                ]
+                "template": [
+                    "公平交易.png",
+                    "共时性.png",
+                    "诡形物语.png",
+                    "火线特攻.png",
+                    "虎胆龙威.png",
+                    "巅峰时刻.png"
+                ],
+                "threshold": 0.8
             }
         },
         "inverse": true,
@@ -3400,12 +3413,12 @@
             "type": "TemplateMatch",
             "param": {
                 "roi": [
-                    43,
-                    60,
-                    1159,
-                    534
+                    0,
+                    0,
+                    1280,
+                    720
                 ],
-                "template": "BCR/PreparedFund.png",
+                "template": "公平交易.png",
                 "threshold": 0.8
             }
         },
@@ -3444,12 +3457,12 @@
             "type": "TemplateMatch",
             "param": {
                 "roi": [
-                    43,
-                    60,
-                    1159,
-                    534
+                    0,
+                    0,
+                    1280,
+                    720
                 ],
-                "template": "BCR/PreparedTape.png",
+                "template": "共时性.png",
                 "threshold": 0.8
             }
         },
@@ -3462,10 +3475,10 @@
             "type": "OCR",
             "param": {
                 "roi": [
-                    821,
-                    70,
-                    240,
-                    115
+                    0,
+                    0,
+                    1280,
+                    120
                 ],
                 "expected": [
                     "诡形物语"
@@ -3488,12 +3501,12 @@
             "type": "TemplateMatch",
             "param": {
                 "roi": [
-                    43,
-                    60,
-                    1159,
-                    534
+                    0,
+                    0,
+                    1280,
+                    720
                 ],
-                "template": "BCR/PreparedDust.png",
+                "template": "诡形物语.png",
                 "threshold": 0.8
             }
         },
@@ -3535,12 +3548,145 @@
             "type": "TemplateMatch",
             "param": {
                 "roi": [
-                    745,
-                    600,
-                    217,
-                    120
+                    902,
+                    601,
+                    216,
+                    119
                 ],
-                "template": "BCR/Appraisal.png"
+                "template": "BCR/Prepared.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+    // 晋阶考核-铜墙铁壁: occluded by UI on the right, swipe left first to reveal
+    "_NavigateCopperWall": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    360,
+                    1280,
+                    360
+                ],
+                "expected": [
+                    "铜墙铁壁"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SwipeLeftForCopperWall",
+            "[JumpBack]_CopperWallFromPrepared",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR"
+        ]
+    },
+    "_SwipeLeftForCopperWall": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    360,
+                    1280,
+                    360
+                ],
+                "expected": [
+                    "火线特攻"
+                ]
+            }
+        },
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    1000,
+                    400,
+                    1,
+                    1
+                ],
+                "end": [
+                    300,
+                    400,
+                    1,
+                    1
+                ],
+                "duration": 300,
+                "end_hold": 200
+            }
+        },
+        "post_wait_freezes": 800
+    },
+    "_CopperWallFromPrepared": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "铜墙铁壁.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+    // 晋阶考核 material icons (now inside the combined 资源筹备 screen, bottom half)
+    "_FireLineFromPrepared": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "火线特攻.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+    "_TigerFromPrepared": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "虎胆龙威.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+    "_PeakFromPrepared": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "巅峰时刻.png",
+                "threshold": 0.8
             }
         },
         "action": "Click",
@@ -3624,9 +3770,9 @@
             "param": {
                 "roi": [
                     0,
-                    401,
+                    360,
                     1280,
-                    155
+                    360
                 ],
                 "expected": [
                     "火线特攻"
@@ -3783,6 +3929,9 @@
             "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
+            "[JumpBack]_FireLineFromPrepared",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR",
             "[JumpBack]_G604FromAppraisalDisc",
             "[JumpBack]_NavigateAppraisalDisc"
         ]
@@ -3873,6 +4022,9 @@
             "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
+            "[JumpBack]_TigerFromPrepared",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR",
             "[JumpBack]_G301FromAppraisalLion",
             "[JumpBack]_NavigateAppraisalLion"
         ]
@@ -4006,6 +4158,9 @@
             "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
+            "[JumpBack]_PeakFromPrepared",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR",
             "[JumpBack]_G401FromAppraisalWolf",
             "[JumpBack]_NavigateAppraisalWolf"
         ]
@@ -4049,6 +4204,9 @@
             "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
+            "[JumpBack]_PeakFromPrepared",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR",
             "[JumpBack]_G402FromAppraisalWolf",
             "[JumpBack]_NavigateAppraisalWolf"
         ]
@@ -4139,6 +4297,10 @@
             "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
+            "[JumpBack]_SwipeLeftForCopperWall",
+            "[JumpBack]_CopperWallFromPrepared",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR",
             "[JumpBack]_G501FromAppraisalEagle",
             "[JumpBack]_NavigateAppraisalEagle"
         ]
@@ -4182,6 +4344,10 @@
             "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
+            "[JumpBack]_SwipeLeftForCopperWall",
+            "[JumpBack]_CopperWallFromPrepared",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR",
             "[JumpBack]_G502FromAppraisalEagle",
             "[JumpBack]_NavigateAppraisalEagle"
         ]
@@ -4267,11 +4433,11 @@
             "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
-            "[JumpBack]_CrisisMissionFromSideQuest",
-            "[JumpBack]_NavigateSideQuest"
-        ]
-    },
-    "_CrisisMissionFromSideQuest": {
+            "[JumpBack]_CrisisMissionFromSpecialOps",
+            "[JumpBack]_NavigateSpecialOps"
+        ]},
+    // 特别行动 -> 危机行动 entry (危机行动卡已迁入特别行动界面，使用新模板 危机行动.png)
+    "_CrisisMissionFromSpecialOps": {
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -4281,7 +4447,25 @@
                     1280,
                     498
                 ],
-                "template": "BCR/CrisisMission.png"
+                "template": "危机行动.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+    // 特别行动 interface gate: if 特别行动 icon still visible on BCR, click it to enter
+    "_NavigateSpecialOps": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    827,
+                    652,
+                    111,
+                    47
+                ],
+                "template": "特别行动.png"
             }
         },
         "action": "Click",
@@ -4311,8 +4495,7 @@
             "[JumpBack]_LevelUp",
             "[JumpBack]_OngoingMissionFromCrisisMission",
             "[JumpBack]_NavigateCrisisMission"
-        ]
-    },
+        ]},
     "_OngoingMissionFromCrisisMission": {
         "recognition": {
             "type": "OCR",
@@ -4358,8 +4541,7 @@
             "[JumpBack]_S001FromOngoingMission",
             "[JumpBack]_CrisisMissionHead",
             "[JumpBack]_NavigateOngoingMission"
-        ]
-    },
+        ]},
     "_S001FromOngoingMission": {
         "recognition": {
             "type": "OCR",
@@ -4404,8 +4586,7 @@
             "[JumpBack]_S002FromOngoingMission",
             "[JumpBack]_CrisisMissionHead",
             "[JumpBack]_NavigateOngoingMission"
-        ]
-    },
+        ]},
     "_S002FromOngoingMission": {
         "recognition": {
             "type": "OCR",
@@ -4450,8 +4631,7 @@
             "[JumpBack]_S003FromOngoingMission",
             "[JumpBack]_CrisisMissionHead",
             "[JumpBack]_NavigateOngoingMission"
-        ]
-    },
+        ]},
     "_S003FromOngoingMission": {
         "recognition": {
             "type": "OCR",
@@ -4496,8 +4676,7 @@
             "[JumpBack]_S101FromOngoingMission",
             "[JumpBack]_CrisisMissionHead",
             "[JumpBack]_NavigateOngoingMission"
-        ]
-    },
+        ]},
     "_S101FromOngoingMission": {
         "recognition": {
             "type": "OCR",
@@ -4542,8 +4721,7 @@
             "[JumpBack]_S102FromOngoingMission",
             "[JumpBack]_CrisisMissionHead",
             "[JumpBack]_NavigateOngoingMission"
-        ]
-    },
+        ]},
     "_S102FromOngoingMission": {
         "recognition": {
             "type": "OCR",
@@ -4588,8 +4766,7 @@
             "[JumpBack]_S103FromOngoingMission",
             "[JumpBack]_CrisisMissionHead",
             "[JumpBack]_NavigateOngoingMission"
-        ]
-    },
+        ]},
     "_S103FromOngoingMission": {
         "recognition": {
             "type": "OCR",
@@ -4634,8 +4811,7 @@
             "[JumpBack]_S201FromOngoingMission",
             "[JumpBack]_CrisisMissionTail",
             "[JumpBack]_NavigateOngoingMission"
-        ]
-    },
+        ]},
     "_S201FromOngoingMission": {
         "recognition": {
             "type": "OCR",
@@ -4680,8 +4856,7 @@
             "[JumpBack]_S202FromOngoingMission",
             "[JumpBack]_CrisisMissionTail",
             "[JumpBack]_NavigateOngoingMission"
-        ]
-    },
+        ]},
     "_S202FromOngoingMission": {
         "recognition": {
             "type": "OCR",
@@ -4726,8 +4901,7 @@
             "[JumpBack]_S203FromOngoingMission",
             "[JumpBack]_CrisisMissionTail",
             "[JumpBack]_NavigateOngoingMission"
-        ]
-    },
+        ]},
     "_S203FromOngoingMission": {
         "recognition": {
             "type": "OCR",
@@ -4772,8 +4946,7 @@
             "[JumpBack]_S301FromOngoingMission",
             "[JumpBack]_CrisisMissionTail",
             "[JumpBack]_NavigateOngoingMission"
-        ]
-    },
+        ]},
     "_S301FromOngoingMission": {
         "recognition": {
             "type": "OCR",
@@ -4818,8 +4991,7 @@
             "[JumpBack]_S302FromOngoingMission",
             "[JumpBack]_CrisisMissionTail",
             "[JumpBack]_NavigateOngoingMission"
-        ]
-    },
+        ]},
     "_S302FromOngoingMission": {
         "recognition": {
             "type": "OCR",
@@ -4865,8 +5037,7 @@
             "[JumpBack]_S303FromOngoingMission",
             "[JumpBack]_CrisisMissionTail",
             "[JumpBack]_NavigateOngoingMission"
-        ]
-    },
+        ]},
     "_S303FromOngoingMission": {
         "recognition": {
             "type": "OCR",
@@ -4993,8 +5164,7 @@
             "[JumpBack]_LevelUp",
             "[JumpBack]_EliteMissionFromCrisisMission",
             "[JumpBack]_NavigateCrisisMission"
-        ]
-    },
+        ]},
     "_EliteMissionFromCrisisMission": {
         "recognition": {
             "type": "OCR",
@@ -5040,8 +5210,7 @@
             "[JumpBack]_S401FromEliteMission",
             "[JumpBack]_CrisisMissionHead",
             "[JumpBack]_NavigateEliteMission"
-        ]
-    },
+        ]},
     "_S401FromEliteMission": {
         "recognition": {
             "type": "OCR",
@@ -5086,8 +5255,7 @@
             "[JumpBack]_S402FromEliteMission",
             "[JumpBack]_CrisisMissionHead",
             "[JumpBack]_NavigateEliteMission"
-        ]
-    },
+        ]},
     "_S402FromEliteMission": {
         "recognition": {
             "type": "OCR",
@@ -5132,8 +5300,7 @@
             "[JumpBack]_S501FromEliteMission",
             "[JumpBack]_CrisisMissionHead",
             "[JumpBack]_NavigateEliteMission"
-        ]
-    },
+        ]},
     "_S501FromEliteMission": {
         "recognition": {
             "type": "OCR",
@@ -5178,8 +5345,7 @@
             "[JumpBack]_S502FromEliteMission",
             "[JumpBack]_CrisisMissionHead",
             "[JumpBack]_NavigateEliteMission"
-        ]
-    },
+        ]},
     "_S502FromEliteMission": {
         "recognition": {
             "type": "OCR",
@@ -5223,8 +5389,7 @@
             "[JumpBack]_S701FromEliteMission",
             "[JumpBack]_CrisisMissionTail",
             "[JumpBack]_NavigateEliteMission"
-        ]
-    },
+        ]},
     "_S701FromEliteMission": {
         "recognition": {
             "type": "OCR",
@@ -10000,7 +10165,19 @@
 
     // ---------- 任务入口 ----------
     "#当期活动": {
-        "next": ["进入活动页"]
+        "next": ["当期活动"]
+    },
+
+    // ---------- 逻辑入口：开始时先返回主界面（若不在主界面），再进入活动 ----------
+    // 仿照 DailyStaminaBonus 等任务：先尝试直接走流程，若当前不在主界面，
+    // 则依次处理服务器维护 / 重连弹窗，最后 [JumpBack]_NavigateHomepage 回主界面。
+    "当期活动": {
+        "next": [
+            "进入活动页",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateHomepage"
+        ]
     },
 
     // ---------- 步骤 1：点主界面右上角活动 banner 进入活动 ----------
@@ -10932,9 +11109,20 @@
             ]
         },
         "#往期活动": {
+            "next": ["往期活动"]
+        },
+
+        // ---------- 逻辑入口：开始时先返回主界面（若不在主界面），再从主界面进入 ----------
+        // 仿照其它任务（如 DailyStaminaBonus）：先尝试直接走流程，若当前不在主界面，
+        // 则依次处理服务器维护 / 重连弹窗，最后 [JumpBack]_NavigateHomepage 回主界面；
+        // 之后仍从主界面按原有步骤进入往期活动。
+        "往期活动": {
             "next": [
                 "进入作战",
-                "点击往期活动"
+                "点击往期活动",
+                "[JumpBack]_ServerMaintenance",
+                "[JumpBack]_ConfrimReconnect",
+                "[JumpBack]_NavigateHomepage"
             ]
         },
         "选择困境迷途": {
