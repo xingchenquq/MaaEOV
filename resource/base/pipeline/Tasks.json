@@ -11257,7 +11257,7 @@
             "type": "Custom",
             "param": {
                 "custom_action": "ExitApplication",
-                "custom_action_param": "{\"exe_names\": [\"MaaEOV.exe\"], \"kill_parent_tree\": true, \"graceful\": true, \"grace_seconds\": 2}"
+                "custom_action_param": "{\"exe_names\": [\"MaaEOV.exe\"], \"kill_parent_tree\": true}"
             }
         },
         "next": []
