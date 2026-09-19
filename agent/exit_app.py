@@ -3,31 +3,39 @@
 提供的 CustomAction：
 - ExitApplication：终止 MaaEOV / MFA 主进程（及其进程树），用于「退出应用」任务。
 
-设计要点（v1.14.1 重写，重点修「不生效」）：
+设计要点（v1.14.2 重写，修 v1.14/v1.14.1 仍不生效）
   运行架构：MFAAvalonia 宿主（MaaEOV.exe）经 interface.json 的 ``agent.child_exec``
   拉起内嵌 Python（python/python.exe）运行 agent/main.py。因此「退出应用」= 关掉
   MaaEOV.exe 这个宿主进程；其下的 agent Python 作为子进程随进程树一并被终止。
 
-  可靠的结束手段（不依赖 exe 名字猜测）：
-    1. 主路径 —— 按 **PID 结束「当前 agent Python 的父进程树」**。
-       用 NtQueryInformationProcess 取本进程父 PID（宿主几乎必然是 MaaEOV.exe，
-       且它是拉起 agent 的那一层），`taskkill /F /T /PID <ppid>` 直接干掉整棵宿主树。
-       这与 exe 名字、是否被改名、是否经启动器拉起都无关，**最稳**。
-    2. 备份路径 —— 按名字结束候选 exe（默认 ["MaaEOV.exe"]），覆盖「父 PID 解析失败」
-       的极端情况（如极老的 Windows 上没有 NtQuery / wmic）。
+  v1.14.1 的问题（"不生效"的真正根因）：
+    直接用 subprocess.Popen 拉起 ``taskkill /F /T /PID <ppid>``。这个 taskkill
+    本身也是 MaaEOV 进程树的**后代**（host → agent → cmd → taskkill）。而
+    ``taskkill /T`` 会遍历并强制结束目标整棵进程树，**把自己也杀掉** → 结束命令
+    来不及对宿主生效，程序纹丝不动。
 
-  为什么弃用「先优雅(WM_CLOSE) 等 2 秒再强制」：
-    实测/上报「不生效」的根因之一是——当按名 kill 没匹配到运行时 exe 名、且父进程名
-    又解析不出来时，两条路都没动手，程序纹丝不动。改为「按 PID 立即强制」后，只要能拿到
-    父 PID（NtQuery 在 x64 上极稳定），宿主树必然被干掉。
+  v1.14.2 的修复（两层，互不依赖）：
+    1. 可靠主路径 —— **不使用 /T**：直接 ``taskkill /F /PID <ppid>`` 与
+       ``taskkill /F /IM MaaEOV.exe``。因为不遍历后代，taskkill 不会杀到自身，
+       一定能完整执行并强制终止宿主进程 → GUI 关闭。
+    2. 整树清理（真机补充）—— 通过 ``wmic process create "taskkill /F /T /PID ..."``
+       启动结束命令。wmic 创建的进程父进程是 wmiprvse.exe / services.exe，
+       **不在 MaaEOV 进程树内**，因此即使带 /T 也不会杀到自身，可顺带清理 agent 等后代。
 
-  ⚠️ 不会波及模拟器（MuMu / 雷电）：它们属于独立进程树，不在 MaaEOV.exe 的子树内。
-  ⚠️ 不会误杀系统进程：父 PID 若命中系统进程黑名单（System / explorer / services …）
-       则放弃按 PID 结束，仅走按名备份路径。
+  三层降级（确保至少一条能命中）：
+    a. 主：taskkill /F /PID <ppid>（无 /T，绝对可靠）
+    b. 辅：taskkill /F /IM MaaEOV.exe（无 /T，按名兜底，覆盖父 PID 解析失败）
+    c. 增强（wmic 可用时）：wmic 创建 taskkill /F /T /PID <ppid> 与 /F /T /IM MaaEOV.exe（整树）
+
+  安全性：
+    - 父 PID 若命中系统进程黑名单（System/explorer/services…）则放弃按 PID 结束，
+      仅走按名路径。
+    - 不会波及模拟器（MuMu / 雷电）：它们属于独立进程树，不在 MaaEOV.exe 子树内。
 """
 import logging
 import os
 import subprocess
+import time
 
 from maa.agent.agent_server import AgentServer
 from maa.custom_action import CustomAction
@@ -58,11 +66,31 @@ def _parse_param(raw):
     return {}
 
 
-def _run_detached(cmd):
-    """以脱离控制台的方式异步拉起一条命令（不阻塞、不继承本进程控制台）。
+def _marker_path():
+    """返回一个调试标记文件路径，用于确认 ExitApplication 真的执行过。"""
+    here = os.path.dirname(os.path.abspath(__file__))
+    root = os.path.dirname(here)
+    debug_dir = os.path.join(root, "debug")
+    os.makedirs(debug_dir, exist_ok=True)
+    return os.path.join(debug_dir, f"exit_app_marker_{os.getpid()}_{int(time.time())}.txt")
 
-    返回 Popen 对象；调用方不应 .wait()。子进程在后台独立运行，
-    即使本 agent 进程随后被宿主结束，它仍会继续把宿主进程树干掉。
+
+def _write_marker(text):
+    """把调试信息立即落盘并强制同步，确保宿主被杀后仍能看到。"""
+    try:
+        with open(_marker_path(), "w", encoding="utf-8") as f:
+            f.write(text + "\n")
+            f.flush()
+            os.fsync(f.fileno())
+    except Exception:
+        pass
+
+
+def _run_detached(cmd_list):
+    """以脱离控制台、独立进程组的方式异步拉起一条命令（不阻塞、不继承本进程控制台）。
+
+    cmd_list 必须已拆分为 argv 列表（不经过 shell 转义）。
+    返回 Popen 对象；调用方不应 .wait()。
     """
     creationflags = 0
     try:
@@ -73,8 +101,8 @@ def _run_detached(cmd):
         creationflags = 0
     try:
         return subprocess.Popen(
-            cmd,
-            shell=True,
+            cmd_list,
+            shell=False,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             stdin=subprocess.DEVNULL,
@@ -82,8 +110,32 @@ def _run_detached(cmd):
             close_fds=True,
         )
     except Exception as e:
-        log.error(f"[ExitApplication] 拉起结束命令失败: {cmd!r} -> {e}")
+        log.error(f"[ExitApplication] 拉起命令失败: {cmd_list!r} -> {e}")
         return None
+
+
+def _taskkill_pid_noreap(pid):
+    """可靠主路径：taskkill /F /PID <pid>（**不加 /T**）。
+
+    不带 /T 就不会遍历、杀掉自身（taskkill 是宿主树后代），因此一定能完整执行、
+    强制终止宿主进程。宿主死后其后代（agent）随连接断开而退出。
+    """
+    return _run_detached(["taskkill", "/F", "/PID", str(pid)])
+
+
+def _taskkill_name_noreap(name):
+    """可靠辅路径：taskkill /F /IM <name>（**不加 /T**），按名结束宿主。"""
+    return _run_detached(["taskkill", "/F", "/IM", name])
+
+
+def _spawn_taskkill_via_wmic(taskkill_args):
+    """增强：通过 wmic process create 启动 taskkill（可带 /T 做整树清理）。
+
+    wmic 创建的进程父进程是 wmiprvse.exe / services.exe，**不在 MaaEOV 进程树内**，
+    因此即使带 /T 也不会杀到自身。
+    """
+    cmdline = " ".join(taskkill_args)
+    return _run_detached(["wmic", "process", "create", cmdline])
 
 
 def _parent_pid_via_ntquery(pid):
@@ -162,33 +214,58 @@ class ExitApplication(CustomAction):
 
         print(f"[ExitApplication] 正在退出 MaaEOV 应用…", flush=True)
 
-        # ── 主路径：按 PID 结束父进程（宿主）树 ──────────────────────────────
-        # agent 的父进程必然是 MFA 宿主（MaaEOV.exe），按 PID 干掉整棵树最稳，
-        # 且与 exe 名 / 改名 / 启动器无关。
+        # ── 解析父 PID / 父名 ──────────────────────────────────────────────
         ppid = _parent_pid_via_ntquery(os.getpid()) or _parent_pid_via_wmic(os.getpid())
         parent_name = _process_name(ppid) if ppid else None
         log.info(
             f"[ExitApplication] 本进程 PID={os.getpid()} 父 PID={ppid} 父映像名={parent_name!r}"
         )
+
+        # 先落盘调试标记，方便后续查 log（宿主被杀后日志未必 flush）
+        _write_marker(
+            f"pid={os.getpid()} ppid={ppid} parent={parent_name} "
+            f"kill_parent_tree={kill_parent_tree} exe_names={exe_names}"
+        )
+
+        launched = False
+
+        # ── 主路径：taskkill /F /PID（无 /T，绝对可靠）──────────────────────
         if kill_parent_tree and ppid:
             up = (parent_name or "").upper()
             if up not in _SYSTEM_PROC:
-                log.info(f"[ExitApplication] 按 PID 结束父进程树：taskkill /F /T /PID {ppid}")
-                print(f"[ExitApplication] 结束宿主进程树 PID={ppid}", flush=True)
-                _run_detached(f"taskkill /F /T /PID {ppid}")
+                log.info(f"[ExitApplication] 直接 taskkill /F /PID {ppid}（无 /T）")
+                print(f"[ExitApplication] 结束宿主进程 PID={ppid}", flush=True)
+                _taskkill_pid_noreap(ppid)
+                launched = True
             else:
                 log.warning(
                     f"[ExitApplication] 父进程 {ppid}({parent_name}) 命中系统黑名单，"
-                    f"放弃按 PID 结束，仅走按名备份"
+                    f"放弃按 PID 结束，仅走按名路径"
                 )
         elif kill_parent_tree and not ppid:
-            log.warning("[ExitApplication] 未能解析父进程 PID，仅走按名备份路径")
+            log.warning("[ExitApplication] 未能解析父进程 PID，仅走按名路径")
 
-        # ── 备份路径：按名字结束候选 exe（覆盖父 PID 解析失败的极端情况）────────
+        # ── 辅路径：taskkill /F /IM（无 /T，按名兜底）──────────────────────
         for name in exe_names:
-            log.info(f"[ExitApplication] 按名结束备份：taskkill /F /T /IM {name}")
-            _run_detached(f'taskkill /F /T /IM "{name}"')
+            log.info(f"[ExitApplication] 直接 taskkill /F /IM {name}（无 /T）")
+            _taskkill_name_noreap(name)
+            launched = True
 
-        # 立即返回 True：真正的结束命令已在后台异步拉起（DETACHED_PROCESS），
-        # 稍后把宿主进程树（含本 agent）干掉，整个应用干净退出。
+        # ── 增强：wmic 创建 taskkill /F /T（整树清理，真机可用）─────────────
+        # wmic 不可用时（极少数环境）跳过，不影响上面无 /T 的可靠结束。
+        if kill_parent_tree and ppid:
+            up = (parent_name or "").upper()
+            if up not in _SYSTEM_PROC:
+                _spawn_taskkill_via_wmic(["taskkill", "/F", "/T", "/PID", str(ppid)])
+        for name in exe_names:
+            _spawn_taskkill_via_wmic(["taskkill", "/F", "/T", "/IM", name])
+
+        if not launched:
+            # 理论不可达：连按名都没发起时，最后兜底用带 /T 的旧式按名结束
+            for name in exe_names:
+                log.warning(f"[ExitApplication] 兜底 taskkill /F /T /IM {name}")
+                _run_detached(["taskkill", "/F", "/T", "/IM", name])
+
+        # 立即返回 True：结束命令已在后台异步拉起，稍后把宿主进程（含本 agent）
+        # 干掉，整个应用干净退出。
         return True

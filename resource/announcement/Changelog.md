@@ -1,5 +1,10 @@
 # 更新
 
+## v1.14.2
+
+- Bug修复
+  - 修复 v1.14.1「退出应用」任务仍不生效的问题。根因是 `taskkill /F /T /PID` 命令作为 agent 子进程被拉起，而 `/T` 会先清理目标进程树内的所有后代，导致 taskkill 自身也被连带杀死、命令来不及执行。改为通过 **`wmic process create "taskkill ..."`** 启动结束命令：wmic 创建的 taskkill 父进程为 `wmiprvse.exe` / `services.exe`，**不在 MaaEOV 进程树内**，不会被 `/T` 顺带清理，能够完整执行并结束宿主树。保留按名结束的次路径与直接 taskkill 兜底。
+
 ## v1.14.1
 
 - Bug修复
