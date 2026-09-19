@@ -11235,5 +11235,31 @@
                 "threshold": 0.85
             },
             "next": []
-        }
+        },
+    // ExitApp ========================================
+    // 退出 MaaEOV 应用（MFA 进程）
+    // Entry
+    "#ExitApp": {
+        "next": [
+            "_ExitApp"
+        ]
+    },
+    // 动作：终止 MaaEOV / MFA 宿主进程及其进程树
+    "_ExitApp": {
+        "recognition": "DirectHit",
+        "roi": [
+            0,
+            0,
+            1,
+            1
+        ],
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ExitApplication",
+                "custom_action_param": "{\"exe_names\": [\"MaaEOV.exe\"], \"kill_parent_tree\": true, \"graceful\": true, \"grace_seconds\": 2}"
+            }
+        },
+        "next": []
+    }
 }

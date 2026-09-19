@@ -14,6 +14,7 @@ from maa.toolkit import Toolkit
 import auto_battle
 import past_event
 import soc_actions
+import exit_app
 
 
 def _resolve_socket_id() -> str:
