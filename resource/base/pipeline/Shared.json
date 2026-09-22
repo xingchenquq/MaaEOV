@@ -1,0 +1,5328 @@
+{
+    // ============================================================
+    // Shared.json  |  全局共享库（跨功能复用；每个节点全局唯一定义一次）
+    // 含：~ 终屏判定 75 个  /  _ 通用与导航 174 个
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 264
+    // ============================================================
+
+    // *************************************************
+    // Recognizers
+    // Desc:
+    // Keep Track on all recognition
+    // *************************************************
+    // Popup ===========================================
+    "~ConfirmGeneral": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    644,
+                    320,
+                    158,
+                    152
+                ],
+                "template": "Utils/ConfirmGeneral.png"
+            }
+        }
+    },
+
+    "~ConfirmSweepResult": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1014,
+                    611,
+                    162,
+                    109
+                ],
+                "expected": [
+                    "确定"
+                ]
+            }
+        }
+    },
+
+    "~CancelGeneral": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    481,
+                    318,
+                    155,
+                    153
+                ],
+                "template": "Utils/CancelGeneral.png"
+            }
+        }
+    },
+
+    "~Cancel1": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    469,
+                    412,
+                    174,
+                    142
+                ],
+                "expected": [
+                    "取消"
+                ]
+            }
+        }
+    },
+
+    "~Cancel2": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    716,
+                    586,
+                    175,
+                    134
+                ],
+                "expected": [
+                    "取消"
+                ]
+            }
+        }
+    },
+
+    "~Cancel3": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    465,
+                    590,
+                    150,
+                    130
+                ],
+                "expected": [
+                    "取消"
+                ]
+            }
+        }
+    },
+
+    "~CloseWindowsGeneral": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1081,
+                    29,
+                    142,
+                    143
+                ],
+                "template": "Utils/CloseWindows.png"
+            }
+        }
+    },
+
+    "~CloseWindow1": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1102,
+                    143,
+                    130,
+                    135
+                ],
+                "template": "Utils/CloseWindow1.png"
+            }
+        }
+    },
+
+    "~CloseWindow2": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1163,
+                    25,
+                    117,
+                    148
+                ],
+                "template": "Utils/CloseWindow2.png"
+            }
+        }
+    },
+
+    // Overlay =========================================
+    "~ConfirmMiddle": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    558,
+                    1,
+                    164,
+                    719
+                ],
+                "template": "Utils/ConfirmMiddle.png"
+            }
+        }
+    },
+
+    "~SkipButton": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1026,
+                    21,
+                    185,
+                    130
+                ],
+                "template": "Utils/SkipButton.png"
+            }
+        }
+    },
+
+    "~LevelUp": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    827,
+                    207,
+                    207,
+                    133
+                ],
+                "expected": [
+                    "行动力恢复"
+                ]
+            }
+        }
+    },
+
+    // Base ============================================
+    "~HomeButton": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    245,
+                    0,
+                    148,
+                    143
+                ],
+                "template": "Utils/HomeButton.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~BackButton": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    48,
+                    0,
+                    151,
+                    143
+                ],
+                "template": "Utils/BackButton.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~Login": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    495,
+                    431,
+                    291,
+                    129
+                ],
+                "template": "StartUp/Login.png"
+            }
+        }
+    },
+
+    "~EnterGame": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    522,
+                    489,
+                    239,
+                    79
+                ],
+                "expected": [
+                    "点",
+                    "击",
+                    "开",
+                    "始",
+                    "游",
+                    "戏"
+                ]
+            }
+        }
+    },
+
+    // Other ===========================================
+    "~StartUpLoading": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    521,
+                    429,
+                    235,
+                    141
+                ],
+                "expected": "加载"
+            }
+        }
+    },
+
+    "~Loading": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    425,
+                    123
+                ],
+                "template": "Utils/Loading.png"
+            }
+        }
+    },
+
+    // Pages ===========================================
+    // Homepage
+    "~Homepage": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    32,
+                    562,
+                    137,
+                    145
+                ],
+                "template": "Homepage/SystemButton.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    // BCR
+    "~BCR": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1080,
+                    607,
+                    200,
+                    113
+                ],
+                "expected": [
+                    "主线故事"
+                ]
+            }
+        }
+    },
+
+    // 合并屏(资源筹备+晋阶考核)判定：旧 OCR ROI 已失效，改用素材卡模板（离线实测 0.98+）
+    "~Prepared": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": [
+                    "公平交易.png",
+                    "共时性.png",
+                    "诡形物语.png",
+                    "火线特攻.png",
+                    "虎胆龙威.png",
+                    "巅峰时刻.png"
+                ],
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~PreparedFund": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "公平交易"
+                ]
+            }
+        }
+    },
+
+    "~PreparedTape": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "共时性"
+                ]
+            }
+        }
+    },
+
+    "~PreparedDust": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    120
+                ],
+                "expected": [
+                    "诡形物语"
+                ]
+            }
+        }
+    },
+
+    "~Appraisal": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    407,
+                    1280,
+                    142
+                ],
+                "expected": [
+                    "火线特攻",
+                    "虎胆龙威",
+                    "巅峰时刻",
+                    "铜墙铁壁"
+                ]
+            }
+        }
+    },
+
+    "~AppraisalDisc": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "火线特攻"
+                ]
+            }
+        }
+    },
+
+    "~G601": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    51,
+                    471,
+                    444
+                ],
+                "template": "BCR/AtG601.png"
+            }
+        }
+    },
+
+    "~G602": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    51,
+                    471,
+                    444
+                ],
+                "template": "BCR/AtG602.png"
+            }
+        }
+    },
+
+    "~G603": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    51,
+                    471,
+                    444
+                ],
+                "template": "BCR/AtG603.png"
+            }
+        }
+    },
+
+    "~G604": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    51,
+                    471,
+                    444
+                ],
+                "template": "BCR/AtG604.png"
+            }
+        }
+    },
+
+    "~AppraisalLion": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "虎胆龙威"
+                ]
+            }
+        }
+    },
+
+    "~G301": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1013,
+                    23,
+                    267,
+                    208
+                ],
+                "template": "BCR/AtG301.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~G302": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1013,
+                    23,
+                    267,
+                    208
+                ],
+                "template": "BCR/AtG302.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~AppraisalWolf": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "巅峰时刻"
+                ]
+            }
+        }
+    },
+
+    "~G401": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1013,
+                    23,
+                    267,
+                    208
+                ],
+                "template": "BCR/AtG401.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~G402": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1013,
+                    23,
+                    267,
+                    208
+                ],
+                "template": "BCR/AtG402.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~AppraisalEagle": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "铜墙铁壁"
+                ]
+            }
+        }
+    },
+
+    "~G501": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1013,
+                    23,
+                    267,
+                    208
+                ],
+                "template": "BCR/AtG501.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~G502": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1013,
+                    23,
+                    267,
+                    208
+                ],
+                "template": "BCR/AtG502.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~CrisisMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1122,
+                    0,
+                    142,
+                    130
+                ],
+                "template": "BCR/AtCrisisMission.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~OngoingMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    66,
+                    467,
+                    114
+                ],
+                "template": "BCR/AtOngoingMission.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~S001": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "混合体Ⅰ",
+                    "混合体I$"
+                ]
+            }
+        }
+    },
+
+    "~S002": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "混合体Ⅱ",
+                    "混合体II$"
+                ]
+            }
+        }
+    },
+
+    "~S003": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "混合体Ⅲ",
+                    "混合体III$"
+                ]
+            }
+        }
+    },
+
+    "~S101": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "奇点列车Ⅰ",
+                    "奇点列车I$"
+                ]
+            }
+        }
+    },
+
+    "~S102": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "奇点列车Ⅱ",
+                    "奇点列车II$"
+                ]
+            }
+        }
+    },
+
+    "~S103": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "奇点列车Ⅲ",
+                    "奇点列车III$"
+                ]
+            }
+        }
+    },
+
+    "~S201": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "洛伦佐Ⅰ",
+                    "洛伦佐I$"
+                ]
+            }
+        }
+    },
+
+    "~S202": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "洛伦佐Ⅱ",
+                    "洛伦佐II$"
+                ]
+            }
+        }
+    },
+
+    "~S203": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "洛伦佐Ⅲ",
+                    "洛伦佐III$"
+                ]
+            }
+        }
+    },
+
+    "~S301": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "乐园梦魇Ⅰ",
+                    "乐园梦魇I$"
+                ]
+            }
+        }
+    },
+
+    "~S302": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "乐园梦魇Ⅱ",
+                    "乐园梦魇II$"
+                ]
+            }
+        }
+    },
+
+    "~S303": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "乐园梦魇Ⅲ",
+                    "乐园梦魇III$",
+                    "乐园梦魔IⅢ"
+                ]
+            }
+        }
+    },
+
+    "~EventLevel": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "活动"
+                ]
+            }
+        }
+    },
+
+    "~EliteMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    66,
+                    467,
+                    114
+                ],
+                "template": "BCR/AtEliteMission.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~S401": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "总控一号Ⅰ",
+                    "总控一号I$"
+                ]
+            }
+        }
+    },
+
+    "~S402": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "总控一号Ⅱ",
+                    "总控一号II$"
+                ]
+            }
+        }
+    },
+
+    "~S501": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "幻影人偶Ⅰ",
+                    "幻影人偶I$"
+                ]
+            }
+        }
+    },
+
+    "~S502": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "幻影人偶Ⅱ",
+                    "幻影人偶II$"
+                ]
+            }
+        }
+    },
+
+    "~S701": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "罪与罚"
+                ]
+            }
+        }
+    },
+
+    "~LiminalZone": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    45,
+                    81,
+                    147,
+                    144
+                ],
+                "template": "BCR/AtLiminalZone.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~ObsoleteNexus": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    47,
+                    42,
+                    173,
+                    131
+                ],
+                "expected": [
+                    "废弃枢纽"
+                ]
+            }
+        }
+    },
+
+    "~Corridor": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    47,
+                    42,
+                    173,
+                    131
+                ],
+                "expected": [
+                    "回廊\\d+区"
+                ]
+            }
+        }
+    },
+
+    "~LevelNA": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    804,
+                    591,
+                    273,
+                    129
+                ],
+                "expected": [
+                    "重复行动"
+                ]
+            }
+        }
+    },
+
+    "~LiminalZoneNA": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    859,
+                    585,
+                    140,
+                    135
+                ],
+                "template": "BCR/LiminalZoneNA.png"
+            }
+        }
+    },
+
+    // The Room
+    "~TheRoom": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1115,
+                    566,
+                    159,
+                    154
+                ],
+                "template": "TheRoom/Ritual.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    // Mission
+    "~Mission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    454,
+                    0,
+                    286,
+                    137
+                ],
+                "expected": [
+                    "任务"
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    },
+
+    // System Page
+    "~System": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    559,
+                    149,
+                    149
+                ],
+                "template": "SystemPage/Settings.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    // Event
+    "~Event": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    94,
+                    87,
+                    198,
+                    131
+                ],
+                "expected": [
+                    "每日签到"
+                ]
+            }
+        }
+    },
+
+    // *************************************************
+    // Escape
+    // Desc:
+    // Attempt to Escape from Unknown Screen
+    // StopTask on time out
+    // Fallback when a recognizable found
+    // *************************************************
+    "_Escape": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    318,
+                    36,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "~ConfirmGeneral",
+            "~ConfirmSweepResult",
+            "~CancelGeneral",
+            "~Cancel1",
+            "~Cancel2",
+            "~Cancel3",
+            "~CloseWindowsGeneral",
+            "~CloseWindow1",
+            "~CloseWindow2",
+            "~ConfirmMiddle",
+            "~SkipButton",
+            "~LevelUp",
+            "~HomeButton",
+            "~BackButton",
+            "~Login",
+            "~EnterGame",
+            "~StartUpLoading",
+            "~Loading",
+            "~Homepage",
+            "~TheRoom",
+            "_Escape1"
+        ]
+    },
+
+    "_Escape1": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    318,
+                    36,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "~ConfirmGeneral",
+            "~ConfirmSweepResult",
+            "~CancelGeneral",
+            "~Cancel1",
+            "~Cancel2",
+            "~Cancel3",
+            "~CloseWindowsGeneral",
+            "~CloseWindow1",
+            "~CloseWindow2",
+            "~ConfirmMiddle",
+            "~SkipButton",
+            "~LevelUp",
+            "~HomeButton",
+            "~BackButton",
+            "~Login",
+            "~EnterGame",
+            "~StartUpLoading",
+            "~Loading",
+            "~Homepage",
+            "~TheRoom",
+            "_Escape2"
+        ]
+    },
+
+    "_Escape2": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    318,
+                    36,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "~ConfirmGeneral",
+            "~ConfirmSweepResult",
+            "~CancelGeneral",
+            "~Cancel1",
+            "~Cancel2",
+            "~Cancel3",
+            "~CloseWindowsGeneral",
+            "~CloseWindow1",
+            "~CloseWindow2",
+            "~ConfirmMiddle",
+            "~SkipButton",
+            "~LevelUp",
+            "~HomeButton",
+            "~BackButton",
+            "~Login",
+            "~EnterGame",
+            "~StartUpLoading",
+            "~Loading",
+            "~Homepage",
+            "~TheRoom",
+            "_Escape3"
+        ]
+    },
+
+    "_Escape3": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    318,
+                    36,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "~ConfirmGeneral",
+            "~ConfirmSweepResult",
+            "~CancelGeneral",
+            "~Cancel1",
+            "~Cancel2",
+            "~Cancel3",
+            "~CloseWindowsGeneral",
+            "~CloseWindow1",
+            "~CloseWindow2",
+            "~ConfirmMiddle",
+            "~SkipButton",
+            "~LevelUp",
+            "~HomeButton",
+            "~BackButton",
+            "~Login",
+            "~EnterGame",
+            "~StartUpLoading",
+            "~Loading",
+            "~Homepage",
+            "~TheRoom",
+            "_Escape4"
+        ]
+    },
+
+    "_Escape4": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    318,
+                    36,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "~ConfirmGeneral",
+            "~ConfirmSweepResult",
+            "~CancelGeneral",
+            "~Cancel1",
+            "~Cancel2",
+            "~Cancel3",
+            "~CloseWindowsGeneral",
+            "~CloseWindow1",
+            "~CloseWindow2",
+            "~ConfirmMiddle",
+            "~SkipButton",
+            "~LevelUp",
+            "~HomeButton",
+            "~BackButton",
+            "~Login",
+            "~EnterGame",
+            "~StartUpLoading",
+            "~Loading",
+            "~Homepage",
+            "~TheRoom",
+            "_Escape5"
+        ]
+    },
+
+    "_Escape5": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    318,
+                    36,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "~ConfirmGeneral",
+            "~ConfirmSweepResult",
+            "~CancelGeneral",
+            "~Cancel1",
+            "~Cancel2",
+            "~Cancel3",
+            "~CloseWindowsGeneral",
+            "~CloseWindow1",
+            "~CloseWindow2",
+            "~ConfirmMiddle",
+            "~SkipButton",
+            "~LevelUp",
+            "~HomeButton",
+            "~BackButton",
+            "~Login",
+            "~EnterGame",
+            "~StartUpLoading",
+            "~Loading",
+            "~Homepage",
+            "~TheRoom",
+            "_Escape6"
+        ]
+    },
+
+    "_Escape6": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    318,
+                    36,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "~ConfirmGeneral",
+            "~ConfirmSweepResult",
+            "~CancelGeneral",
+            "~Cancel1",
+            "~Cancel2",
+            "~Cancel3",
+            "~CloseWindowsGeneral",
+            "~CloseWindow1",
+            "~CloseWindow2",
+            "~ConfirmMiddle",
+            "~SkipButton",
+            "~LevelUp",
+            "~HomeButton",
+            "~BackButton",
+            "~Login",
+            "~EnterGame",
+            "~StartUpLoading",
+            "~Loading",
+            "~Homepage",
+            "~TheRoom",
+            "_Escape7"
+        ]
+    },
+
+    "_Escape7": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    318,
+                    36,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "~ConfirmGeneral",
+            "~ConfirmSweepResult",
+            "~CancelGeneral",
+            "~Cancel1",
+            "~Cancel2",
+            "~Cancel3",
+            "~CloseWindowsGeneral",
+            "~CloseWindow1",
+            "~CloseWindow2",
+            "~ConfirmMiddle",
+            "~SkipButton",
+            "~LevelUp",
+            "~HomeButton",
+            "~BackButton",
+            "~Login",
+            "~EnterGame",
+            "~StartUpLoading",
+            "~Loading",
+            "~Homepage",
+            "~TheRoom",
+            "_Escape8"
+        ]
+    },
+
+    "_Escape8": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    318,
+                    36,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "~ConfirmGeneral",
+            "~ConfirmSweepResult",
+            "~CancelGeneral",
+            "~Cancel1",
+            "~Cancel2",
+            "~Cancel3",
+            "~CloseWindowsGeneral",
+            "~CloseWindow1",
+            "~CloseWindow2",
+            "~ConfirmMiddle",
+            "~SkipButton",
+            "~LevelUp",
+            "~HomeButton",
+            "~BackButton",
+            "~Login",
+            "~EnterGame",
+            "~StartUpLoading",
+            "~Loading",
+            "~Homepage",
+            "~TheRoom",
+            "_Escape9"
+        ]
+    },
+
+    "_Escape9": {
+        "action": {
+            "type": "StopApp",
+            "param": {
+                "package": "com.leiting.yxhs"
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "~ConfirmGeneral",
+            "~ConfirmSweepResult",
+            "~CancelGeneral",
+            "~Cancel1",
+            "~Cancel2",
+            "~Cancel3",
+            "~CloseWindowsGeneral",
+            "~CloseWindow1",
+            "~CloseWindow2",
+            "~ConfirmMiddle",
+            "~SkipButton",
+            "~LevelUp",
+            "~HomeButton",
+            "~BackButton",
+            "~Login",
+            "~EnterGame",
+            "~StartUpLoading",
+            "~Loading",
+            "~Homepage",
+            "~TheRoom",
+            "_Escape_Wait"
+        ]
+    },
+
+    "_Escape_Wait": {
+        "rate_limit": 2000,
+        "action": {
+            "type": "StartApp",
+            "param": {
+                "package": "com.leiting.yxhs"
+            }
+        },
+        "post_delay": 1000,
+        "timeout": 30000,
+        "next": [
+            "~ConfirmGeneral",
+            "~ConfirmSweepResult",
+            "~CancelGeneral",
+            "~Cancel1",
+            "~Cancel2",
+            "~Cancel3",
+            "~CloseWindowsGeneral",
+            "~CloseWindow1",
+            "~CloseWindow2",
+            "~ConfirmMiddle",
+            "~SkipButton",
+            "~LevelUp",
+            "~HomeButton",
+            "~BackButton",
+            "~Login",
+            "~EnterGame",
+            "~StartUpLoading",
+            "~Loading",
+            "~Homepage",
+            "~TheRoom"
+        ],
+        "on_error": [
+            "_StopTask"
+        ]
+    },
+
+    // *************************************************
+    // Recognizable Ops
+    // Desc:
+    // context-free ops with recognition
+    // each has a recognizer and a clicker
+    // *************************************************
+    // Popup ===========================================
+    "_ConfirmGeneral": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    644,
+                    320,
+                    158,
+                    152
+                ],
+                "template": "Utils/ConfirmGeneral.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.8
+        }
+    },
+
+    "_ConfirmSweepResult": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1014,
+                    611,
+                    162,
+                    109
+                ],
+                "expected": [
+                    "确定"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_CancelGeneral": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    481,
+                    318,
+                    155,
+                    153
+                ],
+                "template": "Utils/CancelGeneral.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.8
+        }
+    },
+
+    "_Cancel1": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    469,
+                    412,
+                    174,
+                    142
+                ],
+                "expected": [
+                    "取消"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.8
+        }
+    },
+
+    "_Cancel2": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    716,
+                    586,
+                    175,
+                    134
+                ],
+                "expected": [
+                    "取消"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.8
+        }
+    },
+
+    "_Cancel3": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    465,
+                    590,
+                    150,
+                    130
+                ],
+                "expected": [
+                    "取消"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.8
+        }
+    },
+
+    "_Cancel4": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    574,
+                    448,
+                    162,
+                    125
+                ],
+                "expected": [
+                    "取消"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.8
+        }
+    },
+
+    "_CloseWindowsGeneral": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1081,
+                    29,
+                    142,
+                    143
+                ],
+                "template": "Utils/CloseWindows.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.5
+        }
+    },
+
+    "_CloseWindow1": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1102,
+                    143,
+                    130,
+                    135
+                ],
+                "template": "Utils/CloseWindow1.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.8
+        }
+    },
+
+    "_CloseWindow2": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1163,
+                    25,
+                    117,
+                    148
+                ],
+                "template": "Utils/CloseWindow2.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.8
+        }
+    },
+
+    // Overlay =========================================
+    "_ConfirmMiddle": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    558,
+                    1,
+                    164,
+                    719
+                ],
+                "template": "Utils/ConfirmMiddle.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.8
+        }
+    },
+
+    "_SkipButton": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1026,
+                    21,
+                    185,
+                    130
+                ],
+                "template": "Utils/SkipButton.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.8
+        }
+    },
+
+    // Base ============================================
+    "_HomeButton": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    245,
+                    0,
+                    148,
+                    143
+                ],
+                "template": "Utils/HomeButton.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.8
+        }
+    },
+
+    "_BackButton": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    48,
+                    0,
+                    151,
+                    143
+                ],
+                "template": "Utils/BackButton.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.8
+        }
+    },
+
+    "_Login": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    495,
+                    431,
+                    291,
+                    129
+                ],
+                "template": "StartUp/Login.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 2000,
+            "threshold": 0.8
+        }
+    },
+
+    "_EnterGame": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    522,
+                    489,
+                    239,
+                    79
+                ],
+                "expected": [
+                    "开始游戏"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 2000,
+            "threshold": 0.8
+        }
+    },
+
+    // *************************************************
+    // Direct Ops
+    // Desc:
+    // context-free ops
+    // executed directly without recognition
+    // *************************************************
+    // General =========================================
+    "_LaunchGame": {
+        "action": {
+            "type": "StartApp",
+            "param": {
+                "package": "com.leiting.yxhs"
+            }
+        },
+        "next": [
+            "_NavigateHomepage"
+        ]
+    },
+
+    "_Wait2": {
+        "post_delay": 2000
+    },
+
+    "_Wait5": {
+        "post_delay": 5000
+    },
+
+    "_StopTask": {
+        "action": "StopTask"
+    },
+
+    "_False": {
+        "inverse": true
+    },
+
+    // Wrappers ========================================
+    "_Confirm": {
+        "next": [
+            "_ConfirmGeneral",
+            "_ConfirmMiddle",
+            "_ConfirmSweepResult"
+        ]
+    },
+
+    "_Cancel": {
+        "next": [
+            "_CancelGeneral",
+            "_Cancel1",
+            "_Cancel2",
+            "_Cancel3",
+            "_Cancel4"
+        ]
+    },
+
+    "_CloseWindows": {
+        "next": [
+            "_CloseWindowsGeneral",
+            "_CloseWindow1",
+            "_CloseWindow2"
+        ]
+    },
+
+    // *************************************************
+    // Contextual Ops
+    // Desc:
+    // context-dependent operations
+    // consists of Atomic Ops or Wrapped Ops
+    // *************************************************
+    // Popup ===========================================
+    // Handle Game Update Popup
+    "_UpdateGame": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    323,
+                    161,
+                    628,
+                    344
+                ],
+                "expected": [
+                    "下载"
+                ]
+            }
+        },
+        "next": [
+            "_Confirm"
+        ]
+    },
+
+    // Handle Unfinished Game
+    "_UnfinishedGame": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    440,
+                    224,
+                    399,
+                    139
+                ],
+                "expected": "未完成"
+            }
+        },
+        "next": [
+            "_DiscardUnfinishedGame",
+            "_StopTask"
+        ]
+    },
+
+    "_DiscardUnfinishedGame": {
+        "enabled": false,
+        "next": [
+            "_Cancel"
+        ]
+    },
+
+    // Handle Server Maintenance
+    "_ServerMaintenance": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    485,
+                    227,
+                    311,
+                    133
+                ],
+                "expected": [
+                    "维护"
+                ]
+            }
+        },
+        "next": [
+            "_ConfirmServerMaintenance"
+        ]
+    },
+
+    "_ConfirmServerMaintenance": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    558,
+                    1,
+                    164,
+                    719
+                ],
+                "template": "Utils/ConfirmMiddle.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.8
+        },
+        "next": [
+            "_LaunchGame"
+        ]
+    },
+
+    // Handle Reconnect
+    "_ConfrimReconnect": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    437,
+                    234,
+                    404,
+                    135
+                ],
+                "expected": [
+                    "回来",
+                    "继续游玩"
+                ]
+            }
+        },
+        "next": [
+            "_ConfirmMiddle"
+        ],
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.8
+        }
+    },
+
+    // Confirm Level Up
+    "_LevelUp": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    827,
+                    207,
+                    207,
+                    133
+                ],
+                "expected": [
+                    "行动力恢复"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    318,
+                    36,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    },
+
+    // BCR Sweep
+    "_SweepMax": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    148,
+                    176,
+                    308,
+                    292
+                ],
+                "template": "BCR/AtSweep.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    955,
+                    457,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "_SweepConfirm",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmSweepResult"
+        ]
+    },
+
+    "_SweepConfirm": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    814,
+                    500,
+                    154,
+                    127
+                ],
+                "expected": [
+                    "出发"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.75
+        }
+    },
+
+    // Handle Exiting The Room Confirmation
+    "_ConfirmExitTheRoom": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    502,
+                    223,
+                    267,
+                    142
+                ],
+                "expected": [
+                    "离开"
+                ]
+            }
+        },
+        "next": [
+            "_Confirm"
+        ],
+        "post_wait_freezes": 1000
+    },
+
+    // Close Sea of Cognition Reward Popup
+    // ⚠️ 旧实现用 SeaOfCognition/Reward.png（ROI 左上 [46,230,190,192]）匹配新版本弹窗
+    //   永远失败（日志见 maafw.bak 2026.09.13）。新弹窗：空白界面随机点一下才出现顶部居中
+    //   的「获取物资」标题，再点底部中央对号(✓)关闭。故改为 OCR「获取物资」+ 点 ✓。
+    //   作为 [JumpBack] 中断节点使用：命中后点 ✓，结束后自动回到被中断的节点。
+    "_SeaOfCognitionReward": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    380,
+                    30,
+                    520,
+                    190
+                ],
+                "expected": [
+                    "获取物资"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    640,
+                    650,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1500
+    },
+
+    // Close Mission -> Urban Patrol -> Mutual Aid Window
+    "_CloseMutualAid": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    52,
+                    38,
+                    260,
+                    149
+                ],
+                "expected": [
+                    "互助"
+                ]
+            }
+        },
+        "next": [
+            "_CloseWindows"
+        ]
+    },
+
+    // Base ============================================
+    // BCR =============================================
+    // Horizontal Swipe
+    "_BCRHead": {
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    10,
+                    360,
+                    1,
+                    1
+                ],
+                "end": [
+                    1270,
+                    360,
+                    1,
+                    1
+                ],
+                "duration": 500,
+                "end_hold": 200
+            }
+        }
+    },
+
+    "_BCRTail": {
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    1270,
+                    360,
+                    1,
+                    1
+                ],
+                "end": [
+                    10,
+                    360,
+                    1,
+                    1
+                ],
+                "duration": 500,
+                "end_hold": 200
+            }
+        }
+    },
+
+    // Vertical Swipe
+    "_CrisisMissionHead": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1122,
+                    0,
+                    142,
+                    130
+                ],
+                "template": "BCR/AtCrisisMission.png"
+            }
+        },
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    188,
+                    155,
+                    1,
+                    1
+                ],
+                "end": [
+                    188,
+                    720,
+                    1,
+                    1
+                ],
+                "duration": 500,
+                "end_hold": 200
+            }
+        }
+    },
+
+    "_CrisisMissionTail": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1122,
+                    0,
+                    142,
+                    130
+                ],
+                "template": "BCR/AtCrisisMission.png"
+            }
+        },
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    188,
+                    675,
+                    1,
+                    1
+                ],
+                "end": [
+                    188,
+                    100,
+                    1,
+                    1
+                ],
+                "duration": 500,
+                "end_hold": 200
+            }
+        }
+    },
+
+    // Sweep From BCR Level
+    "_SweepFromLevel": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    804,
+                    591,
+                    273,
+                    129
+                ],
+                "expected": [
+                    "扫荡",
+                    "扫汤",
+                    "快速完成"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Exit The Room
+    "_ExitTheRoom": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    47,
+                    0,
+                    147,
+                    144
+                ],
+                "template": "TheRoom/ExitTheRoom.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Other ===========================================
+    "_StartUpLoading": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    521,
+                    429,
+                    235,
+                    141
+                ],
+                "expected": "加载"
+            }
+        },
+        "next": [
+            "_Wait5"
+        ]
+    },
+
+    "_Loading": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    425,
+                    123
+                ],
+                "template": "Utils/Loading.png"
+            }
+        },
+        "next": [
+            "_Wait2"
+        ]
+    },
+
+    // *************************************************
+    // Navigator
+    // Desc: navigate among different interface
+    // *************************************************
+    // Homepage ========================================
+    "_NavigateHomepage": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    32,
+                    562,
+                    137,
+                    145
+                ],
+                "template": "Homepage/SystemButton.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "_EnsureHomepage",
+            "[JumpBack]_UpdateGame",
+            "[JumpBack]_UnfinishedGame",
+            "[JumpBack]_ConfirmExitTheRoom",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_CancelGeneral",
+            "[JumpBack]_Cancel1",
+            "[JumpBack]_Cancel2",
+            "[JumpBack]_Cancel3",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_ConfirmGeneral",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_ConfirmSweepResult",
+            "[JumpBack]_CloseWindowsGeneral",
+            "[JumpBack]_CloseWindow1",
+            "[JumpBack]_CloseWindow2",
+            "[JumpBack]_SkipButton",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_HomeButton",
+            "[JumpBack]_BackButton",
+            "[JumpBack]_Login",
+            "[JumpBack]_EnterGame",
+            "[JumpBack]_ExitTheRoom",
+            "[JumpBack]_Loading",
+            "[JumpBack]_StartUpLoading",
+            "[JumpBack]_Escape"
+        ]
+    },
+
+    "_EnsureHomepage": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    32,
+                    562,
+                    137,
+                    145
+                ],
+                "template": "Homepage/SystemButton.png",
+                "threshold": 0.8
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "~Homepage",
+            "_NavigateHomepage"
+        ]
+    },
+
+    // BCR =============================================
+    // Navigate to BCR Root
+    "_NavigateBCR": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1080,
+                    607,
+                    200,
+                    113
+                ],
+                "expected": [
+                    "主线故事"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~BCR",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_BCRFromHome",
+            "[JumpBack]_NavigateHomepage"
+        ]
+    },
+
+    "_BCRFromHome": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    750,
+                    58,
+                    530,
+                    578
+                ],
+                "template": [
+                    "Homepage/BCR_default.png",
+                    "Homepage/BCR_compact.png"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.8
+        }
+    },
+
+    // Navigate to BCR -> Prepared
+    "_NavigatePrepared": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": [
+                    "公平交易.png",
+                    "共时性.png",
+                    "诡形物语.png",
+                    "火线特攻.png",
+                    "虎胆龙威.png",
+                    "巅峰时刻.png"
+                ],
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~Prepared",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_PreparedFromBCR",
+            "[JumpBack]_NavigateBCR"
+        ]
+    },
+
+    "_PreparedFromBCR": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    902,
+                    601,
+                    216,
+                    119
+                ],
+                "template": "BCR/Prepared.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to BCR -> Prepared -> Fund
+    "_NavigatePreparedFund": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "公平交易"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~PreparedFund",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_FundFromPrepared",
+            "[JumpBack]_NavigatePrepared"
+        ]
+    },
+
+    "_FundFromPrepared": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "公平交易.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to BCR -> Prepared -> Tape
+    "_NavigatePreparedTape": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "共时性"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~PreparedTape",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_TapeFromPrepared",
+            "[JumpBack]_NavigatePrepared"
+        ]
+    },
+
+    "_TapeFromPrepared": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "共时性.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to BCR -> Prepared -> Dust
+    "_NavigatePreparedDust": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    120
+                ],
+                "expected": [
+                    "诡形物语"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~PreparedDust",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_DustFromPrepared",
+            "[JumpBack]_NavigatePrepared"
+        ]
+    },
+
+    "_DustFromPrepared": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "诡形物语.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to BCR -> Appraisal
+    "_NavigateAppraisal": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    407,
+                    1280,
+                    142
+                ],
+                "expected": [
+                    "火线特攻",
+                    "虎胆龙威",
+                    "巅峰时刻",
+                    "铜墙铁壁"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~Appraisal",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR"
+        ]
+    },
+
+    "_AppraisalFromBCR": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    902,
+                    601,
+                    216,
+                    119
+                ],
+                "template": "BCR/Prepared.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_SwipeLeftForCopperWall": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    360,
+                    1280,
+                    360
+                ],
+                "expected": [
+                    "火线特攻"
+                ]
+            }
+        },
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    1000,
+                    400,
+                    1,
+                    1
+                ],
+                "end": [
+                    300,
+                    400,
+                    1,
+                    1
+                ],
+                "duration": 300,
+                "end_hold": 200
+            }
+        },
+        "post_wait_freezes": 800
+    },
+
+    "_CopperWallFromPrepared": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "铜墙铁壁.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // 晋阶考核 material icons (now inside the combined 资源筹备 screen, bottom half)
+    "_FireLineFromPrepared": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "火线特攻.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_TigerFromPrepared": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "虎胆龙威.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_PeakFromPrepared": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "巅峰时刻.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_ApprasialHead": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    407,
+                    1280,
+                    142
+                ],
+                "expected": [
+                    "火线特攻",
+                    "虎胆龙威",
+                    "巅峰时刻",
+                    "铜墙铁壁"
+                ]
+            }
+        },
+        "next": [
+            "_BCRHead"
+        ]
+    },
+
+    "_ApprasialTail": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    407,
+                    1280,
+                    142
+                ],
+                "expected": [
+                    "火线特攻",
+                    "虎胆龙威",
+                    "巅峰时刻",
+                    "铜墙铁壁"
+                ]
+            }
+        },
+        "next": [
+            "_BCRTail"
+        ]
+    },
+
+    // Navigate to BCR -> Appraisal -> Disc
+    "_NavigateAppraisalDisc": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "火线特攻"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~AppraisalDisc",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_DiscFromAppraisal",
+            "[JumpBack]_ApprasialHead",
+            "[JumpBack]_NavigateAppraisal"
+        ]
+    },
+
+    "_DiscFromAppraisal": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    360,
+                    1280,
+                    360
+                ],
+                "expected": [
+                    "火线特攻"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Levels in BCR -> Appraisal -> Disc
+    "_NavigateG601": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    51,
+                    471,
+                    444
+                ],
+                "template": "BCR/AtG601.png"
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~G601",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_G601FromAppraisalDisc",
+            "[JumpBack]_NavigateAppraisalDisc"
+        ]
+    },
+
+    "_G601FromAppraisalDisc": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "G601"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateG602": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    51,
+                    471,
+                    444
+                ],
+                "template": "BCR/AtG602.png"
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~G602",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_G602FromAppraisalDisc",
+            "[JumpBack]_NavigateAppraisalDisc"
+        ]
+    },
+
+    "_G602FromAppraisalDisc": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "G602"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateG603": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    51,
+                    471,
+                    444
+                ],
+                "template": "BCR/AtG603.png"
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~G603",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_G603FromAppraisalDisc",
+            "[JumpBack]_NavigateAppraisalDisc"
+        ]
+    },
+
+    "_G603FromAppraisalDisc": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "G603"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateG604": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    51,
+                    471,
+                    444
+                ],
+                "template": "BCR/AtG604.png"
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~G604",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_FireLineFromPrepared",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR",
+            "[JumpBack]_G604FromAppraisalDisc",
+            "[JumpBack]_NavigateAppraisalDisc"
+        ]
+    },
+
+    "_G604FromAppraisalDisc": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "G604"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to BCR -> Appraisal -> Lion
+    "_NavigateAppraisalLion": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "虎胆龙威"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~AppraisalLion",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_LionFromAppraisal",
+            "[JumpBack]_ApprasialHead",
+            "[JumpBack]_NavigateAppraisal"
+        ]
+    },
+
+    "_LionFromAppraisal": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    401,
+                    1280,
+                    155
+                ],
+                "expected": [
+                    "虎胆龙威"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Levels in BCR -> Appraisal -> Lion
+    "_NavigateG301": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1013,
+                    23,
+                    267,
+                    208
+                ],
+                "template": "BCR/AtG301.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~G301",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_TigerFromPrepared",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR",
+            "[JumpBack]_G301FromAppraisalLion",
+            "[JumpBack]_NavigateAppraisalLion"
+        ]
+    },
+
+    "_G301FromAppraisalLion": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "G301"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateG302": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1013,
+                    23,
+                    267,
+                    208
+                ],
+                "template": "BCR/AtG302.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~G302",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_G302FromAppraisalLion",
+            "[JumpBack]_NavigateAppraisalLion"
+        ]
+    },
+
+    "_G302FromAppraisalLion": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "G302"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to BCR -> Appraisal -> Wolf
+    "_NavigateAppraisalWolf": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "巅峰时刻"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~AppraisalWolf",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_WolfFromAppraisal",
+            "[JumpBack]_ApprasialHead",
+            "[JumpBack]_NavigateAppraisal"
+        ]
+    },
+
+    "_WolfFromAppraisal": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    401,
+                    1280,
+                    155
+                ],
+                "expected": [
+                    "巅峰时刻"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Levels in BCR -> Appraisal -> Wolf
+    "_NavigateG401": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1013,
+                    23,
+                    267,
+                    208
+                ],
+                "template": "BCR/AtG401.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~G401",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_PeakFromPrepared",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR",
+            "[JumpBack]_G401FromAppraisalWolf",
+            "[JumpBack]_NavigateAppraisalWolf"
+        ]
+    },
+
+    "_G401FromAppraisalWolf": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "G401"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateG402": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1013,
+                    23,
+                    267,
+                    208
+                ],
+                "template": "BCR/AtG402.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~G402",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_PeakFromPrepared",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR",
+            "[JumpBack]_G402FromAppraisalWolf",
+            "[JumpBack]_NavigateAppraisalWolf"
+        ]
+    },
+
+    "_G402FromAppraisalWolf": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "G402"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to BCR -> Appraisal -> Eagle
+    "_NavigateAppraisalEagle": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "铜墙铁壁"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~AppraisalEagle",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_EagleFromAppraisal",
+            "[JumpBack]_ApprasialTail",
+            "[JumpBack]_NavigateAppraisal"
+        ]
+    },
+
+    "_EagleFromAppraisal": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    401,
+                    1280,
+                    155
+                ],
+                "expected": [
+                    "铜墙铁壁"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Levels in BCR -> Appraisal -> Eagle
+    "_NavigateG501": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1013,
+                    23,
+                    267,
+                    208
+                ],
+                "template": "BCR/AtG501.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~G501",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SwipeLeftForCopperWall",
+            "[JumpBack]_CopperWallFromPrepared",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR",
+            "[JumpBack]_G501FromAppraisalEagle",
+            "[JumpBack]_NavigateAppraisalEagle"
+        ]
+    },
+
+    "_G501FromAppraisalEagle": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "G501"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateG502": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1013,
+                    23,
+                    267,
+                    208
+                ],
+                "template": "BCR/AtG502.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~G502",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SwipeLeftForCopperWall",
+            "[JumpBack]_CopperWallFromPrepared",
+            "[JumpBack]_AppraisalFromBCR",
+            "[JumpBack]_NavigateBCR",
+            "[JumpBack]_G502FromAppraisalEagle",
+            "[JumpBack]_NavigateAppraisalEagle"
+        ]
+    },
+
+    "_G502FromAppraisalEagle": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "G502"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to BCR -> SideQuest -> CrisisMission
+    "_NavigateCrisisMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1122,
+                    0,
+                    142,
+                    130
+                ],
+                "template": "BCR/AtCrisisMission.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~CrisisMission",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_CrisisMissionFromSpecialOps",
+            "[JumpBack]_NavigateSpecialOps"
+        ]},
+
+    // 特别行动 -> 危机行动 entry (危机行动卡已迁入特别行动界面，使用新模板 危机行动.png)
+    "_CrisisMissionFromSpecialOps": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    106,
+                    1280,
+                    498
+                ],
+                "template": "危机行动.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // 特别行动 interface gate: if 特别行动 icon still visible on BCR, click it to enter
+    "_NavigateSpecialOps": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    827,
+                    652,
+                    111,
+                    47
+                ],
+                "template": "特别行动.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to BCR -> SideQuest -> CrisisMission -> OngoingMission
+    "_NavigateOngoingMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    66,
+                    467,
+                    114
+                ],
+                "template": "BCR/AtOngoingMission.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~OngoingMission",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_OngoingMissionFromCrisisMission",
+            "[JumpBack]_NavigateCrisisMission"
+        ]},
+
+    "_OngoingMissionFromCrisisMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    14,
+                    38,
+                    181,
+                    128
+                ],
+                "expected": [
+                    "常驻行动"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Levels in BCR -> SideQuest -> CrisisMission -> OngoingMission
+    "_NavigateS001": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "混合体Ⅰ",
+                    "混合体I$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S001",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S001FromOngoingMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateOngoingMission"
+        ]},
+
+    "_S001FromOngoingMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S001"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS002": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "混合体Ⅱ",
+                    "混合体II$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S002",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S002FromOngoingMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateOngoingMission"
+        ]},
+
+    "_S002FromOngoingMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S002"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS003": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "混合体Ⅲ",
+                    "混合体III$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S003",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S003FromOngoingMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateOngoingMission"
+        ]},
+
+    "_S003FromOngoingMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S003"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS101": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "奇点列车Ⅰ",
+                    "奇点列车I$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S101",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S101FromOngoingMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateOngoingMission"
+        ]},
+
+    "_S101FromOngoingMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S101"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS102": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "奇点列车Ⅱ",
+                    "奇点列车II$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S102",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S102FromOngoingMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateOngoingMission"
+        ]},
+
+    "_S102FromOngoingMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S102"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS103": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "奇点列车Ⅲ",
+                    "奇点列车III$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S103",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S103FromOngoingMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateOngoingMission"
+        ]},
+
+    "_S103FromOngoingMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S103"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS201": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "洛伦佐Ⅰ",
+                    "洛伦佐I$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S201",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S201FromOngoingMission",
+            "[JumpBack]_CrisisMissionTail",
+            "[JumpBack]_NavigateOngoingMission"
+        ]},
+
+    "_S201FromOngoingMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S201"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS202": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "洛伦佐Ⅱ",
+                    "洛伦佐II$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S202",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S202FromOngoingMission",
+            "[JumpBack]_CrisisMissionTail",
+            "[JumpBack]_NavigateOngoingMission"
+        ]},
+
+    "_S202FromOngoingMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S202"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS203": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "洛伦佐Ⅲ",
+                    "洛伦佐III$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S203",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S203FromOngoingMission",
+            "[JumpBack]_CrisisMissionTail",
+            "[JumpBack]_NavigateOngoingMission"
+        ]},
+
+    "_S203FromOngoingMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S203"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS301": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "乐园梦魇Ⅰ",
+                    "乐园梦魇I$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S301",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S301FromOngoingMission",
+            "[JumpBack]_CrisisMissionTail",
+            "[JumpBack]_NavigateOngoingMission"
+        ]},
+
+    "_S301FromOngoingMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S301"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS302": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "乐园梦魇Ⅱ",
+                    "乐园梦魇II$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S302",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S302FromOngoingMission",
+            "[JumpBack]_CrisisMissionTail",
+            "[JumpBack]_NavigateOngoingMission"
+        ]},
+
+    "_S302FromOngoingMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S302"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS303": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "乐园梦魇Ⅲ",
+                    "乐园梦魇III$",
+                    "乐园梦魔IⅢ"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S303",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S303FromOngoingMission",
+            "[JumpBack]_CrisisMissionTail",
+            "[JumpBack]_NavigateOngoingMission"
+        ]},
+
+    "_S303FromOngoingMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S303"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateEventLevel": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "活动"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~EventLevel",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_FindEventLevelFromOngoingMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateOngoingMission"
+        ]
+    },
+
+    "_FindEventLevelFromOngoingMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    66,
+                    467,
+                    114
+                ],
+                "template": "BCR/AtOngoingMission.png",
+                "threshold": 0.8
+            }
+        },
+        "next": [
+            "_EventLevelNA",
+            "_EventLevelFromOngoingMission"
+        ]
+    },
+
+    "_EventLevelFromOngoingMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "活动"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_EventLevelNA": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "活动"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "_StopTask"
+        ]
+    },
+
+    // Navigate to BCR -> SideQuest -> CrisisMission -> EliteMission
+    "_NavigateEliteMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    66,
+                    467,
+                    114
+                ],
+                "template": "BCR/AtEliteMission.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~EliteMission",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_EliteMissionFromCrisisMission",
+            "[JumpBack]_NavigateCrisisMission"
+        ]},
+
+    "_EliteMissionFromCrisisMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    167,
+                    40,
+                    180,
+                    124
+                ],
+                "expected": [
+                    "特级行动"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Levels in BCR -> SideQuest -> CrisisMission -> EliteMission
+    "_NavigateS401": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "总控一号Ⅰ",
+                    "总控一号I$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S401",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S401FromEliteMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateEliteMission"
+        ]},
+
+    "_S401FromEliteMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S401"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS402": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "总控一号Ⅱ",
+                    "总控一号II$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S402",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S402FromEliteMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateEliteMission"
+        ]},
+
+    "_S402FromEliteMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S402"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS501": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "幻影人偶Ⅰ",
+                    "幻影人偶I$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S501",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S501FromEliteMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateEliteMission"
+        ]},
+
+    "_S501FromEliteMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S501"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS502": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "幻影人偶Ⅱ",
+                    "幻影人偶II$"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S502",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S502FromEliteMission",
+            "[JumpBack]_CrisisMissionHead",
+            "[JumpBack]_NavigateEliteMission"
+        ]},
+
+    "_S502FromEliteMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S502"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_NavigateS701": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "罪与罚"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~S701",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_S701FromEliteMission",
+            "[JumpBack]_CrisisMissionTail",
+            "[JumpBack]_NavigateEliteMission"
+        ]},
+
+    "_S701FromEliteMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    78,
+                    89,
+                    91,
+                    587
+                ],
+                "expected": [
+                    "S701"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to BCR -> LiminalZone
+    "_NavigateLiminalZone": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    45,
+                    81,
+                    147,
+                    144
+                ],
+                "template": "BCR/AtLiminalZone.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~LiminalZone",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_LiminalZoneFromBCR",
+            "[JumpBack]_NavigateBCR"
+        ]
+    },
+
+    "_LiminalZoneFromBCR": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    437,
+                    600,
+                    210,
+                    120
+                ],
+                "template": "BCR/LiminalZone.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_LiminalZoneHead": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    45,
+                    81,
+                    147,
+                    144
+                ],
+                "template": "BCR/AtLiminalZone.png"
+            }
+        },
+        "next": [
+            "_BCRHead"
+        ]
+    },
+
+    "_LiminalZoneTail": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    45,
+                    81,
+                    147,
+                    144
+                ],
+                "template": "BCR/AtLiminalZone.png"
+            }
+        },
+        "next": [
+            "_BCRTail"
+        ]
+    },
+
+    // Navigate to BCR -> LiminalZone -> ObsoleteNexus
+    "_NavigateObsoleteNexus": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    47,
+                    42,
+                    173,
+                    131
+                ],
+                "expected": [
+                    "废弃枢纽"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~ObsoleteNexus",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_ObsoleteNexusFromLiminalZone",
+            "[JumpBack]_LiminalZoneHead",
+            "[JumpBack]_NavigateLiminalZone"
+        ]
+    },
+
+    "_ObsoleteNexusFromLiminalZone": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1,
+                    217,
+                    1279,
+                    157
+                ],
+                "expected": [
+                    "废弃枢纽"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 2000
+    },
+
+    // Navigate to BCR -> LiminalZone -> Corridor
+    "_NavigateCorridor": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    47,
+                    42,
+                    173,
+                    131
+                ],
+                "expected": [
+                    "回廊\\d+区"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~Corridor",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_FindCorridorFromLiminalZone",
+            "[JumpBack]_NavigateLiminalZone"
+        ]
+    },
+
+    "_FindCorridorFromLiminalZone": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    45,
+                    81,
+                    147,
+                    144
+                ],
+                "template": "BCR/AtLiminalZone.png"
+            }
+        },
+        "next": [
+            "_CorridorFromLiminalZone",
+            "_CorridorNA",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_LiminalZoneTail",
+            "[JumpBack]_NavigateLiminalZone"
+        ]
+    },
+
+    "_CorridorFromLiminalZone": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1,
+                    217,
+                    1279,
+                    157
+                ],
+                "expected": [
+                    "回廊"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 2000
+    },
+
+    "_CorridorNA": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1,
+                    217,
+                    1279,
+                    157
+                ],
+                "expected": [
+                    "回"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "_StopTask"
+        ]
+    },
+
+    // Mission =========================================
+    // Navigate to Mission Page
+    "_NavigateMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    454,
+                    0,
+                    286,
+                    137
+                ],
+                "expected": [
+                    "任务"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~Mission",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_CloseMutualAid",
+            "[JumpBack]_MissionFromHome",
+            "[JumpBack]_NavigateHomepage"
+        ]
+    },
+
+    "_MissionFromHome": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    741,
+                    590,
+                    146,
+                    130
+                ],
+                "template": "Homepage/Mission.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.8
+        }
+    },
+
+    // System Page =====================================
+    // Navigate to System
+    "_NavigateSystem": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    559,
+                    149,
+                    149
+                ],
+                "template": "SystemPage/Settings.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~System",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_SystemFromHome",
+            "[JumpBack]_NavigateHomepage"
+        ]
+    },
+
+    "_SystemFromHome": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    32,
+                    562,
+                    137,
+                    145
+                ],
+                "template": "Homepage/SystemButton.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.8
+        }
+    },
+
+    // Event
+    "_NavigateEvent": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    94,
+                    87,
+                    198,
+                    131
+                ],
+                "expected": [
+                    "每日签到"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~Event",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_EventFromHome",
+            "[JumpBack]_NavigateHomepage"
+        ]
+    },
+
+    "_EventFromHome": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    121,
+                    79,
+                    59,
+                    60
+                ],
+                "template": "Homepage/Event.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.8
+        }
+    },
+
+    // Option
+    "FarmSelectLevel": {
+        "next": [
+            "_NavigatePreparedDust"
+        ]
+    },
+
+    "ConfirmUseStaminaItem": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    668,
+                    547,
+                    161,
+                    137
+                ],
+                "expected": [
+                    "确定"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000,
+        "next": [
+            "CloseUseStaminaItem"
+        ]
+    },
+
+    "CloseUseStaminaItem": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    452,
+                    12,
+                    207,
+                    125
+                ],
+                "expected": [
+                    "下次恢复时间"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1080,
+                    327,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    },
+
+
+    // ---------- 步骤 4：在关卡详情界面点"快速完成" ----------
+    // 截图：assets/resource/image/当期活动/关卡详情.png
+    // 改为 OCR 识别「快速完成」后点击（原固定坐标 [910,670] 实测点不中/时机过早）
+    // 点击后进入"快速完成"确认界面
+    // next 放两个：先试"行动力判定"（有道具才命中），没命中就直奔"行动次数确定"
+    "点击快速完成": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [700, 600, 400, 120],
+                "expected": ["快速完成"]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1200,
+            "threshold": 0.85
+        },
+        "next": ["行动力判定", "行动次数确定"]
+    },
+
+
+    // ============================================================
+    // 快速完成界面流程（步骤 5~8）
+    // 截图：assets/resource/image/当期活动/快速完成.png
+    // ============================================================
+
+    // ---------- 步骤 5a：行动力判定（可选节点） ----------
+    // 在消耗品区 [454,189,608,165] 找"时"（如"1小时"道具）
+    // 命中则点其【下方 70px】：target_offset [0,70,0,0]
+    //   例：时 在 [512,209,5,4] → 点击 [512,279,5,4] 的中心 (514, 281)
+    // 没命中 → 自动跳到 next 列表里的"行动次数确定"
+    "行动力判定": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [454, 189, 608, 165],
+                "expected": ["时"]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target_offset": [0, 70, 0, 0]
+            }
+        },
+        "post_wait_freezes": {
+            "time": 800,
+            "threshold": 0.85
+        },
+        "next": ["行动次数确定"]
+    },
+
+
+    // ---------- 步骤 5b：行动次数确定 ----------
+    // 原生 _SweepMax 范式：先 OCR「快速完成次数」确认弹窗，再点滑块「最大」端 (955,457) 直达体力上限（左端 569=最小）
+    "行动次数确定": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [640, 365, 240, 40],
+                "expected": ["快速完成次数"]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [955, 457, 1, 1]
+            }
+        },
+        "post_wait_freezes": {
+            "time": 800,
+            "threshold": 0.85
+        },
+        "next": ["点击出发"]
+    },
+
+
+    // ---------- 步骤 6：点"出发"执行快速完成 ----------
+    "点击出发": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [740, 480, 400, 165],
+                "expected": ["出发"]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1500,
+            "threshold": 0.85
+        },
+        "next": ["~等待快速完成结果"]
+    },
+
+
+    // ---------- 步骤 7a：等待结算界面出现 ----------
+    // 全界面找"快速完成结果"，最多等 60s（timeout 单位 ms）
+    "~等待快速完成结果": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "expected": ["快速完成结果"]
+            }
+        },
+        "timeout": 60000,
+        "next": ["点击确定"]
+    },
+
+
+    // ---------- 步骤 7b：点"确定/确认退出"返回关卡详情界面 ----------
+    // 右下角识别确认按钮。注意：不同活动/版本的结果屏按钮可能是"确定"或"确认退出"，
+    // 两者都要认；否则若按钮是"确认退出"，OCR "确定"匹配不上且本节点无 timeout → 永久卡死。
+    "点击确定": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [940, 600, 340, 120],
+                "expected": ["确定", "确认退出"]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1200,
+            "threshold": 0.85
+        },
+        "next": ["退出关卡详情页"]
+    },
+
+
+    // ---------- 步骤 8a：第一下 —— 退出关卡详情页 ----------
+    // 点"确定"后回到关卡详情页，需先退出该详情页，回到上一层。
+    // 左上角 [11,2,413,84] 内模板匹配 当期活动/主界面图标.png（36×30）
+    "退出关卡详情页": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [11, 2, 413, 84],
+                "template": "当期活动/主界面图标.png",
+                "threshold": 0.85
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1200,
+            "threshold": 0.85
+        },
+        "next": ["返回主界面"]
+    },
+
+
+    // ---------- 步骤 8b：第二下 —— 真正返回主界面 ----------
+    // 同位置（左上角同一区域）再点一次，从上一层返回主界面。
+    // 若实测第二下匹配不到（界面左上角图标不同），把本节点改成
+    // DirectHit + 固定坐标即可：{"recognition":"DirectHit","roi":[x,y,1,1]}
+    "返回主界面": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [11, 2, 413, 84],
+                "template": "当期活动/主界面图标.png",
+                "threshold": 0.85
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1200,
+            "threshold": 0.85
+        },
+        "next": []
+    },
+
+    "无往日行动调令结束": {
+        "recognition": "DirectHit",
+        "roi": [
+            0,
+            0,
+            1,
+            1
+        ],
+        "next": []
+    },
+
+    "设置往期活动战斗次数": {
+        "recognition": "DirectHit",
+        "roi": [
+            0,
+            0,
+            1,
+            1
+        ],
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "设置往期活动战斗次数"
+            }
+        },
+        "next": [
+            "点击出发",
+            "无往日行动调令结束"
+        ]
+    }
+}

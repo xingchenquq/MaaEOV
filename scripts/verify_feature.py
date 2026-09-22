@@ -12,6 +12,8 @@
    （仅针对明确指向推图节点的 override；其它项目的节点在 Tasks.json，跳过）。
 8. 全部 pipeline 文件解析、跨文件合并后的 **next 死链检测**、切图存在性、
    custom_action/recognition 注册、interface 任务 entry 存在性，以及「点击确定」防卡死修复状态。
+9. **跨文件同名节点检测（硬性失败）**：MaaFw 合并时后者静默覆盖前者，会丢逻辑，
+   故「每节点全局唯一定义」是拆分规范，出现同名即判 FAIL。
 """
 import json
 import os
@@ -211,18 +213,20 @@ for fn, d in pipelines.items():
     print(f"  [OK] {fn} 解析成功，节点数 = {len(d)}")
 print(f"  合并后节点总数（去重）= {len(all_nodes)}")
 
-# 跨文件同名节点：MaaFw 会合并，后者覆盖前者（多为有意复用/覆盖，列出来供确认）
+# 跨文件同名节点：MaaFw 合并时后者静默覆盖前者 → 逻辑会被无声抹掉，属致命问题。
+# 采用「每节点全局只定义一次」的拆分规范后，这里必须为 0；否则判为失败。
 dups = {}
 for fn, d in pipelines.items():
     for n in d:
         dups.setdefault(n, []).append(fn)
 conflicts = {n: fs for n, fs in dups.items() if len(fs) > 1}
 if conflicts:
-    print(f"  [INFO] 跨文件同名节点 {len(conflicts)} 个（后者覆盖前者，请确认是否符合预期）")
-    for n, fs in list(conflicts.items())[:8]:
+    ok = False
+    print(f"  [FAIL] 跨文件同名节点 {len(conflicts)} 个（后者会静默覆盖前者，导致逻辑丢失；必须消除重复定义）")
+    for n, fs in conflicts.items():
         print(f"         {n} <- {fs}")
 else:
-    print("  [OK] 无跨文件同名节点冲突")
+    print("  [OK] 无跨文件同名节点冲突（每节点全局唯一定义）")
 
 # 6e interface.json 每个任务的 entry 是否都能在合并节点集中找到
 entry_missing = []

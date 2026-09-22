@@ -98,7 +98,6 @@
       "entry": "#Supplies",
       "option": [
         "领取活动货柜奖励",
-        "胶卷兑换",
         "银心奖章-银锡信息数据",
         "银心奖章-外部招聘书",
         "银心奖章-急务招聘书",
@@ -931,26 +930,6 @@
           "name": "No",
           "pipeline_override": {
             "EventSupplies": {
-              "enabled": false
-            }
-          }
-        }
-      ]
-    },
-    "胶卷兑换": {
-      "cases": [
-        {
-          "name": "Yes",
-          "pipeline_override": {
-            "FilmRedeem": {
-              "enabled": true
-            }
-          }
-        },
-        {
-          "name": "No",
-          "pipeline_override": {
-            "FilmRedeem": {
               "enabled": false
             }
           }

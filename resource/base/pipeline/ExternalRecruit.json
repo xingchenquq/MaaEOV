@@ -1,0 +1,431 @@
+{
+    // ============================================================
+    // ExternalRecruit.json
+    // 功能：外部招募
+    // 入口节点：#ExternalRecruit
+    // 说明：进行外部招募。
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 20
+    // 依赖 Shared.json 节点数 = 6（示例：_Cancel, _ConfirmMiddle, _ConfrimReconnect, _NavigateHomepage, _ServerMaintenance, ~Homepage）
+    // ============================================================
+
+    // Recruit
+    "~Recruit": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    223,
+                    181,
+                    1057,
+                    493
+                ],
+                "expected": [
+                    "招募规则"
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    },
+
+    "~ExternalRecruit": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    325,
+                    322,
+                    290,
+                    153
+                ],
+                "expected": [
+                    "外部招募"
+                ]
+            }
+        }
+    },
+
+    // Cancel External Recruit Start
+    "_CancelExternalRecruitPopup": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    524,
+                    177,
+                    231,
+                    137
+                ],
+                "expected": [
+                    "启动招募",
+                    "加速完成"
+                ]
+            }
+        },
+        "next": [
+            "_Cancel"
+        ]
+    },
+
+    // Recruit
+    // Confirm Recruit Result
+    "_RecruitResult": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    223,
+                    457,
+                    158,
+                    160
+                ],
+                "template": [
+                    "Recruit/RecruitResultR.png",
+                    "Recruit/RecruitResultG.png",
+                    "Recruit/RecruitResultB.png"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.75
+        }
+    },
+
+    // Recruit =========================================
+    // Navigate to Recruit Page
+    "_NavigateRecruit": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    223,
+                    181,
+                    1057,
+                    493
+                ],
+                "expected": [
+                    "招募规则"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~Recruit",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_RecruitFromHome",
+            "[JumpBack]_NavigateHomepage"
+        ]
+    },
+
+    "_RecruitFromHome": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    750,
+                    58,
+                    530,
+                    578
+                ],
+                "template": [
+                    "Homepage/Recruit_default.png",
+                    "Homepage/Recruit_compact.png"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.8
+        }
+    },
+
+    "_RecruitTail": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    223,
+                    181,
+                    1057,
+                    493
+                ],
+                "expected": [
+                    "招募规则"
+                ]
+            }
+        },
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    127,
+                    683,
+                    1,
+                    1
+                ],
+                "end": [
+                    127,
+                    163,
+                    1,
+                    1
+                ],
+                "duration": 500,
+                "end_hold": 200
+            }
+        }
+    },
+
+    // Navigate to External Recruit Tab
+    "_NavigateExternalRecruit": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    325,
+                    322,
+                    290,
+                    153
+                ],
+                "expected": [
+                    "外部招募"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~ExternalRecruit",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_CancelExternalRecruitPopup",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_FindExternalRecruitFromRecruit",
+            "[JumpBack]_NavigateRecruit"
+        ]
+    },
+
+    "_FindExternalRecruitFromRecruit": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    223,
+                    181,
+                    1057,
+                    493
+                ],
+                "expected": [
+                    "招募规则"
+                ]
+            }
+        },
+        "next": [
+            "~ExternalRecruit",
+            "_ExternalRecruitFromRecruit",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_CancelExternalRecruitPopup",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_RecruitTail",
+            "[JumpBack]_NavigateRecruit"
+        ]
+    },
+
+    "_ExternalRecruitFromRecruit": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    36,
+                    106,
+                    182,
+                    614
+                ],
+                "template": "Recruit/ExternalRecruit.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // ---------- 任务入口：#ExternalRecruit（外部招募） ----------
+
+    // External Recruit ================================
+    // Entry
+    "#ExternalRecruit": {
+        "next": [
+            "ExternalRecruit"
+        ]
+    },
+
+    // Logic
+    "ExternalRecruit": {
+        "next": [
+            "ManageExternalRecruit",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateExternalRecruit"
+        ]
+    },
+
+    "ManageExternalRecruit": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    325,
+                    322,
+                    290,
+                    153
+                ],
+                "expected": [
+                    "外部招募"
+                ]
+            }
+        },
+        "next": [
+            "ExternalRecruitOutofOffer",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_RecruitResult",
+            "[JumpBack]ExternalRecruitMax",
+            "[JumpBack]ExternalRecruitProceed",
+            "[JumpBack]ExternalRecruitAcc",
+            "ExternalRecruitQueueFull",
+            "[JumpBack]_NavigateExternalRecruit"
+        ]
+    },
+
+    // End
+    "ExternalRecruitOutofOffer": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    929,
+                    112,
+                    186,
+                    125
+                ],
+                "expected": "道具不足"
+            }
+        },
+        "next": [
+            "_NavigateHomepage",
+            "~Homepage"
+        ]
+    },
+
+    "ExternalRecruitQueueFull": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    906,
+                    475,
+                    202,
+                    137
+                ],
+                "expected": [
+                    "任务已满"
+                ]
+            }
+        },
+        "next": [
+            "_NavigateHomepage",
+            "~Homepage"
+        ]
+    },
+
+    // Proceed
+    "WaitExternalRecruitResult": {
+        "post_delay": 1000,
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.75
+        }
+    },
+
+    "ExternalRecruitProceed": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    903,
+                    477,
+                    198,
+                    135
+                ],
+                "expected": [
+                    "启动招募",
+                    "招募成功"
+                ]
+            }
+        },
+        "action": "Click",
+        "next": [
+            "WaitExternalRecruitResult"
+        ]
+    },
+
+    "ExternalRecruitMax": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    755,
+                    302,
+                    148,
+                    143
+                ],
+                "template": "Recruit/ExternalRecruitMax.png"
+            }
+        },
+        "action": "Click",
+        "next": [
+            "ConfirmExternalRecruit"
+        ]
+    },
+
+    "ConfirmExternalRecruit": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    771,
+                    479,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "ExternalRecruitOutofOffer",
+            "WaitExternalRecruitResult"
+        ]
+    },
+
+    // Optional
+    "ExternalRecruitAcc": {
+        // "enabled": false,
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    709,
+                    480,
+                    136,
+                    140
+                ],
+                "template": "Recruit/Accelerate.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    }
+}

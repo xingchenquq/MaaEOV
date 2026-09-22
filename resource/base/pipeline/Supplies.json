@@ -1,0 +1,1266 @@
+{
+    // ============================================================
+    // Supplies.json
+    // 功能：补给站
+    // 入口节点：#Supplies
+    // 说明：领取每日礼包，活动货柜中的可领取项目，胶卷兑换银心奖章，自动购买部分银心奖章商店、紫心奖章商店的商品。
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 55
+    // 依赖 Shared.json 节点数 = 6（示例：_Cancel, _Cancel4, _ConfirmMiddle, _ConfrimReconnect, _NavigateHomepage, _ServerMaintenance）
+    // ============================================================
+
+    // Supplies
+    "~Supplies": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    65,
+                    331,
+                    655
+                ],
+                "template": "Supplies/AtSupplies.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~ReinforcementSupplies": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    220,
+                    40,
+                    188,
+                    125
+                ],
+                "expected": [
+                    "资源礼包"
+                ]
+            }
+        }
+    },
+
+    "~EventSupplies": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    220,
+                    40,
+                    188,
+                    125
+                ],
+                "expected": [
+                    "当期热卖",
+                    "活动货品"
+                ]
+            }
+        }
+    },
+
+    "~MeritRedeem": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    228,
+                    36,
+                    189,
+                    132
+                ],
+                "expected": [
+                    "银心奖章"
+                ]
+            }
+        }
+    },
+
+    "~SilverMedal": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    180,
+                    29,
+                    268,
+                    145
+                ],
+                "template": "Supplies/AtSilverMedal.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~VioletMedal": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    697,
+                    28,
+                    269,
+                    148
+                ],
+                "template": "Supplies/AtVioletMedal.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    // Supplies ========================================
+    // Navigate to Supplies
+    "_NavigateSupplies": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    65,
+                    331,
+                    655
+                ],
+                "template": "Supplies/AtSupplies.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~Supplies",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_SuppliesFromHome",
+            "[JumpBack]_NavigateHomepage"
+        ]
+    },
+
+    "_SuppliesFromHome": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    750,
+                    58,
+                    530,
+                    578
+                ],
+                "template": [
+                    "Homepage/Supplies_default.png",
+                    "Homepage/Supplies_compact.png"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_delay": 500,
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.8
+        }
+    },
+
+    // Navigate to Reinforcement
+    "_NavigateReinforcementSupplies": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    220,
+                    40,
+                    188,
+                    125
+                ],
+                "expected": [
+                    "资源礼包"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~ReinforcementSupplies",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_ReinforcementSuppliesFromSupplies",
+            "[JumpBack]_NavigateSupplies"
+        ]
+    },
+
+    "_ReinforcementSuppliesFromSupplies": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    76,
+                    141,
+                    129,
+                    528
+                ],
+                "expected": [
+                    "支援货柜"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to Event Supplies
+    "_NavigateEventSupplies": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    220,
+                    40,
+                    188,
+                    125
+                ],
+                "expected": [
+                    "当期热卖",
+                    "活动货品"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~EventSupplies",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_EventSuppliesFromSupplies",
+            "[JumpBack]_NavigateSupplies"
+        ]
+    },
+
+    "_EventSuppliesFromSupplies": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    76,
+                    141,
+                    129,
+                    528
+                ],
+                "expected": [
+                    "活动货柜"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to Merit Redeem
+    "_NavigateMeritRedeem": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    228,
+                    36,
+                    189,
+                    132
+                ],
+                "expected": [
+                    "银心奖章"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~MeritRedeem",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_MeritRedeemFromSupplies",
+            "[JumpBack]_NavigateSupplies"
+        ]
+    },
+
+    "_MeritRedeemFromSupplies": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    76,
+                    141,
+                    129,
+                    528
+                ],
+                "expected": [
+                    "嘉奖兑换",
+                    "嘉奖兌换"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to Silver Medal Redeem
+    "_NavigateSilverMedal": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    180,
+                    29,
+                    268,
+                    145
+                ],
+                "template": "Supplies/AtSilverMedal.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~SilverMedal",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_SilverMedalFromMeritRedeem",
+            "[JumpBack]_NavigateMeritRedeem"
+        ]
+    },
+
+    "_SilverMedalFromMeritRedeem": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    180,
+                    29,
+                    268,
+                    145
+                ],
+                "template": "Supplies/SilverMedal.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_SilverMedalTail": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    180,
+                    29,
+                    268,
+                    145
+                ],
+                "template": "Supplies/AtSilverMedal.png"
+            }
+        },
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    1270,
+                    360,
+                    1,
+                    1
+                ],
+                "end": [
+                    240,
+                    360,
+                    1,
+                    1
+                ],
+                "duration": 500,
+                "end_hold": 200
+            }
+        }
+    },
+
+    // Navigate to Violet Medal Redeem
+    "_NavigateVioletMedal": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    697,
+                    28,
+                    269,
+                    148
+                ],
+                "template": "Supplies/AtVioletMedal.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~VioletMedal",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_VioletMedalFromMeritRedeem",
+            "[JumpBack]_NavigateMeritRedeem"
+        ]
+    },
+
+    "_VioletMedalFromMeritRedeem": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    697,
+                    28,
+                    269,
+                    148
+                ],
+                "template": "Supplies/VioletMedal.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "_VioletMedalTail": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    697,
+                    28,
+                    269,
+                    148
+                ],
+                "template": "Supplies/AtVioletMedal.png"
+            }
+        },
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    1270,
+                    360,
+                    1,
+                    1
+                ],
+                "end": [
+                    240,
+                    360,
+                    1,
+                    1
+                ],
+                "duration": 500,
+                "end_hold": 200
+            }
+        }
+    },
+
+    // ---------- 任务入口：#Supplies（补给站） ----------
+
+    // Supplies ========================================
+    // Entry
+    "#Supplies": {
+        "next": [
+            "Supplies"
+        ]
+    },
+
+    // Logic
+    "Supplies": {
+        "next": [
+            "DailyGiftCollected",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]DailyGift",
+            "[JumpBack]_NavigateReinforcementSupplies"
+        ]
+    },
+
+    "DailyGift": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    220,
+                    40,
+                    188,
+                    125
+                ],
+                "expected": [
+                    "资源礼包"
+                ]
+            }
+        },
+        "next": [
+            "CollectDailyGift",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]DailyGift",
+            "[JumpBack]_NavigateReinforcementSupplies"
+        ]
+    },
+
+    "CollectDailyGift": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    234,
+                    142,
+                    1045,
+                    496
+                ],
+                "expected": [
+                    "^可领取"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "DailyGiftCollected": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    234,
+                    142,
+                    1045,
+                    496
+                ],
+                "expected": [
+                    "明日可领取"
+                ]
+            }
+        },
+        "next": [
+            "EventSupplies",
+            "SilverMedalRedeemRecord",
+            "SilverMedalRedeemOffer",
+            "SilverMedalRedeemAcc",
+            "VioletMedalRedeemRecord"
+        ]
+    },
+
+    // Optional
+    "EventSupplies": {
+        // "enabled": false,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    36,
+                    348,
+                    201,
+                    131
+                ],
+                "expected": [
+                    "活动货柜"
+                ]
+            }
+        },
+        "next": [
+            "FindEventGift",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_NavigateEventSupplies"
+        ]
+    },
+
+    "FindEventGift": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    220,
+                    40,
+                    188,
+                    125
+                ],
+                "expected": [
+                    "当期热卖",
+                    "活动货品"
+                ]
+            }
+        },
+        "next": [
+            "NoEventGift",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]CollectEventGift",
+            "[JumpBack]_NavigateEventSupplies"
+        ]
+    },
+
+    "CollectEventGift": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    234,
+                    142,
+                    1045,
+                    496
+                ],
+                "expected": [
+                    "^可领取"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "NoEventGift": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    234,
+                    142,
+                    1045,
+                    496
+                ],
+                "expected": [
+                    "^可领取"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "SilverMedalRedeemRecord",
+            "SilverMedalRedeemOffer",
+            "SilverMedalRedeemAcc",
+            "VioletMedalRedeemRecord"
+        ]
+    },
+
+    "SilverMedalRedeemRecord": {
+        // "enabled": false,
+        "next": [
+            "SilverMedalRedeemRecordOutOfMedal",
+            "SilverMedalRedeemRecordComplete",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]SilverMedalRedeemRecordMax",
+            "[JumpBack]SilverMedalRedeemRecordFound",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_SilverMedalTail",
+            "[JumpBack]_NavigateSilverMedal"
+        ]
+    },
+
+    "SilverMedalRedeemRecordComplete": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    876,
+                    151,
+                    230,
+                    125
+                ],
+                "expected": [
+                    "剩余购买次数0"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    652,
+                    512,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "SilverMedalRedeemOffer",
+            "SilverMedalRedeemAcc",
+            "VioletMedalRedeemRecord"
+        ]
+    },
+
+    "SilverMedalRedeemRecordOutOfMedal": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    868,
+                    95,
+                    142,
+                    300
+                ],
+                "template": "Utils/Tips.png"
+            }
+        },
+        "next": [
+            "SilverMedalRedeemOffer",
+            "SilverMedalRedeemAcc",
+            "VioletMedalRedeemRecord"
+        ]
+    },
+
+    "SilverMedalRedeemRecordFound": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    234,
+                    142,
+                    1045,
+                    496
+                ],
+                "expected": [
+                    "银锡信息数据"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "SilverMedalRedeemRecordMax": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    480,
+                    135,
+                    289,
+                    138
+                ],
+                "expected": [
+                    "银锡信息数据"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1016,
+                    395,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "SilverMedalRedeemRecordConfirm",
+            "SilverMedalRedeemRecord",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_NavigateSilverMedal"
+        ]
+    },
+
+    "SilverMedalRedeemRecordConfirm": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    480,
+                    135,
+                    289,
+                    138
+                ],
+                "expected": [
+                    "银锡信息数据"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    941,
+                    512,
+                    1,
+                    1
+                ]
+            }
+        }
+    },
+
+    "SilverMedalRedeemOffer": {
+        // "enabled": false,
+        "next": [
+            "SilverMedalRedeemOfferOutOfMedal",
+            "SilverMedalRedeemOfferComplete",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]SilverMedalRedeemOfferMax",
+            "[JumpBack]SilverMedalRedeemOfferFound",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_SilverMedalTail",
+            "[JumpBack]_NavigateSilverMedal"
+        ]
+    },
+
+    "SilverMedalRedeemOfferComplete": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    876,
+                    151,
+                    230,
+                    125
+                ],
+                "expected": [
+                    "剩余购买次数0"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    652,
+                    512,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "SilverMedalRedeemAcc",
+            "VioletMedalRedeemRecord"
+        ]
+    },
+
+    "SilverMedalRedeemOfferOutOfMedal": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    868,
+                    95,
+                    142,
+                    300
+                ],
+                "template": "Utils/Tips.png"
+            }
+        },
+        "next": [
+            "SilverMedalRedeemAcc",
+            "VioletMedalRedeemRecord"
+        ]
+    },
+
+    "SilverMedalRedeemOfferFound": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    234,
+                    142,
+                    1045,
+                    496
+                ],
+                "expected": [
+                    "外部招聘书"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "SilverMedalRedeemOfferMax": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    481,
+                    134,
+                    260,
+                    141
+                ],
+                "expected": [
+                    "外部招聘书"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1016,
+                    395,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "SilverMedalRedeemOfferConfirm",
+            "SilverMedalRedeemOffer",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_NavigateSilverMedal"
+        ]
+    },
+
+    "SilverMedalRedeemOfferConfirm": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    481,
+                    134,
+                    260,
+                    141
+                ],
+                "expected": [
+                    "外部招聘书"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    941,
+                    512,
+                    1,
+                    1
+                ]
+            }
+        }
+    },
+
+    "SilverMedalRedeemAcc": {
+        // "enabled": false,
+        "next": [
+            "SilverMedalRedeemAccOutOfMedal",
+            "SilverMedalRedeemAccComplete",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]SilverMedalRedeemAccMax",
+            "[JumpBack]SilverMedalRedeemAccFound",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_SilverMedalTail",
+            "[JumpBack]_NavigateSilverMedal"
+        ]
+    },
+
+    "SilverMedalRedeemAccComplete": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    876,
+                    151,
+                    230,
+                    125
+                ],
+                "expected": [
+                    "剩余购买次数0"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    652,
+                    512,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "VioletMedalRedeemRecord"
+        ]
+    },
+
+    "SilverMedalRedeemAccOutOfMedal": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    868,
+                    95,
+                    142,
+                    300
+                ],
+                "template": "Utils/Tips.png"
+            }
+        },
+        "next": [
+            "VioletMedalRedeemRecord"
+        ]
+    },
+
+    "SilverMedalRedeemAccFound": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    234,
+                    142,
+                    1045,
+                    496
+                ],
+                "expected": [
+                    "急务招聘书"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "SilverMedalRedeemAccMax": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    481,
+                    134,
+                    260,
+                    141
+                ],
+                "expected": [
+                    "急务招聘书"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1016,
+                    395,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "SilverMedalRedeemAccConfirm",
+            "SilverMedalRedeemAcc",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_NavigateSilverMedal"
+        ]
+    },
+
+    "SilverMedalRedeemAccConfirm": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    481,
+                    134,
+                    260,
+                    141
+                ],
+                "expected": [
+                    "急务招聘书"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    941,
+                    512,
+                    1,
+                    1
+                ]
+            }
+        }
+    },
+
+    "VioletMedalRedeemRecord": {
+        // "enabled": false,
+        "next": [
+            "VioletMedalRedeemRecordAtVioletMedal",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_NavigateVioletMedal"
+        ]
+    },
+
+    "VioletMedalRedeemRecordAtVioletMedal": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    697,
+                    28,
+                    269,
+                    148
+                ],
+                "template": "Supplies/AtVioletMedal.png"
+            }
+        },
+        "next": [
+            "VioletMedalRedeemRecordOutOfMedal",
+            "VioletMedalRedeemRecordComplete",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]VioletMedalRedeemRecordMax",
+            "[JumpBack]VioletMedalRedeemRecordFound",
+            "[JumpBack]_Cancel4",
+            "[JumpBack]_VioletMedalTail",
+            "[JumpBack]_NavigateVioletMedal"
+        ]
+    },
+
+    "VioletMedalRedeemRecordComplete": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    876,
+                    151,
+                    230,
+                    125
+                ],
+                "expected": [
+                    "剩余购买次数0"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    652,
+                    512,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    },
+
+    "VioletMedalRedeemRecordOutOfMedal": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    868,
+                    95,
+                    142,
+                    300
+                ],
+                "template": "Utils/Tips.png"
+            }
+        }
+    },
+
+    "VioletMedalRedeemRecordFound": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    234,
+                    142,
+                    1045,
+                    496
+                ],
+                "expected": [
+                    "银锡信息数据"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    "VioletMedalRedeemRecordMax": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    480,
+                    135,
+                    289,
+                    138
+                ],
+                "expected": [
+                    "银锡信息数据"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1016,
+                    395,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "VioletMedalRedeemRecordConfirm",
+            "VioletMedalRedeemRecord",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_VioletMedalTail",
+            "[JumpBack]_NavigateVioletMedal"
+        ]
+    },
+
+    "VioletMedalRedeemRecordConfirm": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    480,
+                    135,
+                    289,
+                    138
+                ],
+                "expected": [
+                    "银锡信息数据"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    941,
+                    512,
+                    1,
+                    1
+                ]
+            }
+        }
+    }
+}

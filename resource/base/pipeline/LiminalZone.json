@@ -1,0 +1,302 @@
+{
+    // ============================================================
+    // LiminalZone.json
+    // 功能：每周-阈限禁区
+    // 入口节点：#LiminalZone
+    // 说明：进行每周的阈限禁区扫荡，直到达到黑胶上限（480/480），已达上限则跳过。 [color:red]目标关卡需通关过一次开放扫荡。[/color]
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 15
+    // 依赖 Shared.json 节点数 = 15（示例：ConfirmUseStaminaItem, FarmSelectLevel, _Cancel, _ConfirmMiddle, _ConfrimReconnect, _LevelUp）
+    // ============================================================
+
+    "~ReceptionRoom": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    47,
+                    42,
+                    173,
+                    131
+                ],
+                "expected": [
+                    "会客间"
+                ]
+            }
+        }
+    },
+
+    "_CancelLiminalZoneOverflow": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    222,
+                    225,
+                    834,
+                    136
+                ],
+                "expected": [
+                    "进行探索",
+                    "回收物"
+                ]
+            }
+        },
+        "next": [
+            "_Cancel"
+        ],
+        "post_wait_freezes": 1000
+    },
+
+    // Handle Liminal Zone Result
+    "_ConfirmLiminalZoneResult": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    121,
+                    31,
+                    454,
+                    192
+                ],
+                "expected": [
+                    "探索"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_delay": 2000
+    },
+
+    // Navigate to BCR -> LiminalZone -> ReceptionRoom
+    "_NavigateReceptionRoom": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    47,
+                    42,
+                    173,
+                    131
+                ],
+                "expected": [
+                    "会客间"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~ReceptionRoom",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_ReceptionRoomFromLiminalZone",
+            "[JumpBack]_LiminalZoneHead",
+            "[JumpBack]_NavigateLiminalZone"
+        ]
+    },
+
+    "_ReceptionRoomFromLiminalZone": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1,
+                    217,
+                    1279,
+                    157
+                ],
+                "expected": [
+                    "会客间"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 2000
+    },
+
+    // ---------- 任务入口：#LiminalZone（每周-阈限禁区） ----------
+
+    // Weekly Liminal Zone =============================
+    // Entry
+    "#LiminalZone": {
+        "next": [
+            "LiminalZone"
+        ]
+    },
+
+    // Logic
+    "LiminalZone": {
+        "next": [
+            "LiminalZoneCompletedFromSystem",
+            "LiminalZoneFromSystem",
+            "[JumpBack]_NavigateSystem"
+        ]
+    },
+
+    "LiminalZoneFromSystem": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    559,
+                    149,
+                    149
+                ],
+                "template": "SystemPage/Settings.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    337,
+                    362,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "SelectLevelFromLiminalZone",
+            "[JumpBack]_NavigateLiminalZone"
+        ]
+    },
+
+    "SelectLevelFromLiminalZone": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    45,
+                    81,
+                    147,
+                    144
+                ],
+                "template": "BCR/AtLiminalZone.png"
+            }
+        },
+        "next": [
+            "~LiminalZoneNA",
+            "LiminalZoneFromLevel",
+            "[JumpBack]LiminalZoneSelectLevel"
+        ]
+    },
+
+    "LiminalZoneFromLevel": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    804,
+                    591,
+                    273,
+                    129
+                ],
+                "expected": [
+                    "扫荡",
+                    "扫汤"
+                ]
+            }
+        },
+        "next": [
+            "_CancelLiminalZoneOverflow",
+            "LiminalZoneCompletedFromLevel",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmLiminalZoneResult",
+            "[JumpBack]LiminalZoneOutOfStamina",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SweepMax",
+            "[JumpBack]_SweepFromLevel",
+            "[JumpBack]FarmSelectLevel"
+        ]
+    },
+
+    // Option
+    "LiminalZoneSelectLevel": {
+        "next": [
+            "_NavigateObsoleteNexus"
+        ]
+    },
+
+    // Success
+    "LiminalZoneCompletedFromSystem": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    199,
+                    312,
+                    223,
+                    128
+                ],
+                "expected": [
+                    "480/480"
+                ]
+            }
+        }
+    },
+
+    "LiminalZoneCompletedFromLevel": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    92,
+                    620,
+                    225,
+                    100
+                ],
+                "expected": [
+                    "480/480"
+                ]
+            }
+        }
+    },
+
+    // Exception
+    "LiminalZoneOutOfStamina": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    452,
+                    12,
+                    207,
+                    125
+                ],
+                "expected": [
+                    "下次恢复时间"
+                ]
+            }
+        },
+        "next": [
+            "LiminalZoneUseStaminaItem",
+            "_StopTask"
+        ]
+    },
+
+    "LiminalZoneUseStaminaItem": {
+        // "enabled": false,
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    566,
+                    482,
+                    127,
+                    128
+                ],
+                "template": "BCR/StaminaItemInc.png"
+            }
+        },
+        "action": "Click",
+        "next": [
+            "ConfirmUseStaminaItem"
+        ]
+    }
+}

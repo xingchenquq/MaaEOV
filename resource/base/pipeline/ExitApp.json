@@ -1,0 +1,40 @@
+{
+    // ============================================================
+    // ExitApp.json
+    // 功能：退出应用
+    // 入口节点：#ExitApp
+    // 说明：直接终止 MaaEOV（MFA）应用进程并退出整个程序。
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 2
+    // ============================================================
+
+    // ---------- 任务入口：#ExitApp（退出应用） ----------
+
+    // ExitApp ========================================
+    // 退出 MaaEOV 应用（MFA 进程）
+    // Entry
+    "#ExitApp": {
+        "next": [
+            "_ExitApp"
+        ]
+    },
+
+    // 动作：终止 MaaEOV / MFA 宿主进程及其进程树
+    "_ExitApp": {
+        "recognition": "DirectHit",
+        "roi": [
+            0,
+            0,
+            1,
+            1
+        ],
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ExitApplication",
+                "custom_action_param": "{\"exe_names\": [\"MaaEOV.exe\"], \"kill_parent_tree\": true}"
+            }
+        },
+        "next": []
+    }
+}

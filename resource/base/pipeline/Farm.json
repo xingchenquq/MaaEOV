@@ -1,0 +1,161 @@
+{
+    // ============================================================
+    // Farm.json
+    // 功能：清体力
+    // 入口节点：#Farm
+    // 说明：进行日常的副本刷取，在指定关卡清空全部体力。 [color:red]如目标关卡为危机行动关卡，会一并消耗危机行动调令。[/color]
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 7
+    // 依赖 Shared.json 节点数 = 14（示例：ConfirmUseStaminaItem, FarmSelectLevel, _Confirm, _ConfirmSweepResult, _ConfrimReconnect, _False）
+    // ============================================================
+
+    // Handle Liminal Zone Overflow Confirmation
+    "_ConfirmLiminalZoneOverflow": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    222,
+                    225,
+                    834,
+                    136
+                ],
+                "expected": [
+                    "进行探索",
+                    "回收物"
+                ]
+            }
+        },
+        "next": [
+            "_Confirm"
+        ],
+        "post_wait_freezes": 1000
+    },
+
+    // ---------- 任务入口：#Farm（清体力） ----------
+
+    // Daily Farm ======================================
+    // Entry
+    "#Farm": {
+        "next": [
+            "Farm"
+        ]
+    },
+
+    // Logic
+    "Farm": {
+        "next": [
+            "SelectLevelFromBCR",
+            "[JumpBack]_NavigateBCR"
+        ]
+    },
+
+    "SelectLevelFromBCR": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1080,
+                    607,
+                    200,
+                    113
+                ],
+                "expected": [
+                    "主线故事"
+                ]
+            }
+        },
+        "next": [
+            "~LevelNA",
+            "~LiminalZoneNA",
+            "FarmFromLevel",
+            "[JumpBack]FarmSelectLevel"
+        ]
+    },
+
+    "FarmFromLevel": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    804,
+                    591,
+                    273,
+                    129
+                ],
+                "expected": [
+                    "扫荡",
+                    "扫汤",
+                    "快速完成"
+                ]
+            }
+        },
+        "next": [
+            "_False",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmSweepResult",
+            "[JumpBack]_ConfirmLiminalZoneOverflow",
+            "[JumpBack]FarmOutOfStamina",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]_SweepMax",
+            "[JumpBack]_SweepFromLevel",
+            "[JumpBack]FarmSelectLevel"
+        ]
+    },
+
+    // Exception
+    "FarmOutOfStamina": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    452,
+                    12,
+                    207,
+                    125
+                ],
+                "expected": [
+                    "下次恢复时间"
+                ]
+            }
+        },
+        "next": [
+            "FarmUseExpiringItem",
+            "_StopTask"
+        ]
+    },
+
+    // Optional
+    "FarmUseExpiringItem": {
+        // "enabled": false,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    539,
+                    320,
+                    166,
+                    128
+                ],
+                "expected": [
+                    "小时"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    628,
+                    545,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "ConfirmUseStaminaItem"
+        ]
+    }
+}

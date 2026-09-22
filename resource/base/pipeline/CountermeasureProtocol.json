@@ -1,0 +1,491 @@
+{
+    // ============================================================
+    // CountermeasureProtocol.json
+    // 功能：领取应对协议
+    // 入口节点：#CountermeasureProtocol
+    // 说明：交付应对协议任务并领取奖励。
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 23
+    // 依赖 Shared.json 节点数 = 5（示例：_ConfirmMiddle, _ConfrimReconnect, _NavigateHomepage, _ServerMaintenance, _StopTask）
+    // ============================================================
+
+    // Countermeasure Protocol
+    "~Protocol": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    382,
+                    0,
+                    180,
+                    130
+                ],
+                "expected": [
+                    "协议"
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    },
+
+    "~ProtocolMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    559,
+                    139,
+                    181,
+                    126
+                ],
+                "expected": [
+                    "任务"
+                ]
+            }
+        }
+    },
+
+    "~ProtocolWeekly": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    556,
+                    135,
+                    186,
+                    134
+                ],
+                "template": "Protocol/AtProtocolWeekly.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~ProtocolSpecial": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    927,
+                    135,
+                    184,
+                    133
+                ],
+                "template": "Protocol/AtProtocolSpecial.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~ProtocolReward": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    414,
+                    172,
+                    172,
+                    195
+                ],
+                "template": "Protocol/AtProtocolReward.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    // Countermeasure Protocol =========================
+    // Navigate to Protocol Page
+    "_NavigateProtocol": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    382,
+                    0,
+                    180,
+                    130
+                ],
+                "expected": [
+                    "协议"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~Protocol",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_FindProtocolFromHome",
+            "[JumpBack]_NavigateHomepage"
+        ]
+    },
+
+    "_FindProtocolFromHome": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    32,
+                    562,
+                    137,
+                    145
+                ],
+                "template": "Homepage/SystemButton.png",
+                "threshold": 0.8
+            }
+        },
+        "next": [
+            "_ProtocolNA",
+            "_ProtocolFromHome"
+        ]
+    },
+
+    "_ProtocolFromHome": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    45,
+                    278,
+                    538
+                ],
+                "template": "Homepage/Protocol.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.8
+        }
+    },
+
+    "_ProtocolNA": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    45,
+                    278,
+                    538
+                ],
+                "template": "Homepage/Protocol.png"
+            }
+        },
+        "inverse": true,
+        "next": [
+            "_StopTask"
+        ]
+    },
+
+    // Navigate to Protocol Mission Tab
+    "_NavigateProtocolMission": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    559,
+                    139,
+                    181,
+                    126
+                ],
+                "expected": [
+                    "任务"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~ProtocolMission",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_MissionFromProtocol",
+            "[JumpBack]_NavigateProtocol"
+        ]
+    },
+
+    "_MissionFromProtocol": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    66,
+                    284,
+                    148,
+                    141
+                ],
+                "expected": [
+                    "任务"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to Protocol Weekly Mission Tab
+    "_NavigateProtocolWeekly": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    556,
+                    135,
+                    186,
+                    134
+                ],
+                "template": "Protocol/AtProtocolWeekly.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~ProtocolWeekly",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_WeeklyFromProtocolMission",
+            "[JumpBack]_NavigateProtocolMission"
+        ]
+    },
+
+    "_WeeklyFromProtocolMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    556,
+                    135,
+                    186,
+                    134
+                ],
+                "template": "Protocol/ProtocolWeekly.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to Protocol Special Mission Tab
+    "_NavigateProtocolSpecial": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    927,
+                    135,
+                    184,
+                    133
+                ],
+                "template": "Protocol/AtProtocolSpecial.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~ProtocolSpecial",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_SpecialFromProtocolMission",
+            "[JumpBack]_NavigateProtocolMission"
+        ]
+    },
+
+    "_SpecialFromProtocolMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    927,
+                    135,
+                    184,
+                    133
+                ],
+                "template": "Protocol/ProtocolSpecial.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to Protocol Reward Tab
+    "_NavigateProtocolReward": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    414,
+                    172,
+                    172,
+                    195
+                ],
+                "template": "Protocol/AtProtocolReward.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~ProtocolReward",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_RewardFromProtocol",
+            "[JumpBack]_NavigateProtocol"
+        ]
+    },
+
+    "_RewardFromProtocol": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    65,
+                    203,
+                    148,
+                    134
+                ],
+                "expected": "奖励"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // ---------- 任务入口：#CountermeasureProtocol（领取应对协议） ----------
+
+    // Countermeasure Protocol =========================
+    // Entry
+    "#CountermeasureProtocol": {
+        "next": [
+            "CountermeasureProtocol"
+        ]
+    },
+
+    // Logic
+    "CountermeasureProtocol": {
+        "next": [
+            "ProtocolFullLevel",
+            "CollectProtocolWeekly",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateProtocolWeekly"
+        ]
+    },
+
+    "ProtocolFullLevel": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    550,
+                    65,
+                    171,
+                    133
+                ],
+                "expected": [
+                    "已满级"
+                ]
+            }
+        },
+        "next": [
+            "_StopTask"
+        ]
+    },
+
+    "CollectProtocolWeekly": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    556,
+                    135,
+                    186,
+                    134
+                ],
+                "template": "Protocol/AtProtocolWeekly.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1103,
+                    640,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "CollectProtocolSpecial",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateProtocolSpecial"
+        ]
+    },
+
+    "CollectProtocolSpecial": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    927,
+                    135,
+                    184,
+                    133
+                ],
+                "template": "Protocol/AtProtocolSpecial.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1103,
+                    640,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "CollectProtocolReward",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateProtocolReward"
+        ]
+    },
+
+    "CollectProtocolReward": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    414,
+                    172,
+                    172,
+                    195
+                ],
+                "template": "Protocol/AtProtocolReward.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1103,
+                    640,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    }
+}

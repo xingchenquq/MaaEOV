@@ -1,0 +1,199 @@
+{
+    // ============================================================
+    // DailyStaminaBonus.json
+    // 功能：活动-每日行动补给
+    // 入口节点：#DailyStaminaBonus
+    // 说明：领取“每日行动补给”活动赠送的体力，找不到该活动（活动未开放）时会跳过。
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 9
+    // 依赖 Shared.json 节点数 = 4（示例：_ConfirmMiddle, _ConfrimReconnect, _NavigateEvent, _ServerMaintenance）
+    // ============================================================
+
+    "~DailyStaminaBonus": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    419,
+                    24,
+                    446,
+                    170
+                ],
+                "expected": [
+                    "每日行动"
+                ]
+            }
+        }
+    },
+
+    // Stamina Bonus
+    "_NavigateStaminaBonus": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    419,
+                    24,
+                    446,
+                    170
+                ],
+                "expected": [
+                    "每日行动"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~DailyStaminaBonus",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_StaminaBonusFromEvent",
+            "[JumpBack]_DailyStaminaBonusNA",
+            "[JumpBack]_NavigateEvent"
+        ]
+    },
+
+    // Daily Stamina Bonus Event Not Exist
+    "_DailyStaminaBonusNA": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    94,
+                    87,
+                    198,
+                    131
+                ],
+                "expected": [
+                    "每日签到"
+                ]
+            }
+        },
+        "next": [
+            "_DailyStaminaBonusNAFromEvent"
+        ]
+    },
+
+    "_DailyStaminaBonusNAFromEvent": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    88,
+                    112,
+                    182,
+                    542
+                ],
+                "expected": [
+                    "领取体力"
+                ]
+            }
+        },
+        "inverse": true,
+        "action": "StopTask"
+    },
+
+    "_StaminaBonusFromEvent": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    88,
+                    112,
+                    182,
+                    542
+                ],
+                "expected": [
+                    "领取体力"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // ---------- 任务入口：#DailyStaminaBonus（活动-每日行动补给） ----------
+
+    // Collect Daily Stamina Bonus =====================
+    // Entry
+    "#DailyStaminaBonus": {
+        "next": [
+            "DailyStaminaBonus"
+        ]
+    },
+
+    // Logic
+    "DailyStaminaBonus": {
+        "next": [
+            "CollectStaminaBonusNoon",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateStaminaBonus"
+        ]
+    },
+
+    "CollectStaminaBonusNoon": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    419,
+                    24,
+                    446,
+                    170
+                ],
+                "expected": [
+                    "每日行动"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    431,
+                    584,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "CollectStaminaBonusEvening",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateStaminaBonus"
+        ]
+    },
+
+    "CollectStaminaBonusEvening": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    419,
+                    24,
+                    446,
+                    170
+                ],
+                "expected": [
+                    "每日行动"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    708,
+                    582,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    }
+}

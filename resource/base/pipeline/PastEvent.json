@@ -1,0 +1,847 @@
+{
+    // ============================================================
+    // PastEvent.json
+    // 功能：往期活动
+    // 入口节点：#往期活动
+    // 说明：自动扫荡往期活动（复刻）关卡。
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 37
+    // 依赖 Shared.json 节点数 = 4（示例：_ConfrimReconnect, _NavigateHomepage, _ServerMaintenance, 点击快速完成）
+    // ============================================================
+
+
+    // =================================================
+    // ---------- 往期活动（整合自 MaaEOV1 v1.0） ----------
+    "~已切换到往期活动": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    47,
+                    65,
+                    484,
+                    89
+                ],
+                "template": "往期活动/往期活动标志.png",
+                "threshold": 0.85
+            }
+        },
+        "next": [
+            "进入往期活动内部流程"
+        ]
+    },
+
+    "退出往期活动失败": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    11,
+                    2,
+                    413,
+                    84
+                ],
+                "template": "当期活动/主界面图标.png",
+                "threshold": 0.85
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1200,
+            "threshold": 0.85
+        },
+        "next": [
+            "返回主界面_往期活动失败"
+        ]
+    },
+
+    "选择往期活动": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    147,
+                    1280,
+                    442
+                ],
+                "template": "往期活动/在月光之下.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.85
+        },
+        "next": [
+            "进入该往期活动事件"
+        ]
+    },
+
+    "~已切换到往期活动_重试2": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    47,
+                    65,
+                    484,
+                    89
+                ],
+                "template": "往期活动/往期活动标志.png",
+                "threshold": 0.85
+            }
+        },
+        "next": [
+            "进入往期活动内部流程"
+        ]
+    },
+
+    "选择新手": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    945,
+                    366,
+                    210,
+                    211
+                ],
+                "template": "往期活动/校园大玩家新手.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1200,
+            "threshold": 0.85
+        },
+        "next": [
+            "选择大玩家关卡",
+            "进入该往期活动事件_未适配"
+        ]
+    },
+
+    "进入该往期活动事件": {
+        "recognition": "DirectHit",
+        "roi": [
+            0,
+            0,
+            1,
+            1
+        ],
+        "next": [
+            "进入该往期活动事件_未适配"
+        ]
+    },
+
+    "~识别往日行动调令": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    351,
+                    92,
+                    173,
+                    48
+                ],
+                "expected": [
+                    "[0-6]"
+                ]
+            }
+        },
+        "next": [
+            "记录往日行动调令数",
+            "选择往期活动",
+            "往左滑动"
+        ]
+    },
+
+    "选择往期活动_重试2": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    147,
+                    1280,
+                    442
+                ],
+                "template": "往期活动/在月光之下.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.85
+        },
+        "next": [
+            "进入该往期活动事件"
+        ]
+    },
+
+    "选择大玩家关卡": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "往期活动/校园大玩家SR12.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 3000,
+            "threshold": 0.85
+        },
+        "next": [
+            "点击快速完成",
+            "进入该往期活动事件_未适配"
+        ]
+    },
+
+    "进入该往期活动事件_未适配": {
+        "recognition": "DirectHit",
+        "roi": [
+            0,
+            0,
+            1,
+            1
+        ],
+        "next": []
+    },
+
+    "选择公馆之夜": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    930,
+                    330,
+                    320,
+                    165
+                ],
+                "template": "往期活动/处理时间奇物的三项建议公馆之夜.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1200,
+            "threshold": 0.85
+        },
+        "next": [
+            "选择奇物关卡",
+            "进入该往期活动事件_未适配"
+        ]
+    },
+
+    "选择迷城之下": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1061,
+                    345,
+                    199,
+                    309
+                ],
+                "template": "往期活动/在月光之下迷城之下.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1200,
+            "threshold": 0.85
+        },
+        "next": [
+            "选择月光关卡",
+            "进入该往期活动事件_未适配"
+        ]
+    },
+
+    "选择回忆录关卡": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "往期活动/写给昨日的回忆录MY205.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 3000,
+            "threshold": 0.85
+        },
+        "next": [
+            "点击快速完成",
+            "进入该往期活动事件_未适配"
+        ]
+    },
+
+    "往左滑动3": {
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    1270,
+                    368,
+                    1,
+                    1
+                ],
+                "end": [
+                    630,
+                    368,
+                    1,
+                    1
+                ],
+                "duration": 500,
+                "end_hold": 200
+            }
+        },
+        "post_wait_freezes": {
+            "time": 800,
+            "threshold": 0.85
+        },
+        "next": [
+            "选择往期活动_重试4",
+            "退出往期活动失败"
+        ]
+    },
+
+    "选择回忆重现": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    857,
+                    423,
+                    356,
+                    162
+                ],
+                "template": "往期活动/写给昨日的回忆录回忆重现.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1200,
+            "threshold": 0.85
+        },
+        "next": [
+            "选择回忆录关卡",
+            "进入该往期活动事件_未适配"
+        ]
+    },
+
+    "选择笑笑关卡": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    469,
+                    390,
+                    147,
+                    191
+                ],
+                "template": "往期活动/笑笑小剧场FV104.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 3000,
+            "threshold": 0.85
+        },
+        "next": [
+            "点击快速完成",
+            "进入该往期活动事件_未适配"
+        ]
+    },
+
+    "选择谜案回首关卡": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "往期活动/谜案回首GB112.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 3000,
+            "threshold": 0.85
+        },
+        "next": [
+            "点击快速完成",
+            "进入该往期活动事件_未适配"
+        ]
+    },
+
+    "点击往期活动_重试3": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    421,
+                    0,
+                    859,
+                    154
+                ],
+                "template": "往期活动/往期活动.png",
+                "threshold": 0.85
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 800,
+            "threshold": 0.85
+        },
+        "next": [
+            "~已切换到往期活动_重试3",
+            "退出往期活动失败"
+        ]
+    },
+
+    "选择往期活动_重试4": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    147,
+                    1280,
+                    442
+                ],
+                "template": "往期活动/在月光之下.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.85
+        },
+        "next": [
+            "进入该往期活动事件"
+        ]
+    },
+
+    "选择囚徒关卡": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "往期活动/囚徒困境PD110.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 3000,
+            "threshold": 0.85
+        },
+        "next": [
+            "点击快速完成",
+            "进入该往期活动事件_未适配"
+        ]
+    },
+
+    "点击往期活动": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    421,
+                    0,
+                    859,
+                    154
+                ],
+                "template": "往期活动/往期活动.png",
+                "threshold": 0.85
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 800,
+            "threshold": 0.85
+        },
+        "next": [
+            "~已切换到往期活动",
+            "点击往期活动_重试2"
+        ]
+    },
+
+    "~调令为零": {
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "调令为零"
+            }
+        },
+        "next": [
+            "退出往期活动失败"
+        ]
+    },
+
+    "进入作战": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    850,
+                    300,
+                    360,
+                    200
+                ],
+                "expected": [
+                    "作战"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.85
+        },
+        "next": [
+            "点击往期活动"
+        ]
+    },
+
+    "选择首演": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1080,
+                    470,
+                    200,
+                    230
+                ],
+                "template": "往期活动/谜案回首首演.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1200,
+            "threshold": 0.85
+        },
+        "next": [
+            "选择谜案回首关卡",
+            "进入该往期活动事件_未适配"
+        ]
+    },
+
+    "往左滑动2": {
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    1270,
+                    368,
+                    1,
+                    1
+                ],
+                "end": [
+                    630,
+                    368,
+                    1,
+                    1
+                ],
+                "duration": 500,
+                "end_hold": 200
+            }
+        },
+        "post_wait_freezes": {
+            "time": 800,
+            "threshold": 0.85
+        },
+        "next": [
+            "选择往期活动_重试3",
+            "往左滑动3"
+        ]
+    },
+
+    "进入往期活动内部流程": {
+        "recognition": "DirectHit",
+        "roi": [
+            0,
+            0,
+            1,
+            1
+        ],
+        "next": [
+            "~识别往日行动调令",
+            "选择往期活动",
+            "往左滑动"
+        ]
+    },
+
+    "选择奇物关卡": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "往期活动/处理时间奇物的三项建议TB112.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 3000,
+            "threshold": 0.85
+        },
+        "next": [
+            "点击快速完成",
+            "进入该往期活动事件_未适配"
+        ]
+    },
+
+    "往左滑动": {
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    1270,
+                    368,
+                    1,
+                    1
+                ],
+                "end": [
+                    630,
+                    368,
+                    1,
+                    1
+                ],
+                "duration": 500,
+                "end_hold": 200
+            }
+        },
+        "post_wait_freezes": {
+            "time": 800,
+            "threshold": 0.85
+        },
+        "next": [
+            "选择往期活动_重试2",
+            "往左滑动2"
+        ]
+    },
+
+    "选择月光关卡": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    0,
+                    1280,
+                    720
+                ],
+                "template": "往期活动/在月光之下IM112.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 3000,
+            "threshold": 0.85
+        },
+        "next": [
+            "点击快速完成",
+            "进入该往期活动事件_未适配"
+        ]
+    },
+
+    "选择往期活动_重试3": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    147,
+                    1280,
+                    442
+                ],
+                "template": "往期活动/在月光之下.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.85
+        },
+        "next": [
+            "进入该往期活动事件"
+        ]
+    },
+
+    // ---------- 任务入口：#往期活动（往期活动） ----------
+
+    "#往期活动": {
+        "next": ["往期活动"]
+    },
+
+
+    // ---------- 逻辑入口：开始时先返回主界面（若不在主界面），再从主界面进入 ----------
+    // 仿照其它任务（如 DailyStaminaBonus）：先尝试直接走流程，若当前不在主界面，
+    // 则依次处理服务器维护 / 重连弹窗，最后 [JumpBack]_NavigateHomepage 回主界面；
+    // 之后仍从主界面按原有步骤进入往期活动。
+    "往期活动": {
+        "next": [
+            "进入作战",
+            "点击往期活动",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateHomepage"
+        ]
+    },
+
+    "选择困境迷途": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    831,
+                    428,
+                    213,
+                    260
+                ],
+                "template": "往期活动/囚徒困境困境迷途.png",
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1200,
+            "threshold": 0.85
+        },
+        "next": [
+            "选择囚徒关卡",
+            "进入该往期活动事件_未适配"
+        ]
+    },
+
+    "记录往日行动调令数": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    351,
+                    92,
+                    173,
+                    48
+                ],
+                "expected": []
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "记录往日行动调令数"
+            }
+        },
+        "next": [
+            "~调令为零",
+            "选择往期活动"
+        ]
+    },
+
+    "点击往期活动_重试2": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    421,
+                    0,
+                    859,
+                    154
+                ],
+                "template": "往期活动/往期活动.png",
+                "threshold": 0.85
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 800,
+            "threshold": 0.85
+        },
+        "next": [
+            "~已切换到往期活动_重试2",
+            "点击往期活动_重试3"
+        ]
+    },
+
+    "~已切换到往期活动_重试3": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    47,
+                    65,
+                    484,
+                    89
+                ],
+                "template": "往期活动/往期活动标志.png",
+                "threshold": 0.85
+            }
+        },
+        "next": [
+            "进入往期活动内部流程"
+        ]
+    },
+
+    "返回主界面_往期活动失败": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    11,
+                    2,
+                    413,
+                    84
+                ],
+                "template": "当期活动/主界面图标.png",
+                "threshold": 0.85
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1200,
+            "threshold": 0.85
+        },
+        "next": []
+    }
+}

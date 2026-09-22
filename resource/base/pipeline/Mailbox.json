@@ -1,0 +1,111 @@
+{
+    // ============================================================
+    // Mailbox.json
+    // 功能：领取邮件
+    // 入口节点：#Mailbox
+    // 说明：领取全部邮件。
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 6
+    // 依赖 Shared.json 节点数 = 4（示例：_ConfirmMiddle, _ConfrimReconnect, _NavigateHomepage, _ServerMaintenance）
+    // ============================================================
+
+    // Mailbox
+    "~Mailbox": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    55,
+                    586,
+                    229,
+                    132
+                ],
+                "template": "Mailbox/CollectMail.png"
+            }
+        },
+        "post_wait_freezes": 1000
+    },
+
+    // Mailbox =========================================
+    // Navigate to Mailbox
+    "_NavigateMailbox": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    55,
+                    586,
+                    229,
+                    132
+                ],
+                "template": "Mailbox/CollectMail.png"
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~Mailbox",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_MailboxFromHome",
+            "[JumpBack]_NavigateHomepage"
+        ]
+    },
+
+    "_MailboxFromHome": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    331,
+                    616,
+                    62,
+                    61
+                ],
+                "template": "Homepage/Mailbox.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "threshold": 0.8
+        }
+    },
+
+    // ---------- 任务入口：#Mailbox（领取邮件） ----------
+
+    // Mailbox =========================================
+    // Entry
+    "#Mailbox": {
+        "next": [
+            "Mailbox"
+        ]
+    },
+
+    // Logic
+    "Mailbox": {
+        "next": [
+            "CollectMail",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateMailbox"
+        ]
+    },
+
+    "CollectMail": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    55,
+                    586,
+                    229,
+                    132
+                ],
+                "template": "Mailbox/CollectMail.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    }
+}

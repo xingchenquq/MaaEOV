@@ -1,0 +1,153 @@
+{
+    // ============================================================
+    // CrisisMissionTickets.json
+    // 功能：危机行动调令
+    // 入口节点：#CrisisMissionTickets
+    // 说明：消耗全部危机行动调令，如危机行动调令为0，则跳过。
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 8
+    // 依赖 Shared.json 节点数 = 10（示例：_ConfirmSweepResult, _ConfrimReconnect, _LevelUp, _NavigateBCR, _NavigateS502, _ServerMaintenance）
+    // ============================================================
+
+    "_SweepMin": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    148,
+                    176,
+                    308,
+                    292
+                ],
+                "template": "BCR/AtSweep.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    569,
+                    457,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "_SweepConfirm",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmSweepResult"
+        ]
+    },
+
+    // ---------- 任务入口：#CrisisMissionTickets（危机行动调令） ----------
+
+    // Crisis Mission Tickets ==========================
+    // Entry
+    "#CrisisMissionTickets": {
+        "next": [
+            "CrisisMissionTickets"
+        ]
+    },
+
+    // Logic
+    "CrisisMissionTickets": {
+        "next": [
+            "CrisisMissionTicketsFromBCR",
+            "[JumpBack]_NavigateBCR"
+        ]
+    },
+
+    "CrisisMissionTicketsFromBCR": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1080,
+                    607,
+                    200,
+                    113
+                ],
+                "expected": [
+                    "主线故事"
+                ]
+            }
+        },
+        "next": [
+            "~LevelNA",
+            "CrisisMissionTicketsFromLevel",
+            "[JumpBack]CrisisMissionTicketsSelectLevel"
+        ]
+    },
+
+    "CrisisMissionTicketsFromLevel": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    804,
+                    591,
+                    273,
+                    129
+                ],
+                "expected": [
+                    "快速完成"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsCompletedFromLevel",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmSweepResult",
+            "[JumpBack]_LevelUp",
+            "[JumpBack]CrisisMissonTicketsSweepStrategy",
+            "[JumpBack]_SweepFromLevel",
+            "[JumpBack]CrisisMissionTicketsSelectLevel"
+        ]
+    },
+
+    // Option
+    "CrisisMissionTicketsSelectLevel": {
+        "next": [
+            "_NavigateS502"
+        ]
+    },
+
+    "CrisisMissonTicketsSweepStrategy": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    148,
+                    176,
+                    308,
+                    292
+                ],
+                "template": "BCR/AtSweep.png"
+            }
+        },
+        "next": [
+            "_SweepMin",
+            "_SweepMax"
+        ]
+    },
+
+    // Success
+    "CrisisMissionTicketsCompletedFromLevel": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1161,
+                    0,
+                    119,
+                    92
+                ],
+                "expected": [
+                    "^0"
+                ]
+            }
+        }
+    }
+}

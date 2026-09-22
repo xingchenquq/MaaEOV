@@ -1,0 +1,343 @@
+{
+    // ============================================================
+    // UrbanPatrol.json
+    // 功能：市区巡逻
+    // 入口节点：#UrbanPatrol
+    // 说明：自动赠送、领取解读点数，并尝试购买全部奖励。
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 14
+    // 依赖 Shared.json 节点数 = 7（示例：_CloseMutualAid, _ConfirmMiddle, _ConfrimReconnect, _False, _NavigateMission, _ServerMaintenance）
+    // ============================================================
+
+    "~UrbanPatrol": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1053,
+                    0,
+                    219,
+                    136
+                ],
+                "template": "Mission/AtUrbanPatrol.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~MutualAid": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    59,
+                    47,
+                    248,
+                    134
+                ],
+                "template": "Mission/AtMutualAid.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    // Navigate to Urban Patrol
+    "_NavigateUrbanPatrol": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1053,
+                    0,
+                    219,
+                    136
+                ],
+                "template": "Mission/AtUrbanPatrol.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~UrbanPatrol",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_CloseMutualAid",
+            "[JumpBack]_UrbanPatrolFromMission",
+            "[JumpBack]_NavigateMission"
+        ]
+    },
+
+    "_UrbanPatrolFromMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1053,
+                    0,
+                    214,
+                    133
+                ],
+                "template": "Mission/UrbanPatrol.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to Mutual Aid
+    "_NavigateMutualAid": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    59,
+                    47,
+                    248,
+                    134
+                ],
+                "template": "Mission/AtMutualAid.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~MutualAid",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_MutualAidFromUrbanPatrol",
+            "[JumpBack]_NavigateUrbanPatrol"
+        ]
+    },
+
+    "_MutualAidFromUrbanPatrol": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    922,
+                    596,
+                    237,
+                    124
+                ],
+                "template": "Mission/MutualAid.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // ---------- 任务入口：#UrbanPatrol（市区巡逻） ----------
+
+    // Urban Patrol ====================================
+    // Entry
+    "#UrbanPatrol": {
+        "next": [
+            "UrbanPatrol",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateUrbanPatrol"
+        ]
+    },
+
+    // Logic
+    "UrbanPatrol": {
+        "next": [
+            "DailyCollabPtsCollected",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]CollectDailyCollabPts",
+            "[JumpBack]_NavigateUrbanPatrol"
+        ]
+    },
+
+    "CollectDailyCollabPts": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1053,
+                    0,
+                    219,
+                    136
+                ],
+                "template": "Mission/AtUrbanPatrol.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1133,
+                    577,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "_ConfirmMiddle"
+        ]
+    },
+
+    "DailyCollabPtsCollected": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1052,
+                    516,
+                    166,
+                    124
+                ],
+                "expected": "已"
+            }
+        },
+        "next": [
+            "_False",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]SelectAllFriends",
+            "[JumpBack]_NavigateMutualAid"
+        ]
+    },
+
+    "SelectAllFriends": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    59,
+                    47,
+                    248,
+                    134
+                ],
+                "template": "Mission/AtMutualAid.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    840,
+                    109,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "_False",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]SendCollabPts",
+            "[JumpBack]_NavigateMutualAid"
+        ]
+    },
+
+    "SendCollabPts": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    59,
+                    47,
+                    248,
+                    134
+                ],
+                "template": "Mission/AtMutualAid.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1081,
+                    205,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "_False",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]CollectCollabPts",
+            "[JumpBack]_NavigateMutualAid"
+        ]
+    },
+
+    "CollectCollabPts": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    59,
+                    47,
+                    248,
+                    134
+                ],
+                "template": "Mission/AtMutualAid.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1079,
+                    604,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "_False",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]UrbanPatrolPuchase",
+            "[JumpBack]_NavigateUrbanPatrol"
+        ]
+    },
+
+    "UrbanPatrolPuchase": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1053,
+                    0,
+                    219,
+                    136
+                ],
+                "template": "Mission/AtUrbanPatrol.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    241,
+                    522,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "_False",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_StopTask"
+        ]
+    }
+}

@@ -1,0 +1,155 @@
+{
+    // ============================================================
+    // ShortTermCheckIn.json
+    // 功能：活动-短期支援补贴
+    // 入口节点：#ShortTermCheckIn
+    // 说明：“短期支援补贴”自动签到，找不到该活动（活动未开放）时会跳过。
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 8
+    // 依赖 Shared.json 节点数 = 4（示例：_ConfirmMiddle, _ConfrimReconnect, _NavigateEvent, _ServerMaintenance）
+    // ============================================================
+
+    "~ShortTermCheckIn": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    254,
+                    377,
+                    396,
+                    190
+                ],
+                "expected": [
+                    "短期支援"
+                ]
+            }
+        }
+    },
+
+    // Short-Term Check-in
+    "_NavigateShortTermCheckIn": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    254,
+                    377,
+                    396,
+                    190
+                ],
+                "expected": [
+                    "短期支援"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~ShortTermCheckIn",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_ShortTermCheckInFromEvent",
+            "[JumpBack]_ShortTermCheckInNA",
+            "[JumpBack]_NavigateEvent"
+        ]
+    },
+
+    // Daily Stamina Bonus Event Not Exist
+    "_ShortTermCheckInNA": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    94,
+                    87,
+                    198,
+                    131
+                ],
+                "expected": [
+                    "每日签到"
+                ]
+            }
+        },
+        "next": [
+            "_ShortTermCheckInNAFromEvent"
+        ]
+    },
+
+    "_ShortTermCheckInNAFromEvent": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    88,
+                    112,
+                    182,
+                    542
+                ],
+                "expected": [
+                    "短期签到"
+                ]
+            }
+        },
+        "inverse": true,
+        "action": "StopTask"
+    },
+
+    "_ShortTermCheckInFromEvent": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    88,
+                    112,
+                    182,
+                    542
+                ],
+                "expected": [
+                    "短期签到"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // ---------- 任务入口：#ShortTermCheckIn（活动-短期支援补贴） ----------
+
+    // Collect Short-Term Check-in =====================
+    // Entry
+    "#ShortTermCheckIn": {
+        "next": [
+            "ShortTermCheckIn"
+        ]
+    },
+
+    // Logic
+    "ShortTermCheckIn": {
+        "next": [
+            "CollectShortTermCheckIn",
+            "~ShortTermCheckIn",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateShortTermCheckIn"
+        ]
+    },
+
+    "CollectShortTermCheckIn": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1035,
+                    117,
+                    179,
+                    547
+                ],
+                "expected": [
+                    "点击领取"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    }
+}

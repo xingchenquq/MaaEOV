@@ -1,0 +1,1187 @@
+{
+    // ============================================================
+    // TheRoom.json
+    // 功能：事务所（解读仪式）
+    // 入口节点：#TheRoom
+    // 说明：进行解读仪式，分解剩余护符（可选）。
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 48
+    // 依赖 Shared.json 节点数 = 10（示例：_BackButton, _Cancel, _Confirm, _ConfirmMiddle, _ConfrimReconnect, _Escape）
+    // ============================================================
+
+    "~Ritual": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    29,
+                    308,
+                    288
+                ],
+                "template": "TheRoom/AtRitual.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~RitualAgentSelect": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    187,
+                    0,
+                    197,
+                    129
+                ],
+                "expected": [
+                    "探员需求"
+                ]
+            }
+        }
+    },
+
+    "~RitualUseKeys": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    432,
+                    195,
+                    136,
+                    135
+                ],
+                "template": "TheRoom/AtUseKeys.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~TheRoomStorage": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    603,
+                    0,
+                    144,
+                    145
+                ],
+                "template": "TheRoom/AtStorage.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "_CancelExitTheRoom": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    502,
+                    223,
+                    267,
+                    142
+                ],
+                "expected": [
+                    "离开"
+                ]
+            }
+        },
+        "next": [
+            "_Cancel"
+        ],
+        "post_wait_freezes": {
+            "time": 500,
+            "threshold": 0.5
+        }
+    },
+
+    // Cancel Ritual Use Keys Popup
+    "_CancelKey2ArchivePieces": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    432,
+                    195,
+                    136,
+                    135
+                ],
+                "template": "TheRoom/AtUseKeys.png"
+            }
+        },
+        "next": [
+            "_Cancel"
+        ]
+    },
+
+    // Cancel Use Key for Agent Rest Acc
+    "_CancelKey2Agent": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    513,
+                    278,
+                    133,
+                    136
+                ],
+                "template": "TheRoom/Key2Agent.png"
+            }
+        },
+        "next": [
+            "_Cancel"
+        ]
+    },
+
+    // Close The Room -> Storage -> Sell Amulet Popup
+    "_CloseSellAmulet": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    530,
+                    166,
+                    217,
+                    137
+                ],
+                "expected": [
+                    "分解数量"
+                ]
+            }
+        },
+        "next": [
+            "_Cancel"
+        ]
+    },
+
+    // Overlay =========================================
+    // Close Reading Ritual Log
+    "_CloseMeditationLog": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    511,
+                    0,
+                    257,
+                    150
+                ],
+                "expected": [
+                    "冥",
+                    "想"
+                ]
+            }
+        },
+        "next": [
+            "_Escape"
+        ]
+    },
+
+    // Close Ritual Result Overlay
+    "_CloseRitualResult": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    46,
+                    43,
+                    361,
+                    172
+                ],
+                "expected": [
+                    "解读结果"
+                ]
+            }
+        },
+        "next": [
+            "_Escape"
+        ]
+    },
+
+    // Exit The Room -> Storage
+    "_ExitTheRoomStorage": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    603,
+                    0,
+                    144,
+                    145
+                ],
+                "template": "TheRoom/AtStorage.png"
+            }
+        },
+        "next": [
+            "_Cancel"
+        ]
+    },
+
+    // Exit The Room -> Reading Ritual
+    "_ExitRitual": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    29,
+                    308,
+                    288
+                ],
+                "template": "TheRoom/AtRitual.png"
+            }
+        },
+        "next": [
+            "_BackButton"
+        ]
+    },
+
+    // Exit The Room -> Reading Ritual -> Agent Selection Page
+    "_ExitRitualAgentSelect": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    187,
+                    0,
+                    197,
+                    129
+                ],
+                "expected": [
+                    "探员需求"
+                ]
+            }
+        },
+        "next": [
+            "_BackButton"
+        ]
+    },
+
+    // The Room ========================================
+    // Navigate to The Room
+    "_NavigateTheRoom": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1115,
+                    566,
+                    159,
+                    154
+                ],
+                "template": "TheRoom/Ritual.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "_EnsureTheRoom",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_CancelExitTheRoom",
+            "[JumpBack]_CancelKey2ArchivePieces",
+            "[JumpBack]_CancelKey2Agent",
+            "[JumpBack]_CloseSellAmulet",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_CloseMeditationLog",
+            "[JumpBack]_CloseRitualResult",
+            "[JumpBack]_ExitTheRoomStorage",
+            "[JumpBack]_ExitRitual",
+            "[JumpBack]_ExitRitualAgentSelect",
+            "[JumpBack]_Loading",
+            "[JumpBack]_TheRoomFromHome",
+            "[JumpBack]_NavigateHomepage"
+        ]
+    },
+
+    "_EnsureTheRoom": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1115,
+                    566,
+                    159,
+                    154
+                ],
+                "template": "TheRoom/Ritual.png"
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            // popup
+            "_ServerMaintenance",
+            "_ConfrimReconnect",
+            "_CancelExitTheRoom",
+            // overlay
+            "_CloseMeditationLog",
+            // at target
+            "~TheRoom",
+            // fallback
+            "_NavigateTheRoom"
+        ]
+    },
+
+    "_TheRoomFromHome": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    750,
+                    58,
+                    530,
+                    578
+                ],
+                "template": [
+                    "Homepage/TheRoom_default.png",
+                    "Homepage/TheRoom_compact.png"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 2000,
+            "threshold": 0.8
+        }
+    },
+
+    // Navigate to Reading Ritual
+    "_NavigateRitual": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    29,
+                    308,
+                    288
+                ],
+                "template": "TheRoom/AtRitual.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~Ritual",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_CancelExitTheRoom",
+            "[JumpBack]_CancelKey2ArchivePieces",
+            "[JumpBack]_CancelKey2Agent",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_CloseMeditationLog",
+            "[JumpBack]_CloseRitualResult",
+            "[JumpBack]_ExitRitualAgentSelect",
+            "[JumpBack]_RitualFromTheRoom",
+            "[JumpBack]_NavigateTheRoom"
+        ]
+    },
+
+    "_RitualFromTheRoom": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1115,
+                    566,
+                    159,
+                    154
+                ],
+                "template": "TheRoom/Ritual.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to Reading Ritual's Agent Selection Page
+    "_NavigateRitualSelectAgent": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    187,
+                    0,
+                    197,
+                    129
+                ],
+                "expected": [
+                    "探员需求"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~RitualAgentSelect",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_AgentSelectFromRitual",
+            "[JumpBack]_NavigateRitual"
+        ]
+    },
+
+    "_AgentSelectFromRitual": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    29,
+                    308,
+                    288
+                ],
+                "template": "TheRoom/AtRitual.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    420,
+                    207,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to Reading Ritual's Use Key Page
+    "_NavigateRitualUseKeys": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    879,
+                    584,
+                    247,
+                    135
+                ],
+                "expected": [
+                    "追加档案残片"
+                ]
+            }
+        },
+        "next": [
+            "~RitualUseKeys",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_UseKeysFromRitual",
+            "[JumpBack]_NavigateRitual"
+        ]
+    },
+
+    "_UseKeysFromRitual": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    879,
+                    584,
+                    247,
+                    135
+                ],
+                "expected": [
+                    "追加档案残片"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to The Room Storage
+    "_NavigateTheRoomStorage": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    603,
+                    0,
+                    144,
+                    145
+                ],
+                "template": "TheRoom/AtStorage.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~TheRoomStorage",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_CloseSellAmulet",
+            "[JumpBack]_CancelExitTheRoom",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_StorageFromTheRoom",
+            "[JumpBack]_NavigateTheRoom"
+        ]
+    },
+
+    "_StorageFromTheRoom": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    718,
+                    581,
+                    153,
+                    139
+                ],
+                "template": "TheRoom/Storage.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // ---------- 任务入口：#TheRoom（事务所（解读仪式）） ----------
+
+    // The Room ========================================
+    // Entry
+    "#TheRoom": {
+        "next": [
+            "Ritual"
+        ]
+    },
+
+    // Logic
+    "Ritual": {
+        "next": [
+            "RitualCompleted",
+            "RitualCompleted_NoKey2Archive",
+            "RitualCompleted_NoKey2Agent",
+            "RitualNoAmulet",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]Key2Agent",
+            "[JumpBack]RitualUseAllKeys",
+            "[JumpBack]Key2ArchivePieces",
+            "[JumpBack]_CloseRitualResult",
+            "[JumpBack]RitualRewardSelect",
+            "[JumpBack]NextRitual",
+            "[JumpBack]_NavigateRitual"
+        ]
+    },
+
+    // Ritual Proceed
+    "NextRitual": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    0,
+                    29,
+                    308,
+                    288
+                ],
+                "template": "TheRoom/AtRitual.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    420,
+                    207,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "RitualRewardSelect",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitualSelectAgent"
+        ]
+    },
+
+    // Option: Ritual Reward Select
+    "RitualRewardSelect": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    187,
+                    0,
+                    197,
+                    129
+                ],
+                "expected": [
+                    "探员需求"
+                ]
+            }
+        },
+        "next": [
+            "RitualRewardDust",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitualSelectAgent"
+        ]
+    },
+
+    // Fund
+    "RitualRewardFund": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    187,
+                    0,
+                    197,
+                    129
+                ],
+                "expected": [
+                    "探员需求"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1179,
+                    240,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "ConfirmRitual",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitualSelectAgent"
+        ]
+    },
+
+    // Tape
+    "RitualRewardTape": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    187,
+                    0,
+                    197,
+                    129
+                ],
+                "expected": [
+                    "探员需求"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1179,
+                    329,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "ConfirmRitual",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitualSelectAgent"
+        ]
+    },
+
+    // Star Dust
+    "RitualRewardDust": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    187,
+                    0,
+                    197,
+                    129
+                ],
+                "expected": [
+                    "探员需求"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1179,
+                    415,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "ConfirmRitual",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitualSelectAgent"
+        ]
+    },
+
+    // Sample
+    "RitualRewardSample": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    187,
+                    0,
+                    197,
+                    129
+                ],
+                "expected": [
+                    "探员需求"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1179,
+                    501,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "ConfirmRitual",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitualSelectAgent"
+        ]
+    },
+
+    "ConfirmRitual": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    187,
+                    0,
+                    197,
+                    129
+                ],
+                "expected": [
+                    "探员需求"
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    217,
+                    562,
+                    1,
+                    1
+                ]
+            }
+        }
+    },
+
+    // Optional
+    "Key2Agent": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    513,
+                    278,
+                    133,
+                    136
+                ],
+                "template": "TheRoom/Key2Agent.png"
+            }
+        },
+        "next": [
+            "Key2AgentOutOfKey",
+            "_Confirm"
+        ]
+    },
+
+    "Key2ArchivePieces": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    879,
+                    584,
+                    247,
+                    135
+                ],
+                "expected": [
+                    "追加档案残片"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000,
+        "next": [
+            "RitualUseAllKeys",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitual"
+        ]
+    },
+
+    "RitualUseAllKeys": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    432,
+                    195,
+                    136,
+                    135
+                ],
+                "template": "TheRoom/AtUseKeys.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    772,
+                    410,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "ConfirmRitualUseKeys",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateRitualUseKeys"
+        ]
+    },
+
+    "ConfirmRitualUseKeys": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    432,
+                    195,
+                    136,
+                    135
+                ],
+                "template": "TheRoom/AtUseKeys.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    806,
+                    509,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    },
+
+    // Success
+    "RitualCompleted": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    620,
+                    420,
+                    377,
+                    179
+                ],
+                "template": "TheRoom/RitualCompleted.png"
+            }
+        },
+        "next": [
+            "SellAmulet"
+        ]
+    },
+
+    "RitualCompleted_NoKey2Agent": {
+        "enabled": false,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    125,
+                    500,
+                    182,
+                    126
+                ],
+                "expected": [
+                    "加速"
+                ]
+            }
+        },
+        "next": [
+            "SellAmulet"
+        ]
+    },
+
+    "RitualCompleted_NoKey2Archive": {
+        "enabled": false,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    879,
+                    584,
+                    247,
+                    135
+                ],
+                "expected": [
+                    "追加档案残片"
+                ]
+            }
+        },
+        "next": [
+            "SellAmulet"
+        ]
+    },
+
+    // Exception
+    "RitualNoAmulet": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    123,
+                    500,
+                    185,
+                    127
+                ],
+                "expected": [
+                    "不足"
+                ]
+            }
+        },
+        "next": [
+            "SellAmulet"
+        ]
+    },
+
+    "Key2AgentOutOfKey": {
+        "recognition": {
+            "type": "ColorMatch",
+            "param": {
+                "roi": [
+                    604,
+                    330,
+                    72,
+                    28
+                ],
+                "lower": [
+                    120,
+                    58,
+                    58
+                ],
+                "upper": [
+                    120,
+                    58,
+                    58
+                ]
+            }
+        },
+        "next": [
+            "SellAmulet"
+        ]
+    },
+
+    // Optional
+    // Sell Out Amulets
+    "SellAmulet": {
+        // "enabled": false,
+        "next": [
+            "AmuletSoldOut",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]NextAmulet",
+            "[JumpBack]_NavigateTheRoomStorage"
+        ]
+    },
+
+    "AmuletSoldOut": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    721,
+                    0,
+                    180,
+                    136
+                ],
+                "expected": [
+                    "^0/"
+                ]
+            }
+        },
+        "next": [
+            "_NavigateTheRoom"
+        ]
+    },
+
+    "NextAmulet": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    603,
+                    0,
+                    144,
+                    145
+                ],
+                "template": "TheRoom/AtStorage.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    715,
+                    123,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "EnterSellAmulet",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateTheRoomStorage"
+        ]
+    },
+
+    "EnterSellAmulet": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    603,
+                    0,
+                    144,
+                    145
+                ],
+                "template": "TheRoom/AtStorage.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1040,
+                    691,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "SelectAmuletCount",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]NextAmulet",
+            "[JumpBack]_NavigateTheRoomStorage"
+        ]
+    },
+
+    "SelectAmuletCount": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    530,
+                    166,
+                    217,
+                    137
+                ],
+                "expected": [
+                    "分解数量"
+                ]
+            }
+        },
+        "pre_wait_freezes": 200,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1037,
+                    344,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "ConfirmSellAmulet",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]NextAmulet",
+            "[JumpBack]_NavigateTheRoomStorage"
+        ]
+    },
+
+    "ConfirmSellAmulet": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    530,
+                    166,
+                    217,
+                    137
+                ],
+                "expected": [
+                    "分解数量"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    787,
+                    461,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "_ConfirmMiddle"
+        ]
+    }
+}

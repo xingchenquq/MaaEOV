@@ -1,0 +1,211 @@
+{
+    // ============================================================
+    // CollectRewards.json
+    // 功能：领取任务奖励
+    // 入口节点：#CollectRewards
+    // 说明：领取日常任务、周常任务奖励。
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 10
+    // 依赖 Shared.json 节点数 = 5（示例：_CloseMutualAid, _ConfirmMiddle, _ConfrimReconnect, _NavigateMission, _ServerMaintenance）
+    // ============================================================
+
+    "~DailyMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    677,
+                    0,
+                    214,
+                    135
+                ],
+                "template": "Mission/AtDailyMission.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    "~WeeklyMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    867,
+                    0,
+                    209,
+                    131
+                ],
+                "template": "Mission/AtWeeklyMission.png",
+                "threshold": 0.8
+            }
+        }
+    },
+
+    // Navigate to Daily Mission Tab
+    "_NavigateDailyMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    677,
+                    0,
+                    214,
+                    135
+                ],
+                "template": "Mission/AtDailyMission.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~DailyMission",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_CloseMutualAid",
+            "[JumpBack]_DailyFromMission",
+            "[JumpBack]_NavigateMission"
+        ]
+    },
+
+    "_DailyFromMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    677,
+                    0,
+                    214,
+                    135
+                ],
+                "template": "Mission/DailyMission.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to Weekly Mission Tab
+    "_NavigateWeeklyMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    867,
+                    0,
+                    209,
+                    131
+                ],
+                "template": "Mission/AtWeeklyMission.png",
+                "threshold": 0.8
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~WeeklyMission",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_CloseMutualAid",
+            "[JumpBack]_WeeklyFromMission",
+            "[JumpBack]_NavigateMission"
+        ]
+    },
+
+    "_WeeklyFromMission": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    867,
+                    0,
+                    208,
+                    132
+                ],
+                "template": "Mission/WeeklyMission.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // ---------- 任务入口：#CollectRewards（领取任务奖励） ----------
+
+    // Collect Rewards =================================
+    // Entry
+    "#CollectRewards": {
+        "next": [
+            "DailyReward"
+        ]
+    },
+
+    // Logic
+    "DailyReward": {
+        "next": [
+            "CollectDailyReward",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateDailyMission"
+        ]
+    },
+
+    "CollectDailyReward": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    677,
+                    0,
+                    214,
+                    135
+                ],
+                "template": "Mission/AtDailyMission.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1151,
+                    669,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "CollectWeeklyReward",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_NavigateWeeklyMission"
+        ]
+    },
+
+    "CollectWeeklyReward": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    867,
+                    0,
+                    209,
+                    131
+                ],
+                "template": "Mission/AtWeeklyMission.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1151,
+                    669,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    }
+}

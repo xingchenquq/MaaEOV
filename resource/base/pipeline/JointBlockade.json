@@ -1,0 +1,258 @@
+{
+    // ============================================================
+    // JointBlockade.json
+    // 功能：联线封锁
+    // 入口节点：#JointBlockade
+    // 说明：进行联线封锁扫荡，直到达到奖章上限（108/108）或联线行动指令数量为0，已达上限则跳过。 [color:red]需通关一次当期联线封锁开放扫荡。[/color]
+    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 13
+    // 依赖 Shared.json 节点数 = 7（示例：_ConfirmMiddle, _ConfrimReconnect, _NavigateBCR, _NavigateSystem, _ServerMaintenance, _SweepConfirm）
+    // ============================================================
+
+    "~JointBlockade": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1120,
+                    0,
+                    146,
+                    132
+                ],
+                "template": "BCR/AtJointBlockade.png"
+            }
+        }
+    },
+
+    "~JointBlockadeNA": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    792,
+                    576,
+                    133,
+                    136
+                ],
+                "template": "BCR/JointBlockadeNA.png"
+            }
+        }
+    },
+
+    // Handle Joint Blockade Result
+    "_ConfirmJointBlockadeResult": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    110,
+                    34,
+                    461,
+                    199
+                ],
+                "expected": [
+                    "封锁完成",
+                    "终止探索"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_delay": 2000
+    },
+
+    // Navigate to Joint Blockade
+    "_NavigateJointBlockade": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1120,
+                    0,
+                    146,
+                    132
+                ],
+                "template": "BCR/AtJointBlockade.png"
+            }
+        },
+        "inverse": true,
+        "next": [
+            "~JointBlockade",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_JointBlockadeFromBCR",
+            "[JumpBack]_NavigateBCR"
+        ]
+    },
+
+    "_JointBlockadeFromBCR": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    152,
+                    612,
+                    187,
+                    108
+                ],
+                "expected": [
+                    "联线封锁"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000
+    },
+
+    // ---------- 任务入口：#JointBlockade（联线封锁） ----------
+
+    // Joint Blockade ==================================
+    // Entry
+    "#JointBlockade": {
+        "next": [
+            "JointBlockade"
+        ]
+    },
+
+    // Logic
+    "JointBlockade": {
+        "next": [
+            "JointBlockadeCompleteFromSystem",
+            "JointBlockadeFromSystem",
+            "[JumpBack]_NavigateSystem"
+        ]
+    },
+
+    "JointBlockadeFromSystem": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    458,
+                    189,
+                    128
+                ],
+                "expected": [
+                    "联线封锁"
+                ]
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000,
+        "next": [
+            "~JointBlockadeNA",
+            "JointBlockadeCompleteFromLevel",
+            "JointBlockadeTicketsCompleteFromLevel",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]ConfirmDiscardJointBlockadeUnfinishedGame",
+            "[JumpBack]_ConfirmJointBlockadeResult",
+            "[JumpBack]_SweepConfirm",
+            "[JumpBack]_SweepFromLevel",
+            "[JumpBack]JointBlockadeUnfinishedGame",
+            "[JumpBack]_NavigateJointBlockade"
+        ]
+    },
+
+    // Exception
+    "JointBlockadeUnfinishedGame": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    468,
+                    557,
+                    185,
+                    130
+                ],
+                "expected": [
+                    "中途放弃"
+                ]
+            }
+        },
+        "action": "StopTask",
+        "post_wait_freezes": 1000
+    },
+
+    "ConfirmDiscardJointBlockadeUnfinishedGame": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    498,
+                    184,
+                    288,
+                    136
+                ],
+                "expected": [
+                    "结束本次联线封锁"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    714,
+                    450,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    },
+
+    // Success
+    "JointBlockadeCompleteFromSystem": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    0,
+                    483,
+                    168,
+                    128
+                ],
+                "expected": [
+                    "108/108"
+                ]
+            }
+        }
+    },
+
+    "JointBlockadeCompleteFromLevel": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    106,
+                    554,
+                    218,
+                    135
+                ],
+                "expected": [
+                    "108/108"
+                ]
+            }
+        }
+    },
+
+    "JointBlockadeTicketsCompleteFromLevel": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1161,
+                    0,
+                    119,
+                    92
+                ],
+                "expected": [
+                    "^0"
+                ]
+            }
+        }
+    }
+}

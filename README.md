@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD033 MD041 -->
 <div align="center">
 
-<img alt="LOGO" src="https://github.com/user-attachments/assets/00326df5-dd8c-4c63-94ef-f1716555431a" width="256" height="256" />
+<img alt="LOGO" src="./Assets/logo.ico" width="256" height="256" />
 
 # MaaEOV
 
@@ -48,18 +48,17 @@
 
 ## 使用说明
 
-- [新手上路](./docs/zh_cn/manual/新手上路.md)(**使用前必看**)
-- [功能介绍](./docs/zh_cn/manual/功能介绍.md)
-- [MaaPiCli使用说明](./docs/zh_cn/manual/MaaPiCli.md)
-- [连接设置](./docs/zh_cn/manual/连接设置.md)
-<!-- - [常见问题](./docs/zh_cn/manual/常见问题.md) -->
-<!-- - [Mirror酱使用说明](./docs/zh_cn/manual/Mirror酱.md) -->
-
 >[!WARNING]
 >
 >在游戏的 **设置 → 画面** 中，请确保 **「低分辨率」选项处于关闭状态**。开启该选项会导致功能异常。
+
+>[!TIP]
 >
-><img alt="game_settings" src="https://github.com/user-attachments/assets/c7d95899-8c17-48c9-a6d7-c53f9da871fb" />
+>**首次使用 · 模拟器与退出设置**
+>
+>- **模拟器**：发布包**不含任何模拟器配置**（模拟器路径 / 端口因机器而异，硬编码会连错设备）。首次启动后在 GUI 的「连接设置」中选择你的模拟器；模拟器未运行时请先手动打开，GUI 会自动检测到设备。
+>- **多开端口**：MuMu 端口随实例号递增（0 号实例为 `127.0.0.1:16384`），请按实际实例填写。
+>- **跑完自动退出**：若希望任务全部结束后自动关闭 MaaEOV，请在 GUI 中把「任务完成后」设为 **关闭 MFA**。请勿用队列末尾的「退出应用」任务充当退出——**任一任务失败会中止整条队列**，末尾任务不会执行，程序也就不会退出。
 
 ## 功能列表
 
@@ -75,9 +74,14 @@
 - 补给站
 - 外部招募
 - 退出游戏
+- 退出应用
 - 活动-每日行动补给
 - 联线封锁
 - 活动-短期支援补贴
+- 当期活动
+- 往期活动
+- 自动推图
+- 认知海域（开发中）
 
 >[!NOTE]
 >认知海域 自动扫荡已实现初版（独立 pipeline 文件 `resource/base/pipeline/认知海域.json`，GUI 任务「认知海域」）。
