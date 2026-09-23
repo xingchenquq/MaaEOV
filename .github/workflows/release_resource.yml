@@ -1,19 +1,20 @@
 name: release_resource
 
-# 资源更新发布：打 tag（形如 v1.12）推送后，自动打包 MaaEOV-resource.zip
-# 并作为该 tag Release 的唯一 asset 上传。MFAAvalonia 会据此向用户推送资源更新。
+# ⚠️ 发布策略（2026-09 起）：目前只发【完整包】，不做增量（resource）更新。
+#   完整包含 MFA / agent / python 等二进制，且这些都在 .gitignore、CI 拿不到，
+#   因此完整包只能【本机构建】后用 curl 直连 GitHub uploads API 手动上传到 Release
+#   （见 skill: maaeov-release、docs/Agent启动失败排查.md）。
 #
-# 也可在 GitHub 网页 Actions -> release_resource -> Run workflow 手动指定 tag 触发。
+#   为避免本工作流在 push tag 时自动建 Release 并挂 MaaEOV-resource.zip（增量包），
+#   与「仅完整包」策略冲突、并干扰手动发布的完整包，**已移除 push tag 自动触发**。
+#   仅在需要临时产出旧版增量包时，到仓库 Actions 页面手动 Run workflow 触发。
 on:
-  push:
-    tags:
-      - "v*"
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag，例如 v1.12"
+        description: "Release tag，例如 v1.14.4"
         required: true
-        default: "v1.12"
+        default: "v1.14.4"
 
 permissions:
   contents: write
@@ -42,13 +43,17 @@ jobs:
         with:
           python-version: "3.12"
 
-      # 包内 interface.json 的 version 会被改写为 tag，确保与 release tag 一致
-      - name: Build resource package
+      # ⚠️ 下面产出的是【增量】资源包（仅 interface.json + resource/），
+      #    当前策略已不再向用户发布；仅手动触发、临时需要时才使用。
+      #    包内 interface.json 的 version 会被改写为 tag，确保与 release tag 一致。
+      - name: Build resource package (legacy / incremental)
         run: |
           python3 scripts/pack_resource.py \
             --version "${{ steps.tag.outputs.tag }}" \
             --out MaaEOV-resource.zip
 
+      # ⚠️ 该步骤会把 MaaEOV-resource.zip 作为 asset 挂到该 tag 的 Release 上。
+      #    当前「仅完整包」策略下请勿自动运行本工作流。
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
