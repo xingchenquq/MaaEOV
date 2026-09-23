@@ -921,7 +921,8 @@
             }
         },
         "next": [
-            "SellAmulet"
+            "SellAmulet",
+            "RitualDone"
         ]
     },
 
@@ -942,7 +943,8 @@
             }
         },
         "next": [
-            "SellAmulet"
+            "SellAmulet",
+            "RitualDone"
         ]
     },
 
@@ -963,8 +965,18 @@
             }
         },
         "next": [
-            "SellAmulet"
+            "SellAmulet",
+            "RitualDone"
         ]
+    },
+
+    // 收尾兜底：不分解护符时直接结束。
+    // 必要性：「分解剩余护符」=No（默认）会把 SellAmulet 置 enabled=false，
+    // 若收尾节点的 next 只剩 SellAmulet，MaaFramework 会报
+    // 「no valid/enabled node in next」→ invalid node id → 任务误判失败。
+    "RitualDone": {
+        "recognition": "DirectHit",
+        "next": []
     },
 
     // Exception
@@ -984,7 +996,8 @@
             }
         },
         "next": [
-            "SellAmulet"
+            "SellAmulet",
+            "RitualDone"
         ]
     },
 
@@ -1011,7 +1024,8 @@
             }
         },
         "next": [
-            "SellAmulet"
+            "SellAmulet",
+            "RitualDone"
         ]
     },
 

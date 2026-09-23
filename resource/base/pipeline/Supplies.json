@@ -546,7 +546,8 @@
             "SilverMedalRedeemRecord",
             "SilverMedalRedeemOffer",
             "SilverMedalRedeemAcc",
-            "VioletMedalRedeemRecord"
+            "VioletMedalRedeemRecord",
+            "_Done"
         ]
     },
 
@@ -641,7 +642,8 @@
             "SilverMedalRedeemRecord",
             "SilverMedalRedeemOffer",
             "SilverMedalRedeemAcc",
-            "VioletMedalRedeemRecord"
+            "VioletMedalRedeemRecord",
+            "_Done"
         ]
     },
 
@@ -691,7 +693,8 @@
         "next": [
             "SilverMedalRedeemOffer",
             "SilverMedalRedeemAcc",
-            "VioletMedalRedeemRecord"
+            "VioletMedalRedeemRecord",
+            "_Done"
         ]
     },
 
@@ -711,7 +714,8 @@
         "next": [
             "SilverMedalRedeemOffer",
             "SilverMedalRedeemAcc",
-            "VioletMedalRedeemRecord"
+            "VioletMedalRedeemRecord",
+            "_Done"
         ]
     },
 
@@ -843,7 +847,8 @@
         "post_wait_freezes": 1000,
         "next": [
             "SilverMedalRedeemAcc",
-            "VioletMedalRedeemRecord"
+            "VioletMedalRedeemRecord",
+            "_Done"
         ]
     },
 
@@ -862,7 +867,8 @@
         },
         "next": [
             "SilverMedalRedeemAcc",
-            "VioletMedalRedeemRecord"
+            "VioletMedalRedeemRecord",
+            "_Done"
         ]
     },
 
@@ -993,7 +999,8 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "VioletMedalRedeemRecord"
+            "VioletMedalRedeemRecord",
+            "_Done"
         ]
     },
 
@@ -1011,7 +1018,8 @@
             }
         },
         "next": [
-            "VioletMedalRedeemRecord"
+            "VioletMedalRedeemRecord",
+            "_Done"
         ]
     },
 

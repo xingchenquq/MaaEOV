@@ -1975,6 +1975,15 @@
         "inverse": true
     },
 
+    // 通用「任务完成」兜底终端。
+    // 用途：当某个节点的 next 里所有分支都可能被 option 置 enabled=false 时，
+    // 在 next 末尾挂上本节点，避免出现
+    // 「no valid/enabled node in next」→ invalid node id → 任务被误判失败。
+    "_Done": {
+        "recognition": "DirectHit",
+        "next": []
+    },
+
     // Wrappers ========================================
     "_Confirm": {
         "next": [
