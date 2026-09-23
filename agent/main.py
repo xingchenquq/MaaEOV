@@ -11,10 +11,21 @@ from maa.toolkit import Toolkit
 
 # import my_action
 # import my_reco
-import auto_battle
-import past_event
-import soc_actions
-import exit_app
+try:
+    import auto_battle
+    import past_event
+    import soc_actions
+    import exit_app
+except Exception as exc:  # noqa: BLE001
+    # Agent 由 MaaFramework 按 interface.json 的 agent 块拉起，崩溃信息只进
+    # MFA 主机日志（不写 maafw.log）。这里打印显式错误，方便在主机日志里
+    # 直接定位「Agent启动失败 / 连接失败」的根因。
+    sys.stderr.write(
+        "\n[MaaEOV] Agent 启动失败：自定义模块导入错误 -> {!r}\n"
+        "排查：在软件目录执行 'python\\python.exe agent\\main.py' 手动运行，\n"
+        "确认 python/ 与 maa 包完整、且版本与资源一致。\n".format(exc)
+    )
+    raise
 
 
 def _resolve_socket_id() -> str:

@@ -62,11 +62,31 @@
 
 >[!TIP]
 >
->**资源更新（增量更新）**
+>**更新方式（当前仅完整包）**
 >
->- GUI 内置的更新来源有 **GitHub** 与 **Mirror酱** 两种；也可以把 `MaaEOV-resource.zip` **直接拖进 MFA 窗口**，确认后更新。
->- 本仓库为**私有库**，因此使用 GitHub 更新前，需在 **设置 → 更新 → GitHub Token** 填入一个对该仓库**只读**的 PAT（建议细粒度令牌，权限仅 `Contents: Read-only`，仅授权本仓库），这样才能拉取 Release 与资源包。
+>- 目前**只发布完整包**：在 GitHub Release 下载 `MaaEOV-v<版本>-full-package.zip`，解压覆盖到原安装目录即可完成更新（会一并更新 `agent/` + `python/` + `maa` 包 + MFA + `resource/`）。
+>- 本仓库为**私有库**，因此使用 GUI 的 GitHub 更新前，需在 **设置 → 更新 → GitHub Token** 填入一个对该仓库**只读**的 PAT（建议细粒度令牌，权限仅 `Contents: Read-only`，仅授权本仓库），这样才能拉取 Release。
 >- 该 Token 只保存在你本机的全局配置里；**发布包不包含它**，请勿把带 Token 的配置外传。
+>- 暂不提供增量（resource）更新；如需更新，请使用上面的完整包。
+
+## 故障排查
+
+>[!NOTE]
+>
+>**Agent 启动失败（连接重试 → 任务失败: 连接）**
+>
+>现象：GUI 依次提示「正在启动 Agent → 连接重试 (2/3) → (3/3) → Agent启动失败 → 任务失败: 连接」。
+>
+>本质：Agent 是 MaaFramework 依据 `interface.json` 的 `agent` 块拉起的独立 Python 子进程，通过框架自动生成的 `socket_id` 回连主机。日志里出现 `failed to send_and_recv`，代表**子进程虽被拉起、却没连上 socket 就已退出**——通常是自定义模块导入报错、`maa` 包损坏，或 `python/` 缺失/版本错配。注意：子进程崩溃信息只进 **MFA 主机日志**，**不会**写进 `maafw.log`，所以 `maafw.log` 里看不到 Python 报错是正常的。
+>
+>解决（按优先级）：
+>1. **重解压完整包覆盖**：重新解压 `MaaEOV-v<版本>-full-package.zip`，让 `agent/` + `python/` + `maa` 包 + MFA 同源同版本。
+>2. **手动验证 agent**：在软件目录下执行 `python\python.exe agent\main.py`。
+>   - 卡住不动（hang）= 健康，只是在等 MFA 连它；
+>   - 立刻 traceback = 缺模块 / `maa` 损坏 / `python.exe` 不对，按报错修。
+>3. **更新走完整包**：目前仅发布完整包（GitHub Release），版本由完整包统一保证；不要手动把不同版本的 `resource/` 与 `agent/` 混装。私有库需在 `设置 → 更新 → GitHub Token` 填有效的只读 PAT 才能拉取 Release。
+>4. 任务管理器里结束残留的 `python.exe` 再重试，避免旧 socket 占用。
+>5. 查看 **MFA 自身日志** 拿 Python 真实报错（agent 的 stderr 不进 `maafw.log`）。
 
 ## 功能列表
 
