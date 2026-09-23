@@ -1,5 +1,14 @@
 # 更新
 
+## v1.14.4
+
+- 更新方式
+  - 改为**仅完整包**更新：在 GitHub Release 下载 `MaaEOV-v1.14.4-full-package.zip` 解压覆盖即可；暂不提供增量（resource）更新，避免资源与完整包版本错配。
+  - 私有库仍需在 GUI「设置 → 更新 → GitHub Token」填只读 PAT 才能拉取 Release。
+- 自诊断与排查
+  - `agent/main.py`：自定义模块导入失败时向 stderr 打印显式错误，便于在 MFA 主机日志直接定位「Agent 启动失败」根因。
+  - 新增「故障排查」文档与 README 小节（机制 / 日志证据 / 手动验证 / 解决步骤）。
+
 ## v1.14.3
 
 - Bug修复
