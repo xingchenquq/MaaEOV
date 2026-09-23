@@ -79,3 +79,6 @@ config/instances/*.json
 .DS_Store
 Thumbs.db
 *.swp
+
+# ---- 本机运行期配置（含 GitHubToken / 个人背景图路径，每台机器不同，不入库）----
+/config/config.json
