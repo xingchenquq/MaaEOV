@@ -5,8 +5,8 @@
 
 1. 统一格式：每条日志输出为单行 JSON，前缀 [MFA]，字段固定：
      ts      时间戳（ISO8601，含毫秒，本地时区）
-     module  组件名（危机行动 / 往期活动 / 自动推图 / ExitApp / SoC / ...）
-     event   事件类型（如 ticket_count / sweep_set / exit_app / battle 等）
+     module  组件名（危机行动 / 往期活动 / 自动推图 / SoC / ...）
+     event   事件类型（如 ticket_count / sweep_set / battle 等）
      result  操作结果：ok / fail / skip / warn / info
      msg     人类可读信息
      error   可选，错误信息（异常时填）
@@ -16,13 +16,13 @@
    由 redact 自动打码，绝不明文落盘。Game 资源（如「调令 ticket 数量」）不属于凭证，不误伤。
 3. 同时接管 stdlib logging：configure_stdlib_logging() 给 root logger 装上结构化
    Formatter，使既有 log.info/error/warning 也变成同一 [MFA]{json} 格式，做到组件级统一。
-4. 性能：每行 flush，保证 MFA 主程序捕获到（尤其 ExitApplication 杀进程前）。
+4. 性能：每行 flush，保证 MFA 主程序捕获到。
 
 用法：
     from mfalog import mfa_log, mfa_err, mfa_warn, configure_stdlib_logging
     mfa_log("危机行动", "ticket_count", "ok", "记录到危机行动调令数: 5", count=5)
     mfa_err("危机行动", "ticket_ocr", "读取调令 OCR 结果失败", error=e)
-    mfa_warn("ExitApp", "parent_blacklist", "父进程命中系统黑名单，放弃按 PID 结束")
+    mfa_warn("危机行动", "ticket_ocr", "调令 OCR 读取失败")
 """
 
 import json
