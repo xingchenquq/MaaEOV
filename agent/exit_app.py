@@ -32,7 +32,6 @@
       仅走按名路径。
     - 不会波及模拟器（MuMu / 雷电）：它们属于独立进程树，不在 MaaEOV.exe 子树内。
 """
-import logging
 import os
 import subprocess
 import time
@@ -41,7 +40,9 @@ from maa.agent.agent_server import AgentServer
 from maa.custom_action import CustomAction
 from maa.context import Context
 
-log = logging.getLogger(__name__)
+from mfalog import mfa_log, mfa_err, mfa_warn
+
+_MODULE = "ExitApplication"
 
 # 默认要结束的宿主 exe（与发布包根目录 MaaEOV.exe 对应），仅作「父 PID 解析失败」时的备份
 _DEFAULT_EXE_NAMES = ["MaaEOV.exe"]
@@ -110,7 +111,7 @@ def _run_detached(cmd_list):
             close_fds=True,
         )
     except Exception as e:
-        log.error(f"[ExitApplication] 拉起命令失败: {cmd_list!r} -> {e}")
+        mfa_err(_MODULE, "run_detached", f"拉起命令失败: {cmd_list!r}", error=e)
         return None
 
 
@@ -212,13 +213,14 @@ class ExitApplication(CustomAction):
             exe_names = [exe_names]
         kill_parent_tree = bool(p.get("kill_parent_tree", True))
 
-        print(f"[ExitApplication] 正在退出 MaaEOV 应用…", flush=True)
+        mfa_log(_MODULE, "exit_app", "info", "正在退出 MaaEOV 应用…")
 
         # ── 解析父 PID / 父名 ──────────────────────────────────────────────
         ppid = _parent_pid_via_ntquery(os.getpid()) or _parent_pid_via_wmic(os.getpid())
         parent_name = _process_name(ppid) if ppid else None
-        log.info(
-            f"[ExitApplication] 本进程 PID={os.getpid()} 父 PID={ppid} 父映像名={parent_name!r}"
+        mfa_log(
+            _MODULE, "exit_app", "info",
+            f"本进程 PID={os.getpid()} 父 PID={ppid} 父映像名={parent_name!r}",
         )
 
         # 先落盘调试标记，方便后续查 log（宿主被杀后日志未必 flush）
@@ -233,21 +235,21 @@ class ExitApplication(CustomAction):
         if kill_parent_tree and ppid:
             up = (parent_name or "").upper()
             if up not in _SYSTEM_PROC:
-                log.info(f"[ExitApplication] 直接 taskkill /F /PID {ppid}（无 /T）")
-                print(f"[ExitApplication] 结束宿主进程 PID={ppid}", flush=True)
+                mfa_log(_MODULE, "exit_app", "info", f"直接 taskkill /F /PID {ppid}（无 /T）")
+                mfa_log(_MODULE, "exit_app", "ok", f"结束宿主进程 PID={ppid}")
                 _taskkill_pid_noreap(ppid)
                 launched = True
             else:
-                log.warning(
-                    f"[ExitApplication] 父进程 {ppid}({parent_name}) 命中系统黑名单，"
-                    f"放弃按 PID 结束，仅走按名路径"
+                mfa_warn(
+                    _MODULE, "exit_app",
+                    f"父进程 {ppid}({parent_name}) 命中系统黑名单，放弃按 PID 结束，仅走按名路径",
                 )
         elif kill_parent_tree and not ppid:
-            log.warning("[ExitApplication] 未能解析父进程 PID，仅走按名路径")
+            mfa_warn(_MODULE, "exit_app", "未能解析父进程 PID，仅走按名路径")
 
         # ── 辅路径：taskkill /F /IM（无 /T，按名兜底）──────────────────────
         for name in exe_names:
-            log.info(f"[ExitApplication] 直接 taskkill /F /IM {name}（无 /T）")
+            mfa_log(_MODULE, "exit_app", "info", f"直接 taskkill /F /IM {name}（无 /T）")
             _taskkill_name_noreap(name)
             launched = True
 
@@ -263,7 +265,7 @@ class ExitApplication(CustomAction):
         if not launched:
             # 理论不可达：连按名都没发起时，最后兜底用带 /T 的旧式按名结束
             for name in exe_names:
-                log.warning(f"[ExitApplication] 兜底 taskkill /F /T /IM {name}")
+                mfa_warn(_MODULE, "exit_app", f"兜底 taskkill /F /T /IM {name}")
                 _run_detached(["taskkill", "/F", "/T", "/IM", name])
 
         # 立即返回 True：结束命令已在后台异步拉起，稍后把宿主进程（含本 agent）

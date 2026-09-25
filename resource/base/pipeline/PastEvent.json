@@ -5,7 +5,7 @@
     // 入口节点：#往期活动
     // 说明：自动扫荡往期活动（复刻）关卡。
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
-    // 本文件节点数 = 37
+    // 本文件节点数 = 36
     // 依赖 Shared.json 节点数 = 4（示例：_ConfrimReconnect, _NavigateHomepage, _ServerMaintenance, 点击快速完成）
     // ============================================================
 
@@ -13,6 +13,9 @@
     // =================================================
     // ---------- 往期活动（整合自 MaaEOV1 v1.0） ----------
     "~已切换到往期活动": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 已切换到往期活动页签"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -32,6 +35,9 @@
     },
 
     "退出往期活动失败": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 正在退出活动返回主界面"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -51,11 +57,15 @@
             "threshold": 0.85
         },
         "next": [
-            "返回主界面_往期活动失败"
+            "_NavigateHomepage",
+            "~Homepage"
         ]
     },
 
     "选择往期活动": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 正在选择活动入口"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -183,6 +193,9 @@
     },
 
     "选择大玩家关卡": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 已进入「校园大玩家」关卡详情页，点击「快速完成」"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -208,6 +221,9 @@
     },
 
     "进入该往期活动事件_未适配": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 活动关卡未适配或不可扫荡，流程结束"
+        },
         "recognition": "DirectHit",
         "roi": [
             0,
@@ -269,6 +285,9 @@
     },
 
     "选择回忆录关卡": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 已进入「写给昨日的回忆录」关卡详情页，点击「快速完成」"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -349,6 +368,9 @@
     },
 
     "选择笑笑关卡": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 已进入「笑笑小剧场」关卡详情页，点击「快速完成」"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -374,6 +396,9 @@
     },
 
     "选择谜案回首关卡": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 已进入「谜案回首」关卡详情页，点击「快速完成」"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -409,7 +434,7 @@
                     154
                 ],
                 "template": "往期活动/往期活动.png",
-                "threshold": 0.85
+                "threshold": 0.8
             }
         },
         "action": "Click",
@@ -448,6 +473,9 @@
     },
 
     "选择囚徒关卡": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 已进入「囚徒困境」关卡详情页，点击「快速完成」"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -473,6 +501,9 @@
     },
 
     "点击往期活动": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 点击「往期活动」页签"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -483,7 +514,7 @@
                     154
                 ],
                 "template": "往期活动/往期活动.png",
-                "threshold": 0.85
+                "threshold": 0.8
             }
         },
         "action": "Click",
@@ -498,6 +529,9 @@
     },
 
     "~调令为零": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 调令为 0，跳过扫荡并返回主界面"
+        },
         "recognition": {
             "type": "Custom",
             "param": {
@@ -510,6 +544,9 @@
     },
 
     "进入作战": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 点击「作战」进入活动界面"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
@@ -590,6 +627,9 @@
     },
 
     "进入往期活动内部流程": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 已进入活动页，准备读取调令"
+        },
         "recognition": "DirectHit",
         "roi": [
             0,
@@ -605,6 +645,9 @@
     },
 
     "选择奇物关卡": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 已进入「处理时间奇物的三项建议」关卡详情页，点击「快速完成」"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -630,6 +673,9 @@
     },
 
     "往左滑动": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 未找到活动入口，向左滑动翻页"
+        },
         "action": {
             "type": "Swipe",
             "param": {
@@ -660,6 +706,9 @@
     },
 
     "选择月光关卡": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 已进入「在月光之下」关卡详情页，点击「快速完成」"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -720,6 +769,9 @@
     // 则依次处理服务器维护 / 重连弹窗，最后 [JumpBack]_NavigateHomepage 回主界面；
     // 之后仍从主界面按原有步骤进入往期活动。
     "往期活动": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 任务开始，正在定位入口"
+        },
         "next": [
             "进入作战",
             "点击往期活动",
@@ -755,6 +807,9 @@
     },
 
     "记录往日行动调令数": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 正在读取调令数量"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
@@ -790,7 +845,7 @@
                     154
                 ],
                 "template": "往期活动/往期活动.png",
-                "threshold": 0.85
+                "threshold": 0.8
             }
         },
         "action": "Click",
@@ -821,27 +876,5 @@
         "next": [
             "进入往期活动内部流程"
         ]
-    },
-
-    "返回主界面_往期活动失败": {
-        "recognition": {
-            "type": "TemplateMatch",
-            "param": {
-                "roi": [
-                    11,
-                    2,
-                    413,
-                    84
-                ],
-                "template": "当期活动/主界面图标.png",
-                "threshold": 0.85
-            }
-        },
-        "action": "Click",
-        "post_wait_freezes": {
-            "time": 1200,
-            "threshold": 0.85
-        },
-        "next": []
     }
 }

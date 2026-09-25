@@ -20,6 +20,9 @@ from maa.context import Context
 from maa.custom_action import CustomAction
 from maa.custom_recognition import CustomRecognition
 
+from mfalog import mfa_log, mfa_err, mfa_warn
+
+_MODULE = "往期活动"
 
 # 模块级状态：在 agent 子进程内持久，记录最近一次识别到的往日行动调令数
 _TICKET_COUNT: int = 0
@@ -46,7 +49,7 @@ def _click(context: Context, x: int, y: int):
     try:
         context.tasker.controller.post_click(int(x), int(y)).wait()
     except Exception as e:
-        print(f"[往期活动] 点击失败 ({x},{y}): {e}")
+        mfa_err(_MODULE, "click", f"点击失败 ({x},{y})", error=e)
 
 
 def _parse_ticket(text: str) -> int:
@@ -75,9 +78,9 @@ class RecordPastEventTickets(CustomAction):
             if detail and detail.best_result:
                 n = _parse_ticket(detail.best_result.text or "")
         except Exception as e:
-            print(f"[往期活动] 读取调令 OCR 结果失败: {e}")
+            mfa_err(_MODULE, "ticket_ocr", "读取调令 OCR 结果失败", error=e)
         _TICKET_COUNT = max(0, min(6, n))
-        print(f"[往期活动] 记录到往日行动调令数: {_TICKET_COUNT}")
+        mfa_log(_MODULE, "ticket_count", "ok", f"记录到往日行动调令数: {_TICKET_COUNT}", count=_TICKET_COUNT)
         return True
 
 
@@ -92,11 +95,11 @@ class NoPastEventTickets(CustomRecognition):
     def analyze(self, context: Context, argv: CustomRecognition.AnalyzeArg):
         global _TICKET_COUNT
         if _TICKET_COUNT <= 0:
-            print(f"[往期活动] 战斗前检测：调令数={_TICKET_COUNT}（0 或 O）→ 返回主界面，结束")
+            mfa_log(_MODULE, "ticket_check", "skip", "调令为 0（或 O），跳过后续流程，返回主界面", count=_TICKET_COUNT)
             return CustomRecognition.AnalyzeResult(
                 box=(0, 0, 1, 1), detail=f"tickets={_TICKET_COUNT}"
             )
-        print(f"[往期活动] 战斗前检测：调令数={_TICKET_COUNT} > 0 → 继续扫荡")
+        mfa_log(_MODULE, "ticket_check", "ok", "调令 > 0，进入扫荡", count=_TICKET_COUNT)
         return None
 
 
@@ -113,10 +116,10 @@ class SetPastEventSweepCount(CustomAction):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         global _TICKET_COUNT
         n = _TICKET_COUNT
-        print(f"[往期活动] 开始设置战斗次数，当前调令数={n}")
+        mfa_log(_MODULE, "sweep_set", "info", f"开始设置战斗次数，当前调令数={n}", count=n)
 
         if n <= 0:
-            print("[往期活动] 无可用调令，停止扫荡")
+            mfa_warn(_MODULE, "sweep_set", "无可用调令，停止扫荡")
             return False
 
         # 1) 滑块拉到最左，次数默认归 1（等界面刷新）
@@ -125,11 +128,11 @@ class SetPastEventSweepCount(CustomAction):
 
         # 2) 点击加号 (n-1) 次（每次之间留足间隔，避免点太快漏计）
         for i in range(n - 1):
-            print(f"[往期活动] 第 {i + 1}/{n - 1} 次点击加号 @({_PLUS_X},{_PLUS_Y})")
+            mfa_log(_MODULE, "sweep_set", "info", f"第 {i + 1}/{n - 1} 次点击加号 @({_PLUS_X},{_PLUS_Y})", idx=i + 1, total=n - 1)
             _click(context, _PLUS_X, _PLUS_Y)
             time.sleep(_PLUS_INTERVAL_SEC)
 
         # 3) 留一点缓冲再交给下一步（点击出发）
         time.sleep(_AFTER_SET_SEC)
-        print(f"[往期活动] 战斗次数已设置为 {n}")
+        mfa_log(_MODULE, "sweep_set", "ok", f"战斗次数已设置为 {n}", count=n)
         return True

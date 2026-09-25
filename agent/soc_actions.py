@@ -34,7 +34,6 @@
 
 坐标均基于 1280×720 基准，可通过 custom_action_param 覆盖以便调参。
 """
-import logging
 import time
 
 from maa.agent.agent_server import AgentServer
@@ -43,8 +42,9 @@ from maa.context import Context
 from maa.pipeline import JRecognitionType, JOCR, JTemplateMatch
 
 from auto_battle import _parse_param, _screencap
+from mfalog import mfa_log, mfa_err, mfa_warn
 
-log = logging.getLogger(__name__)
+_MODULE = "SoC"
 
 # 诊断目录（首次 OCR 全 miss 时保存截图供排查）
 import os as _os
@@ -75,11 +75,10 @@ class SoCAwaitBattle(CustomAction):
         tap = tuple(p.get("tap", _TAP))
         task_done_roi = tuple(p.get("task_done_roi", _TASK_DONE_ROI))
 
-        log.info(
-            f"[SoCAwaitBattle] 开始等待结算（初等 {init_wait}s，轮询 {poll}s，"
-            f"上限 {max_wait}s）"
+        mfa_log(
+            _MODULE, "await_battle", "info",
+            f"开始等待结算（初等 {init_wait}s，轮询 {poll}s，上限 {max_wait}s）",
         )
-        print("[SoCAwaitBattle] 开始等待结算", flush=True)
 
         start = time.time()
         if init_wait > 0:
@@ -88,8 +87,7 @@ class SoCAwaitBattle(CustomAction):
         while time.time() - start < max_wait:
             # a) 检测用户是否点了停止 → 立即退出，不再点击
             if context.tasker.stopping:
-                log.info("[SoCAwaitBattle] 检测到任务停止请求，立即退出轮询")
-                print("[SoCAwaitBattle] 任务已停止，退出轮询", flush=True)
+                mfa_log(_MODULE, "await_battle", "warn", "检测到任务停止请求，立即退出轮询")
                 return False
 
             # b) 双击跳过空白结束/过场界面（两次间隔 gap 秒）
@@ -109,8 +107,7 @@ class SoCAwaitBattle(CustomAction):
                 img,
             )
             if gift is not None and gift.hit:
-                log.info("[SoCAwaitBattle] 检测到「获取物资」，点 ✓ 关闭")
-                print("[SoCAwaitBattle] 关闭奖励弹窗", flush=True)
+                mfa_log(_MODULE, "await_battle", "info", "检测到「获取物资」，点 ✓ 关闭")
                 self._click(context, *check_btn)
                 time.sleep(1.5)
                 continue
@@ -129,15 +126,14 @@ class SoCAwaitBattle(CustomAction):
                     img,
                 )
                 if done is not None and done.hit:
-                    print("★ 本轮认知海域已完成 ★", flush=True)
-                    log.info("[SoCAwaitBattle] 意识碎片已满 1000，本轮认知海域完成")
+                    mfa_log(_MODULE, "await_battle", "ok", "★ 本轮认知海域已完成 ★（意识碎片已满 1000）")
                 # 未命中不打印，直接交回 pipeline 继续下一轮
                 return True
 
             # e) 都没有 -> 等 poll 后下一轮（下一轮开头会再次双击）
             time.sleep(poll)
 
-        log.warning("[SoCAwaitBattle] 超过最大等待仍未检测到「继续」，返回交回 pipeline")
+        mfa_warn(_MODULE, "await_battle", "超过最大等待仍未检测到「继续」，返回交回 pipeline")
         return True
 
     @staticmethod
@@ -145,7 +141,7 @@ class SoCAwaitBattle(CustomAction):
         try:
             context.tasker.controller.post_click(int(x), int(y)).wait()
         except Exception as e:
-            log.error(f"[SoCAwaitBattle] 点击失败 ({x},{y}): {e}")
+            mfa_err(_MODULE, "await_battle_click", f"点击失败 ({x},{y})", error=e)
 
 
 @AgentServer.custom_action("SoCGBPickAvailable")
@@ -193,23 +189,18 @@ class SoCGBPickAvailable(CustomAction):
         no_find = 0
         start = time.time()
 
-        print(
-            f"[SoCGBPickAvailable] START (纯 OCR·收敛式) "
-            f"label_roi={label_roi} max_look={max_look} "
-            f"click_y_offset={click_y_offset} dedup_tol={dedup_tol} "
-            f"wall_cap={wall_cap}",
-            flush=True,
+        mfa_log(
+            _MODULE, "gb_pick", "info",
+            f"START (纯 OCR·收敛式) label_roi={label_roi} max_look={max_look} "
+            f"click_y_offset={click_y_offset} dedup_tol={dedup_tol} wall_cap={wall_cap}",
         )
 
         for i in range(max_look):
             if context.tasker.stopping:
-                print("[SoCGBPickAvailable] STOP", flush=True)
+                mfa_log(_MODULE, "gb_pick", "warn", "STOP")
                 return False
             if time.time() - start > wall_cap:
-                print(
-                    f"[SoCGBPickAvailable] 超 wall_cap={wall_cap}s 强制结束",
-                    flush=True,
-                )
+                mfa_warn(_MODULE, "gb_pick", f"超 wall_cap={wall_cap}s 强制结束")
                 break
 
             img = _screencap(context)
@@ -226,19 +217,13 @@ class SoCGBPickAvailable(CustomAction):
             # ════════════════════════════════════════════
             boxes = self._ocr_unselected(context, img, label, label_roi)
             n = len(boxes)
-            print(
-                f"[SoCGBPickAvailable] iter{i} 未激发={n} 已点={clicked}",
-                flush=True,
-            )
+            mfa_log(_MODULE, "gb_pick", "info", f"iter{i} 未激发={n} 已点={clicked}")
 
             if n == 0:
                 # 整屏无可点卡
                 no_find += 1
                 if no_find >= max_no_find:
-                    print(
-                        f"[SoCGBPickAvailable] 连续 {no_find} 屏空 -> BREAK",
-                        flush=True,
-                    )
+                    mfa_log(_MODULE, "gb_pick", "info", f"连续 {no_find} 屏空 -> BREAK")
                     break
                 self._swipe(context, swipe_begin, swipe_end)
                 time.sleep(swipe_sleep)
@@ -262,19 +247,13 @@ class SoCGBPickAvailable(CustomAction):
             if not new_boxes:
                 # 视野内所有「未激发」卡都已点过
                 # （选中后标签可能不消失，仅加 ✓ 金边）→ 视为选满，停止，不盲滑
-                print(
-                    "[SoCGBPickAvailable] 视野内未激发均已点过 -> BREAK",
-                    flush=True,
-                )
+                mfa_log(_MODULE, "gb_pick", "info", "视野内未激发均已点过 -> BREAK")
                 break
 
             # 点完当前屏所有未选卡
             for (x, y) in new_boxes:
                 clicked += 1
-                print(
-                    f"[SoCGBPickAvailable] #{clicked} 选卡 @({x},{y})",
-                    flush=True,
-                )
+                mfa_log(_MODULE, "gb_pick", "info", f"#{clicked} 选卡 @({x},{y})")
                 self._click(context, x, y)
                 time.sleep(click_sleep)
             # 给 UI 一点稳定时间，再左滑一次看是否有屏外未选卡
@@ -282,10 +261,9 @@ class SoCGBPickAvailable(CustomAction):
             self._swipe(context, swipe_begin, swipe_end)
             time.sleep(swipe_sleep)
 
-        print(
-            f"[SoCGBPickAvailable] END 已点={clicked} "
-            f"(return {clicked > 0})",
-            flush=True,
+        mfa_log(
+            _MODULE, "gb_pick", "ok",
+            f"END 已点={clicked} (return {clicked > 0})",
         )
         return clicked > 0
 
@@ -301,7 +279,7 @@ class SoCGBPickAvailable(CustomAction):
         try:
             context.tasker.controller.post_click(int(x), int(y)).wait()
         except Exception as e:
-            log.error(f"[SoCGBPickAvailable] 点击失败 ({x},{y}): {e}")
+            mfa_err(_MODULE, "gb_pick_click", f"点击失败 ({x},{y})", error=e)
 
     @staticmethod
     def _swipe(context, begin, end):
@@ -310,7 +288,7 @@ class SoCGBPickAvailable(CustomAction):
                 begin[0], begin[1], end[0], end[1], 800,
             ).wait()
         except Exception as e:
-            log.error(f"[SoCGBPickAvailable] 左滑失败: {e}")
+            mfa_err(_MODULE, "gb_pick_swipe", "左滑失败", error=e)
 
     @staticmethod
     def _ocr_unselected(context, img, label, label_roi):
@@ -322,7 +300,7 @@ class SoCGBPickAvailable(CustomAction):
                 img,
             )
         except Exception as e:
-            print(f"[SoCGBPickAvailable] OCR EXCEPT: {e}", flush=True)
+            mfa_err(_MODULE, "gb_pick_ocr", "OCR EXCEPT", error=e)
             return []
         if r is None or not r.hit:
             return []
@@ -351,6 +329,6 @@ class SoCGBPickAvailable(CustomAction):
                     _raw = _np.ascontiguousarray(img).tobytes()
                     with open(_path, "wb") as _fh:
                         _fh.write(_raw)
-            print(f"[SoCGBPickAvailable] 截图已保存: {_path}", flush=True)
+            mfa_log(_MODULE, "gb_pick_diag", "ok", f"截图已保存: {_path}")
         except Exception as _ex2:
-            print(f"[SoCGBPickAvailable] 保存截图失败: {_ex2}", flush=True)
+            mfa_err(_MODULE, "gb_pick_diag", "保存截图失败", error=_ex2)

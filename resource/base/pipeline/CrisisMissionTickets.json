@@ -3,46 +3,25 @@
     // CrisisMissionTickets.json
     // 功能：危机行动调令
     // 入口节点：#CrisisMissionTickets
-    // 说明：消耗全部危机行动调令，如危机行动调令为0，则跳过。
-    // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
-    // 本文件节点数 = 8
-    // 依赖 Shared.json 节点数 = 10（示例：_ConfirmSweepResult, _ConfrimReconnect, _LevelUp, _NavigateBCR, _NavigateS502, _ServerMaintenance）
+    // 说明：
+    //   1) 先进入「危机行动」界面（_NavigateCrisisMission = 点击「危机行动」入口，
+    //      已迁入特别行动界面，会自动走 特别行动.png → 危机行动.png），
+    //      再在危机行动界面内用模板「危机行动调令.png」(roi [1165,15,94,45]) 确认调令 HUD 存在，
+    //      随后在图标左侧 OCR 读出调令数量并记录。
+    //      调令为 0 时无法进入关卡详情页，故在危机行动界面内提前判定：数量为 0 直接跳过
+    //      （不进入详情页、不触发战斗）；大于 0 才选关进入详情页。
+    //   2) 进入详情页后，按往期活动同范式「一次完成」：CustomAction「设置危机行动战斗次数」在扫荡弹窗内
+    //      把次数设为调令数（滑块拉到最左归 1，再点加号 N-1 次），随后由 Shared 的「点击出发」一次性确认，
+    //      一次扫完所有次数后等待结算、点确定、退出详情页、返回主界面——而非逐次循环。
+    //   由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
+    // 本文件节点数 = 12
+    // 依赖 Shared.json 节点数：_NavigateBCR / _NavigateCrisisMission / ~CrisisMission / _HomeButton / ~Homepage / _NavigateS502 / ~S502 /
+    //   _ServerMaintenance / _ConfrimReconnect / _ConfirmSweepResult / _LevelUp /
+    //   点击出发 / ~等待快速完成结果 / 点击确定 / 退出关卡详情页 / 返回主界面
     // ============================================================
-
-    "_SweepMin": {
-        "recognition": {
-            "type": "TemplateMatch",
-            "param": {
-                "roi": [
-                    148,
-                    176,
-                    308,
-                    292
-                ],
-                "template": "BCR/AtSweep.png"
-            }
-        },
-        "action": {
-            "type": "Click",
-            "param": {
-                "target": [
-                    569,
-                    457,
-                    1,
-                    1
-                ]
-            }
-        },
-        "next": [
-            "_SweepConfirm",
-            "[JumpBack]_ConfrimReconnect",
-            "[JumpBack]_ConfirmSweepResult"
-        ]
-    },
 
     // ---------- 任务入口：#CrisisMissionTickets（危机行动调令） ----------
 
-    // Crisis Mission Tickets ==========================
     // Entry
     "#CrisisMissionTickets": {
         "next": [
@@ -50,15 +29,24 @@
         ]
     },
 
-    // Logic
+    // Logic：首位必须是 BCR 根屏门控（OCR「主线故事」，仅在 BCR 命中）——在主界面等其它屏
+    // 不命中，落到 [JumpBack]_NavigateBCR 先导航回 BCR（Farm.json 同款成熟范式）。
+    // ⚠️ 不能把无识别的 DirectHit 路由节点放首位：它永远命中，会挡死后面的导航兜底。
     "CrisisMissionTickets": {
+        "timeout": 120000,
         "next": [
             "CrisisMissionTicketsFromBCR",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_NavigateBCR"
         ]
     },
 
+    // BCR 根屏门控 + 探测：探测节点写小 timeout，避免吃光父节点预算导致兄弟兜底不执行。
     "CrisisMissionTicketsFromBCR": {
+        "focus": {
+            "Node.PipelineNode.Starting": "危机行动 · 已定位到 BCR 根界面"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
@@ -73,14 +61,145 @@
                 ]
             }
         },
+        "timeout": 5000,
         "next": [
-            "~LevelNA",
+            "CrisisMissionTicketsEnterCM"
+        ]
+    },
+
+    // 进入危机行动界面：优先检测调令 HUD（说明已在危机行动界面），否则先导航进入。
+    // 注意：调令 HUD 只存在于「危机行动」界面内，BCR 根屏不可见，故必须先进入界面再读调令。
+    // ⚠️ 导航必须用 [JumpBack]：裸写 _NavigateCrisisMission 时导航链一路前向走到 ~CrisisMission
+    //   （成功终态）整个任务就结束了——实测 15:12 运行正是如此（进入界面即"任务完成"，后续全没跑）。
+    //   加 [JumpBack] 后每轮导航完回环重扫：未到界面继续导航，到了界面 HUD 命中继续往下走。
+    // 末位 Skipped（DirectHit 永远命中）兜底：已在界面但 HUD 模板意外不命中时，走"跳过+返回主界面"
+    //   而不是报 no valid node in next。
+    "CrisisMissionTicketsEnterCM": {
+        "focus": {
+            "Node.PipelineNode.Starting": "危机行动 · 正在进入危机行动界面"
+        },
+        "timeout": 60000,
+        "next": [
+            "检测危机行动调令HUD",
+            "[JumpBack]_NavigateCrisisMission",
+            "CrisisMissionTicketsSkipped"
+        ]
+    },
+
+    // ---------- 调令 HUD 检测（模板，比 OCR 稳） ----------
+    // 用模板「危机行动调令.png」确认调令 HUD 存在于当前（危机行动）界面（用户指定 roi [1165,15,94,45]）。
+    // 命中 → 进入读数量节点；未命中（不在危机行动界面）→ 直接跳过，避免空扫荡/死循环/超时。
+    "检测危机行动调令HUD": {
+        "focus": {
+            "Node.PipelineNode.Starting": "危机行动 · 已进入危机行动界面，检测到调令 HUD"
+        },
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1165,
+                    15,
+                    94,
+                    45
+                ],
+                "template": "危机行动调令.png",
+                "threshold": 0.8
+            }
+        },
+        "timeout": 3000,
+        "next": [
+            "识别危机行动调令数",
+            "CrisisMissionTicketsSkipped"
+        ]
+    },
+
+    // ---------- 调令数量检测（在危机行动界面内，检测时机提前到进入界面后） ----------
+    // 在调令图标左侧 OCR 读出数量并记录（custom_action 从 OCR 结果读取），
+    // 再由「~危机行动调令为零」条件判断：0 → 直接成功结束（跳过，不触发战斗）；>0 → 进入关卡详情页扫荡。
+    // 注：OCR roi [1210,22,30,33] 为用户按实际截图校准的「纯数字」范围（调令数 0-6）。
+    // 原 [1065,6,100,54] 过宽，会把相邻数字（如 41）一并读入导致误判。
+    "识别危机行动调令数": {
+        "focus": {
+            "Node.PipelineNode.Starting": "危机行动 · 正在读取调令数量"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1210,
+                    22,
+                    30,
+                    33
+                ],
+                "expected": [
+                    "[0-9]"
+                ]
+            }
+        },
+        "timeout": 3000,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "记录危机行动调令数"
+            }
+        },
+        "next": [
+            "~危机行动调令为零",
             "CrisisMissionTicketsFromLevel",
             "[JumpBack]CrisisMissionTicketsSelectLevel"
         ]
     },
 
+    "~危机行动调令为零": {
+        "focus": {
+            "Node.PipelineNode.Starting": "危机行动 · 调令为 0，跳过扫荡"
+        },
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "危机行动调令为零"
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsSkipped"
+        ]
+    },
+
+    // 跳过终态：调令=0 / HUD 未命中 / 扫荡兜底 三处共用。
+    // 不能直接成功结束——此时仍停在危机行动（或下游）界面，必须把"返回主界面"做掉，
+    // 否则后续任务从主界面起跳会找不到根屏。
+    // 先点通用主页按钮（Utils/HomeButton.png，跨界面存在），再 ~Homepage 验证到家成功。
+    "CrisisMissionTicketsSkipped": {
+        "focus": {
+            "Node.PipelineNode.Starting": "危机行动 · 跳过扫荡，正在返回主界面"
+        },
+        "recognition": "DirectHit",
+        "roi": [
+            0,
+            0,
+            1,
+            1
+        ],
+        "next": [
+            "_HomeButton",
+            "~Homepage"
+        ]
+    },
+
+    // 选关：导航到目标关卡（幻影人偶Ⅱ / S502）的详情页。
+    "CrisisMissionTicketsSelectLevel": {
+        "next": [
+            "_NavigateS502"
+        ]
+    },
+
+    // 关卡详情页：识别并点击「快速完成」打开扫荡弹窗，再进入设置次数流程。
+    // 关键：必须 Click 才能真正弹出 AtSweep 弹窗，否则下游 SweepStrategy（AtSweep.png）
+    // 永远匹配不到，会一路回落到 [JumpBack]CrisisMissionTicketsSelectLevel 空转超时。
     "CrisisMissionTicketsFromLevel": {
+        "focus": {
+            "Node.PipelineNode.Starting": "危机行动 · 已进入关卡详情页，点击「快速完成」"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
@@ -95,25 +214,24 @@
                 ]
             }
         },
+        "action": {
+            "type": "Click"
+        },
+        "post_wait_freezes": {
+            "time": 1200,
+            "threshold": 0.85
+        },
         "next": [
-            "CrisisMissionTicketsCompletedFromLevel",
+            "CrisisMissonTicketsSweepStrategy",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfrimReconnect",
             "[JumpBack]_ConfirmSweepResult",
             "[JumpBack]_LevelUp",
-            "[JumpBack]CrisisMissonTicketsSweepStrategy",
-            "[JumpBack]_SweepFromLevel",
             "[JumpBack]CrisisMissionTicketsSelectLevel"
         ]
     },
 
-    // Option
-    "CrisisMissionTicketsSelectLevel": {
-        "next": [
-            "_NavigateS502"
-        ]
-    },
-
+    // 扫荡弹窗已打开（BCR/AtSweep.png 命中），进入设置战斗次数。
     "CrisisMissonTicketsSweepStrategy": {
         "recognition": {
             "type": "TemplateMatch",
@@ -128,26 +246,33 @@
             }
         },
         "next": [
-            "_SweepMin",
-            "_SweepMax"
+            "设置危机行动战斗次数"
         ]
     },
 
-    // Success
-    "CrisisMissionTicketsCompletedFromLevel": {
-        "recognition": {
-            "type": "OCR",
+    // 设置战斗次数（滑块归 1 + 点加号 N-1 次），随后一次性确认出发。
+    // 若调令数 <= 0（理论上不会到这，界面内已拦截），custom_action 返回 False，
+    // 落到 next 兜底直接结束，避免空扫荡。
+    "设置危机行动战斗次数": {
+        "focus": {
+            "Node.PipelineNode.Starting": "危机行动 · 正在设置扫荡次数"
+        },
+        "recognition": "DirectHit",
+        "roi": [
+            0,
+            0,
+            1,
+            1
+        ],
+        "action": {
+            "type": "Custom",
             "param": {
-                "roi": [
-                    1161,
-                    0,
-                    119,
-                    92
-                ],
-                "expected": [
-                    "^0"
-                ]
+                "custom_action": "设置危机行动战斗次数"
             }
-        }
+        },
+        "next": [
+            "点击出发",
+            "CrisisMissionTicketsSkipped"
+        ]
     }
 }

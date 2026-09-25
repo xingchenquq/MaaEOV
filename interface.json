@@ -1,10 +1,10 @@
 {
   "name": "MaaEOV",
   "interface_version": 2,
-  "version": "v1.14.4",
+  "version": "v1.14.5",
   "url": "https://github.com/xingchenquq/MaaEOV",
   "github": "https://github.com/xingchenquq/MaaEOV",
-  "custom_title": "MaaEOV v1.14.4 | 异象回声小助手",
+  "custom_title": "MaaEOV v1.14.5 | 异象回声小助手",
   "message": "异象回声小助手",
   "controller": [
     {
@@ -57,10 +57,9 @@
       "name": "危机行动调令",
       "entry": "#CrisisMissionTickets",
       "option": [
-        "危机行动调令-选择关卡",
-        "危机行动调令扫荡模式"
+        "危机行动调令-选择关卡"
       ],
-      "doc": "消耗全部危机行动调令，如危机行动调令为0，则跳过。\n\n**危机行动调令-选择关卡**\n选择刷取的关卡。\n\n**危机行动调令扫荡模式**\n选择一种扫荡模式，\n\n- 逐次扫荡：每次消耗一张危机行动调令，直至危机行动调令清空，不会消耗体力；\n- 最大扫荡次数：消耗全部危机行动调令，同时**会尽可能消耗剩余体力**。\n\n> “逐次扫荡”模式是较为稳妥的选择。\n> 如在“清体力”之后执行此任务，可以使用“最大扫荡次数”模式。\n\n*活动关卡：目前仅支持位于“危机行动-常驻行动”选单中的活动关卡。*"
+      "doc": "消耗全部危机行动调令，如危机行动调令为0，则跳过。\n\n**危机行动调令-选择关卡**\n选择刷取的关卡。\n\n*活动关卡：目前仅支持位于“危机行动-常驻行动”选单中的活动关卡。*"
     },
     {
       "name": "事务所（解读仪式）",
@@ -770,30 +769,6 @@
             "CrisisMissionTicketsSelectLevel": {
               "next": [
                 "_NavigateEventLevel"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    "危机行动调令扫荡模式": {
-      "cases": [
-        {
-          "name": "逐次扫荡（较慢，不消耗体力）",
-          "pipeline_override": {
-            "CrisisMissonTicketsSweepStrategy": {
-              "next": [
-                "_SweepMin"
-              ]
-            }
-          }
-        },
-        {
-          "name": "最大扫荡次数（同时消耗体力）",
-          "pipeline_override": {
-            "CrisisMissonTicketsSweepStrategy": {
-              "next": [
-                "_SweepMax"
               ]
             }
           }

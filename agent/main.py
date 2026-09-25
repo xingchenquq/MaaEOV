@@ -9,10 +9,16 @@ if _THIS_DIR not in sys.path:
 from maa.agent.agent_server import AgentServer
 from maa.toolkit import Toolkit
 
+from mfalog import configure_stdlib_logging
+
+# 统一接管 stdlib logging，使 MaaFW / 各组件既有的 log.info/error 也转为结构化 [MFA]{json}
+configure_stdlib_logging()
+
 # import my_action
 # import my_reco
 try:
     import auto_battle
+    import crisis_mission
     import past_event
     import soc_actions
     import exit_app

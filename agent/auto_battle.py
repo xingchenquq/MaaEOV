@@ -10,7 +10,6 @@ pipeline 里**已存在**的节点名；否则识别压根不启动、返回 Non
 pipeline 内联识别（TemplateMatch / OCR）+ Click 的 target_offset 偏移点击。
 """
 import json
-import logging
 import struct
 import time
 import zlib
@@ -20,7 +19,9 @@ from maa.agent.agent_server import AgentServer
 from maa.custom_action import CustomAction
 from maa.context import Context
 
-log = logging.getLogger(__name__)
+from mfalog import mfa_log, mfa_err, mfa_warn
+
+_MODULE = "自动推图"
 
 # 诊断截图输出目录（与 main.py 的 agent.log 同处：<MaaEOV1>/debug）
 _DEBUG_DIR = Path(__file__).resolve().parent.parent / "debug"
@@ -83,8 +84,7 @@ class ReportProgress(CustomAction):
                 f"===== 第 {_PROGRESS['current']} 关 · 结束（{label}）"
                 f"｜已完成 {_PROGRESS['done']} 关 ====="
             )
-        log.info(f"[自动推图] {msg}")
-        print(f"[自动推图] {msg}", flush=True)
+        mfa_log(_MODULE, "report_progress", "info", msg)
         return True
 
 
@@ -118,8 +118,8 @@ class ClickTopToExit(CustomAction):
             try:
                 context.tasker.controller.post_click(x, y).wait()
             except Exception as e:
-                log.error(f"[自动推图] 连点退出 点击失败: {e}")
-            log.info(f"[自动推图] 连点退出 ({x},{y}) {i + 1}/{times}")
+                mfa_err(_MODULE, "click_exit", "连点退出 点击失败", error=e)
+            mfa_log(_MODULE, "click_exit", "info", f"连点退出 ({x},{y}) {i + 1}/{times}", idx=i + 1, total=times)
             if i < times - 1:
                 time.sleep(interval)
         return True
@@ -159,7 +159,7 @@ def _save_png(path, img):
             f.write(png)
         return True
     except Exception as e:
-        log.error(f"[自动推图] 保存 PNG 失败: {e}")
+        mfa_err(_MODULE, "save_png", "保存 PNG 失败", error=e)
         return False
 
 
@@ -177,7 +177,7 @@ def _screencap(context: Context):
                 pass
         return img
     except Exception as e:
-        log.error(f"[自动推图] 截图失败: {e}")
+        mfa_err(_MODULE, "screencap", "截图失败", error=e)
         return None
 
 
@@ -193,7 +193,7 @@ class SaveFailShot(CustomAction):
         name = str(_parse_param(argv.custom_action_param).get("name", "_fail"))
         img = _screencap(context)
         if img is None:
-            log.error("[自动推图] 存失败截图：截图失败")
+            mfa_err(_MODULE, "save_fail_shot", "存失败截图：截图失败")
             return True
         try:
             _DEBUG_DIR.mkdir(parents=True, exist_ok=True)
@@ -201,8 +201,7 @@ class SaveFailShot(CustomAction):
             x, y, w, h = 784, 588, 496, 149
             _save_png(_DEBUG_DIR / f"{name}_roi.png", img[y:y + h, x:x + w])
             msg = f"已存失败截图 {name}.png / {name}_roi.png（画面形状 {getattr(img, 'shape', None)}）"
-            log.info(f"[自动推图] {msg}")
-            print(f"[自动推图] {msg}", flush=True)
+            mfa_log(_MODULE, "save_fail_shot", "ok", msg)
         except Exception as e:
-            log.error(f"[自动推图] 存失败截图异常: {e}")
+            mfa_err(_MODULE, "save_fail_shot", "存失败截图异常", error=e)
         return True
