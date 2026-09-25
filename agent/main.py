@@ -21,7 +21,6 @@ try:
     import crisis_mission
     import past_event
     import soc_actions
-    import exit_app
 except Exception as exc:  # noqa: BLE001
     # Agent 由 MaaFramework 按 interface.json 的 agent 块拉起，崩溃信息只进
     # MFA 主机日志（不写 maafw.log）。这里打印显式错误，方便在主机日志里

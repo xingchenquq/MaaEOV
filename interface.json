@@ -1,10 +1,10 @@
 {
   "name": "MaaEOV",
   "interface_version": 2,
-  "version": "v1.14.5",
+  "version": "v1.14.6",
   "url": "https://github.com/xingchenquq/MaaEOV",
   "github": "https://github.com/xingchenquq/MaaEOV",
-  "custom_title": "MaaEOV v1.14.5 | 异象回声小助手",
+  "custom_title": "MaaEOV v1.14.6 | 异象回声小助手",
   "message": "异象回声小助手",
   "controller": [
     {
@@ -116,11 +116,6 @@
       "name": "退出游戏",
       "entry": "#ShutDown",
       "doc": "就是退出游戏。"
-    },
-    {
-      "name": "退出应用",
-      "entry": "#ExitApp",
-      "doc": "直接终止 MaaEOV（MFA）应用进程并退出整个程序。\n\n不同于「退出游戏」（仅退出游戏内会话、保留 MaaEOV 程序），本任务会结束 MaaEOV.exe 宿主进程及其进程树，关闭 GUI。不会波及模拟器（MuMu / 雷电）。\n\n> 适用于跑完所有任务后一键关掉 MaaEOV；执行后程序会直接关闭。"
     },
     {
       "name": "活动-每日行动补给",
