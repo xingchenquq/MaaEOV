@@ -187,16 +187,20 @@
     },
 
     // 选关：导航到目标关卡（幻影人偶Ⅱ / S502）的详情页。
+    // timeout 120000：须覆盖下游「点击出发」+「等待结果」整条扫荡链（最长约 70s）。
     "CrisisMissionTicketsSelectLevel": {
+        "timeout": 120000,
         "next": [
             "_NavigateS502"
         ]
     },
 
     // 关卡详情页：识别并点击「快速完成」打开扫荡弹窗，再进入设置次数流程。
+    // timeout 80000：须覆盖下游「设置次数 → 点击出发 → 等待结果」整条链（最长约 70s）。
     // 关键：必须 Click 才能真正弹出 AtSweep 弹窗，否则下游 SweepStrategy（AtSweep.png）
     // 永远匹配不到，会一路回落到 [JumpBack]CrisisMissionTicketsSelectLevel 空转超时。
     "CrisisMissionTicketsFromLevel": {
+        "timeout": 80000,
         "focus": {
             "Node.PipelineNode.Starting": "危机行动 · 已进入关卡详情页，点击「快速完成」"
         },
@@ -232,7 +236,9 @@
     },
 
     // 扫荡弹窗已打开（BCR/AtSweep.png 命中），进入设置战斗次数。
+    // timeout 80000：覆盖下游「设置次数 → 点击出发 → 等待结果」最长约 70s 的耗时。
     "CrisisMissonTicketsSweepStrategy": {
+        "timeout": 80000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -251,9 +257,11 @@
     },
 
     // 设置战斗次数（滑块归 1 + 点加号 N-1 次），随后一次性确认出发。
+    // timeout 80000：覆盖下游「点击出发 → 等待结果」最长约 70s 的耗时。
     // 若调令数 <= 0（理论上不会到这，界面内已拦截），custom_action 返回 False，
     // 落到 next 兜底直接结束，避免空扫荡。
     "设置危机行动战斗次数": {
+        "timeout": 80000,
         "focus": {
             "Node.PipelineNode.Starting": "危机行动 · 正在设置扫荡次数"
         },
