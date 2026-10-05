@@ -74,6 +74,9 @@
     },
 
     "FarmFromLevel": {
+        // timeout 80000：扫荡 gate。[JumpBack] 弹栈（_SweepFromLevel 点击后回本节点续扫 _SweepMax 等）沿用本节点
+        // timeout 作为续扫窗口，须覆盖「开弹窗 → 设次数 → 出发」耗时，防默认 20s 提前掐断（同 v1.14.6 根因）。
+        "timeout": 80000,
         "recognition": {
             "type": "OCR",
             "param": {

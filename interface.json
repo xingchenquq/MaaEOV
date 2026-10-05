@@ -1,10 +1,10 @@
 {
   "name": "MaaEOV",
   "interface_version": 2,
-  "version": "v1.14.6",
+  "version": "v1.14.7",
   "url": "https://github.com/xingchenquq/MaaEOV",
   "github": "https://github.com/xingchenquq/MaaEOV",
-  "custom_title": "MaaEOV v1.14.6 | 异象回声小助手",
+  "custom_title": "MaaEOV v1.14.7 | 异象回声小助手",
   "message": "异象回声小助手",
   "controller": [
     {
@@ -139,10 +139,9 @@
       "name": "当期活动",
       "entry": "#当期活动",
       "option": [
-        "关卡难度",
-        "小关卡"
+        "危险地带-选择关卡"
       ],
-      "doc": "自动扫荡当期活动关卡。\n\n**当期活动**：银湖之畔\n**剩余时间**：由游戏内 banner 的「剩余X天」自动识别（活动结束后 OCR 无匹配则跳过）。\n\n**关卡难度**\n选择扫荡的难度（默认 被诅咒的信仰）。\n- 被诅咒的信仰\n- 冰冷的救赎\n\n**小关卡**\n选择具体小关卡（默认 SL110，代号最大者）。\n- SL106 / SL107 / SL108 / SL109 / SL110\n\n注：本期活动 banner 位置与关卡布局若变化，需重新截图定坐标。"
+      "doc": "自动扫荡当期活动关卡。\n\n**当期活动**：临界视域（2026.09.30 - 2026.10.14）\n**进入方式**：主界面右上角 banner（OCR「剩余X天」定位，活动结束后自动跳过）→ 活动主页点「危险地带」→ 关卡地图。\n\n**危险地带-选择关卡**\n选择扫荡的关卡（默认 CS110）。\n- CS110 / CS111 / CS112\n\n> 关卡选择采用绿幕模板匹配：仅匹配关卡代号末位字形（三个徽章唯一差异区域），与地图相机位置无关；自身命中 ≥0.99、误匹配 ≤0.75，阈值 0.87。\n> 若目标关卡被屏幕边缘裁掉（游戏会记忆地图相机位置），自动右拖地图重试最多 2 次。\n> 仍匹配失败时任务明确报错并留存 debug/on_error 截图，不会误点其他关卡；需重新截图更新模板。"
     },
     {
       "name": "往期活动",
@@ -1026,154 +1025,39 @@
         }
       ]
     },
-    "关卡难度": {
+    "危险地带-选择关卡": {
       "cases": [
         {
-          "name": "被诅咒的信仰",
+          "name": "CS110",
           "pipeline_override": {
-            "选择关卡": {
+            "选择危险地带关卡": {
               "recognition": {
-                "type": "OCR",
                 "param": {
-                  "roi": [
-                    870,
-                    350,
-                    380,
-                    230
-                  ],
-                  "expected": [
-                    "被诅咒的信仰"
-                  ]
+                  "template": "当期活动/危险地带_CS110.png"
                 }
               }
             }
           }
         },
         {
-          "name": "冰冷的救赎",
+          "name": "CS111",
           "pipeline_override": {
-            "选择关卡": {
+            "选择危险地带关卡": {
               "recognition": {
-                "type": "OCR",
                 "param": {
-                  "roi": [
-                    870,
-                    350,
-                    380,
-                    230
-                  ],
-                  "expected": [
-                    "冰冷的救赎"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
-    "小关卡": {
-      "cases": [
-        {
-          "name": "SL106",
-          "pipeline_override": {
-            "选择小关卡": {
-              "recognition": {
-                "type": "OCR",
-                "param": {
-                  "roi": [
-                    0,
-                    0,
-                    1280,
-                    720
-                  ],
-                  "expected": [
-                    "SL1[0O]6"
-                  ]
+                  "template": "当期活动/危险地带_CS111.png"
                 }
               }
             }
           }
         },
         {
-          "name": "SL107",
+          "name": "CS112",
           "pipeline_override": {
-            "选择小关卡": {
+            "选择危险地带关卡": {
               "recognition": {
-                "type": "OCR",
                 "param": {
-                  "roi": [
-                    0,
-                    0,
-                    1280,
-                    720
-                  ],
-                  "expected": [
-                    "SL1[0O]7"
-                  ]
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "SL108",
-          "pipeline_override": {
-            "选择小关卡": {
-              "recognition": {
-                "type": "OCR",
-                "param": {
-                  "roi": [
-                    0,
-                    0,
-                    1280,
-                    720
-                  ],
-                  "expected": [
-                    "SL1[0O]8"
-                  ]
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "SL109",
-          "pipeline_override": {
-            "选择小关卡": {
-              "recognition": {
-                "type": "OCR",
-                "param": {
-                  "roi": [
-                    0,
-                    0,
-                    1280,
-                    720
-                  ],
-                  "expected": [
-                    "SL1[0O]9"
-                  ]
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "SL110",
-          "pipeline_override": {
-            "选择小关卡": {
-              "recognition": {
-                "type": "OCR",
-                "param": {
-                  "roi": [
-                    0,
-                    0,
-                    1280,
-                    720
-                  ],
-                  "expected": [
-                    "SL11[0O]"
-                  ]
+                  "template": "当期活动/危险地带_CS112.png"
                 }
               }
             }

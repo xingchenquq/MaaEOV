@@ -124,6 +124,7 @@
     },
 
     "JointBlockadeFromSystem": {
+        "timeout": 80000,
         "recognition": {
             "type": "OCR",
             "param": {

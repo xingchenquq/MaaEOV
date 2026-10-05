@@ -28,6 +28,7 @@
     },
 
     "~ConfirmSweepResult": {
+        "timeout": 80000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -1630,6 +1631,7 @@
     },
 
     "_ConfirmSweepResult": {
+        "timeout": 80000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -2168,6 +2170,9 @@
 
     // BCR Sweep
     "_SweepMax": {
+        // timeout 80000：Farm / 阈限禁区 / 联线封锁扫荡链核心节点——点最大次数 → _SweepConfirm 点出发 →
+        // 弹栈续扫 [JumpBack]_ConfirmSweepResult（等结算页出现，最长 60s+）都在本节点 next 扫描窗口内完成。
+        "timeout": 80000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -2199,6 +2204,7 @@
     },
 
     "_SweepConfirm": {
+        "timeout": 80000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -2415,6 +2421,7 @@
 
     // Sweep From BCR Level
     "_SweepFromLevel": {
+        "timeout": 80000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -5136,7 +5143,10 @@
     // 改为 OCR 识别「快速完成」后点击（原固定坐标 [910,670] 实测点不中/时机过早）
     // 点击后进入"快速完成"确认界面
     // next 放两个：先试"行动力判定"（有道具才命中），没命中就直奔"行动次数确定"
+    // timeout 120000：当期/往期活动扫荡链链首，须覆盖下游「设置次数 → 点击出发 → 等待结果」整链（最长约 70s+），
+    // 缺省 ~20s 会在等结算阶段被提前掐断 → 假阴性（同 v1.14.6 危机行动调令根因）。
     "点击快速完成": {
+        "timeout": 120000,
         "focus": {
             "Node.PipelineNode.Starting": "扫荡 · 正在点击「快速完成」打开扫荡弹窗"
         },
@@ -5167,6 +5177,7 @@
     //   例：时 在 [512,209,5,4] → 点击 [512,279,5,4] 的中心 (514, 281)
     // 没命中 → 自动跳到 next 列表里的"行动次数确定"
     "行动力判定": {
+        "timeout": 80000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -5191,6 +5202,7 @@
     // ---------- 步骤 5b：行动次数确定 ----------
     // 原生 _SweepMax 范式：先 OCR「快速完成次数」确认弹窗，再点滑块「最大」端 (955,457) 直达体力上限（左端 569=最小）
     "行动次数确定": {
+        "timeout": 80000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -5329,6 +5341,7 @@
     },
 
     "设置往期活动战斗次数": {
+        "timeout": 80000,
         "recognition": "DirectHit",
         "roi": [
             0,

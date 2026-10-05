@@ -193,6 +193,7 @@
     },
 
     "选择大玩家关卡": {
+        "timeout": 120000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 已进入「校园大玩家」关卡详情页，点击「快速完成」"
         },
@@ -285,6 +286,7 @@
     },
 
     "选择回忆录关卡": {
+        "timeout": 120000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 已进入「写给昨日的回忆录」关卡详情页，点击「快速完成」"
         },
@@ -368,6 +370,7 @@
     },
 
     "选择笑笑关卡": {
+        "timeout": 120000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 已进入「笑笑小剧场」关卡详情页，点击「快速完成」"
         },
@@ -396,6 +399,7 @@
     },
 
     "选择谜案回首关卡": {
+        "timeout": 120000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 已进入「谜案回首」关卡详情页，点击「快速完成」"
         },
@@ -473,6 +477,7 @@
     },
 
     "选择囚徒关卡": {
+        "timeout": 120000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 已进入「囚徒困境」关卡详情页，点击「快速完成」"
         },
@@ -645,6 +650,7 @@
     },
 
     "选择奇物关卡": {
+        "timeout": 120000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 已进入「处理时间奇物的三项建议」关卡详情页，点击「快速完成」"
         },
@@ -706,6 +712,7 @@
     },
 
     "选择月光关卡": {
+        "timeout": 120000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 已进入「在月光之下」关卡详情页，点击「快速完成」"
         },
