@@ -72,7 +72,7 @@
 | 0 | `CrisisMissionTickets` | — | —(仅路由) | `CrisisMissionTicketsFromBCR` |
 | &nbsp;&nbsp;1 | `CrisisMissionTicketsFromBCR` | OCR['主线故事'] roi=[1080, 607, 200, 113] | —(仅路由) | `CrisisMissionTicketsEnterCM` |
 | &nbsp;&nbsp;&nbsp;&nbsp;2 | `CrisisMissionTicketsEnterCM` | — | —(仅路由) | `检测危机行动调令HUD` / `CrisisMissionTicketsSkipped` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `检测危机行动调令HUD` | 模板[危机行动调令.png] roi=[1165, 15, 94, 45] thr=0.8 | —(仅路由) | `识别危机行动调令数` / `CrisisMissionTicketsSkipped` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `检测危机行动调令HUD` | 模板[BCR/危机行动调令.png] roi=[1165, 15, 94, 45] thr=0.8 | —(仅路由) | `识别危机行动调令数` / `CrisisMissionTicketsSkipped` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `识别危机行动调令数` | OCR['[0-9]'] roi=[1210, 22, 30, 33] | Custom['记录危机行动调令数'] | `~危机行动调令为零` / `CrisisMissionTicketsFromLevel` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `~危机行动调令为零` | Custom['危机行动调令为零'] | —(仅路由) | `CrisisMissionTicketsSkipped` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `CrisisMissionTicketsSkipped` | DirectHit | —(仅路由) | `_HomeButton` / `~Homepage` |

@@ -36,22 +36,10 @@ __pycache__/
 # ---- WorkBuddy 运行时产物（finding-ledger / history / reports / hook-state，不入库） ----
 /.mimosa/
 
-# ---- 本地临时脚本（含本机绝对路径 / 个人模拟器录制，不纳入仓库） ----
-/scripts/check_templates.py
-/scripts/crop_templates.py
-/scripts/fix_template_paths.py
-/scripts/parse_mmor.py
-/scripts/validate_pipeline.py
-/scripts/check_roi.py
-/scripts/check_versions.py
-/scripts/grid_view.py
-/scripts/loadres.py
-/scripts/loadres2.py
-/scripts/post_upgrade_tidy.py
-/scripts/fix_soc_dive_flow.py
-/scripts/fix_soc_entry_nav.py
-/scripts/fix_soc_ocr_variants.py
-/scripts/fix_soc_templates.py
+# ---- 本机专用脚本（含本机绝对路径 / 个人模拟器录制，不纳入仓库） ----
+# 集中在 scripts/local/ 统一排除，新增脚本无需再逐条加规则。
+# scripts/legacy/ 是已入库的历史一次性脚本（保留版本历史），不要忽略。
+/scripts/local/
 
 # ---- 原始素材截图（裁模板用的源图，不随发布包分发） ----
 /resource/base/image/SeaOfCognition/raw/

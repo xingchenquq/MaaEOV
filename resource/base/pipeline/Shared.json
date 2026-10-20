@@ -353,12 +353,12 @@
                     720
                 ],
                 "template": [
-                    "公平交易.png",
-                    "共时性.png",
-                    "诡形物语.png",
-                    "火线特攻.png",
-                    "虎胆龙威.png",
-                    "巅峰时刻.png"
+                    "BCR/公平交易.png",
+                    "BCR/共时性.png",
+                    "BCR/诡形物语.png",
+                    "BCR/火线特攻.png",
+                    "BCR/虎胆龙威.png",
+                    "BCR/巅峰时刻.png"
                 ],
                 "threshold": 0.8
             }
@@ -2633,12 +2633,12 @@
                     720
                 ],
                 "template": [
-                    "公平交易.png",
-                    "共时性.png",
-                    "诡形物语.png",
-                    "火线特攻.png",
-                    "虎胆龙威.png",
-                    "巅峰时刻.png"
+                    "BCR/公平交易.png",
+                    "BCR/共时性.png",
+                    "BCR/诡形物语.png",
+                    "BCR/火线特攻.png",
+                    "BCR/虎胆龙威.png",
+                    "BCR/巅峰时刻.png"
                 ],
                 "threshold": 0.8
             }
@@ -2710,7 +2710,7 @@
                     1280,
                     720
                 ],
-                "template": "公平交易.png",
+                "template": "BCR/公平交易.png",
                 "threshold": 0.8
             }
         },
@@ -2756,7 +2756,7 @@
                     1280,
                     720
                 ],
-                "template": "共时性.png",
+                "template": "BCR/共时性.png",
                 "threshold": 0.8
             }
         },
@@ -2802,7 +2802,7 @@
                     1280,
                     720
                 ],
-                "template": "诡形物语.png",
+                "template": "BCR/诡形物语.png",
                 "threshold": 0.8
             }
         },
@@ -2905,7 +2905,7 @@
                     1280,
                     720
                 ],
-                "template": "铜墙铁壁.png",
+                "template": "BCR/铜墙铁壁.png",
                 "threshold": 0.8
             }
         },
@@ -2924,7 +2924,7 @@
                     1280,
                     720
                 ],
-                "template": "火线特攻.png",
+                "template": "BCR/火线特攻.png",
                 "threshold": 0.8
             }
         },
@@ -2942,7 +2942,7 @@
                     1280,
                     720
                 ],
-                "template": "虎胆龙威.png",
+                "template": "BCR/虎胆龙威.png",
                 "threshold": 0.8
             }
         },
@@ -2960,7 +2960,7 @@
                     1280,
                     720
                 ],
-                "template": "巅峰时刻.png",
+                "template": "BCR/巅峰时刻.png",
                 "threshold": 0.8
             }
         },
@@ -3713,7 +3713,7 @@
                     1280,
                     498
                 ],
-                "template": "危机行动.png",
+                "template": "BCR/危机行动.png",
                 "threshold": 0.8
             }
         },
@@ -3732,7 +3732,7 @@
                     111,
                     47
                 ],
-                "template": "特别行动.png"
+                "template": "BCR/特别行动.png"
             }
         },
         "action": "Click",
