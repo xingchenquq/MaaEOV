@@ -65,12 +65,11 @@ __pycache__/
 /resource/mfa_layout.json
 /DependencySetup_*.bat
 
-# ---- 发布完整运行包构建脚本 / 产物（本机专用，不入库） ----
+# ---- 发布构建产物（不入库）----
+# 构建脚本本身已入库：scripts/package_full.py、scripts/build_resource_zip.py
 /dist/
-/package_full.py
 /package_full_log.txt
 /verify_zip.py
-/build_resource_zip.py
 /build_resource_log.txt
 /MaaEOV-resource.zip
 

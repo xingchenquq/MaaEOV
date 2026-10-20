@@ -32,8 +32,8 @@ python scripts/gen_flow_doc.py     # 再生流程文档，git diff 应无变化
 ### 3. 打包
 
 ```bash
-python package_full.py
-# 校验已确认无误但需跳过时（不推荐）：python package_full.py --skip-verify
+python scripts/package_full.py
+# 校验已确认无误但需跳过时（不推荐）：python scripts/package_full.py --skip-verify
 ```
 
 脚本自动完成：前置全量校验 → 按排除规则收集文件 → 对 `config/config.json`、
@@ -43,7 +43,7 @@ python package_full.py
 ### 3.5 构建资源 OTA 包（供 GUI「检查更新」增量下发）
 
 ```bash
-python build_resource_zip.py
+python scripts/build_resource_zip.py
 ```
 
 脚本按 Maadori 同源安全规范构建 `dist/MaaEOV-<版本>-resource-win-x64.zip`：

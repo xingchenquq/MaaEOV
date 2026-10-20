@@ -15,9 +15,12 @@
 |---|---|---|
 | `verify_feature.py` | **主校验**（CI push/PR 强制）：JSONC 解析、跨文件同名节点、死链、模板切图、custom_action 注册、任务 entry/option 引用、pipeline_override 目标、扫荡链 timeout、ROI 越界。`RESULT: ALL_OK` = 通过 | 每次改 pipeline / agent / interface 后；提交前必跑 |
 | `gen_flow_doc.py` | 从 pipeline 再生 `docs/任务流程与UI重测清单.md`（CI 校验文档同步，勿手改该文档） | 每次改 pipeline 后 |
+| `package_full.py` | **完整包打包**（发版唯一通道）：前置自动跑 `verify_feature.py` → 按排除规则收集 → 密钥消毒 → 包内复核，产出 `dist/MaaEOV-<版本>-full-package.zip`。发布流程见 `docs/release.md` | 每次发版 |
+| `build_resource_zip.py` | **资源 OTA 包**：`interface.json` + `resource/` + `agent/`，构建后做 `LEAK_MARKERS` 程序文件泄漏阻断，产出 `dist/MaaEOV-<版本>-resource-win-x64.zip` | 发版需增量更新时 |
+| `migrate_layout.py` | **目录整理工具**（默认只读）：`report` 盘点 / `images` 散图归位 / `archive` 归档一次性脚本 / `purge` 清理过期产物。方案见 `docs/重构与目录整理方案-2026-10-20.md` | 目录维护时 |
 | `pack_resource.py` | 打增量资源包 `MaaEOV-resource.zip`（interface.json + resource/，不含 agent/）。**当前策略仅发完整包**，此脚本仅配合 `.github/workflows/release_resource.yml` 手动触发产出旧版增量包 | 仅临时需要增量包时 |
-| `check_versions.py` | 读 exe/dll 的 Windows 文件版本（MaaEOV.exe 等），核对本机二进制与 interface.json 版本一致性 | 排查「GUI 与资源版本错配」时 |
-| `grid_view.py` | 给截图叠加坐标网格（50px 细线 / 100px 标数），用于量坐标、选 ROI / 切图框 | UI 改版重新定位坐标时 |
+| `check_versions.py` | （本机，未入库）读 exe/dll 的 Windows 文件版本（MaaEOV.exe 等），核对本机二进制与 interface.json 版本一致性 | 排查「GUI 与资源版本错配」时 |
+| `grid_view.py` | （本机，未入库）给截图叠加坐标网格（50px 细线 / 100px 标数），用于量坐标、选 ROI / 切图框 | UI 改版重新定位坐标时 |
 | `build_gui_mfa.sh` | MFAAvalonia GUI（MaaEOV.exe）构建脚本 | 升级 GUI 宿主时（产出物不入库） |
 
 ## 一次性脚本（`[一次性]`，历史记录，参考勿盲跑）
@@ -60,8 +63,11 @@
 | `loadres.py` | `maa` 包 `Resource().post_bundle()` 资源加载冒烟测试 | 含本机绝对路径；排查「资源加载失败」可参考写法 |
 | `loadres2.py` | 同上，ASCII 路径副本对照测试 | 含本机绝对路径 |
 
-## 相关入口（仓库根目录）
+## 相关入口
 
-| 文件 | 用途 |
+| 位置 | 用途 |
 |---|---|
-| `package_full.py` | **完整包打包**（发版唯一通道）：前置自动跑 `verify_feature.py`，排除本机配置/开发产物，密钥消毒后产出 `dist/MaaEOV-<版本>-full-package.zip`。发布流程见 `docs/release.md` |
+| `../interface.json` | 任务 / 选项 / pipeline_override 装配（版本号与 `custom_title` 两处生效） |
+| `../resource/base/pipeline/` | pipeline 节点定义（20 个 JSONC 文件，跨文件节点名全局唯一） |
+| `../agent/` | CustomAction / CustomRecognition 实现（`main.py` 只 import 用到的模块） |
+| `../docs/release.md` | 完整包发布 SOP |

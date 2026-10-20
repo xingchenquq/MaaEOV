@@ -1,0 +1,133 @@
+import os, re, sys, zipfile, json, subprocess
+
+# 仓库根目录：本脚本位于 <root>/scripts/，由脚本位置推导两级父目录，
+# 克隆在任意路径都能打包（不硬编码本机路径）
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUT_DIR = os.path.join(ROOT, 'dist')  # 必须在项目目录内
+os.makedirs(OUT_DIR, exist_ok=True)
+
+# ---- 打包前置：全量校验（死链/同名节点/扫荡链 timeout/ROI 越界/override 断链等），防把坏资源发出去 ----
+SKIP_VERIFY = '--skip-verify' in sys.argv
+if not SKIP_VERIFY:
+    _verify = subprocess.run([sys.executable, os.path.join(ROOT, 'scripts', 'verify_feature.py')])
+    if _verify.returncode != 0:
+        sys.exit('verify_feature.py 未通过（须 RESULT: ALL_OK 才允许打包）；确认无误可加 --skip-verify 跳过')
+
+# 版本号取自 interface.json，避免写死后与发布版本不一致
+VER = json.load(open(os.path.join(ROOT, 'interface.json'), encoding='utf-8'))['version']
+# 资源名用 ASCII（与历史 Release 一致；中文会被 gh 吞掉）
+OUT = os.path.join(OUT_DIR, 'MaaEOV-%s-full-package.zip' % VER)
+if os.path.exists(OUT):
+    os.remove(OUT)
+
+# 排除目录（版本控制/调试/缓存/构建产物/日志/输出目录自身）
+SKIP_DIRS = {'.git', '.github', '.workbuddy', '.mimosa', 'temp', 'debug', 'docs', 'scripts',
+             '__pycache__', '.nicegui', 'backup', '.mfa_build', 'logs', 'dist'}
+# 排除文件（开发产物/打包脚本自身）
+SKIP_FILES = {'MaaEOV-resource.zip', '开发记录.md',
+              'DependencySetup_依赖库安装_win.bat',
+              'package_full.py', 'package_full_log.txt'}
+
+
+def keep(rel):
+    parts = rel.split('/')
+    if parts[0] in SKIP_DIRS:
+        return False
+    if parts[-1] in SKIP_FILES:
+        return False
+    if parts[-1].endswith('.bak'):
+        return False
+    # ---- 每台机器不同的运行期配置：不入发布包 ----
+    # config/instances/*.json 与 maa_pi_config.json 内含本机模拟器路径 / 端口
+    # （如 D:\MuMu\nx_main\MuMuNxMain.exe、127.0.0.1:16384），发出去会导致别的用户
+    # 用错误路径启动模拟器。这些由用户首次运行时在 GUI 中自行配置 / 自动检测。
+    if rel.startswith('config/instances/'):
+        return False
+    if rel == 'config/maa_pi_config.json':
+        return False
+    return True
+
+
+def sanitize_json(fp, rel):
+    """把全局配置 JSON 里的「密钥类」键剔除（返回 新内容bytes, 被剔除键列表）。
+
+    背景：MFAAvalonia 的全局配置里可能保存 GitHubToken（私有库 OTA 用的只读 PAT）、
+    DownloadCDK（Mirror酱 CDK）、以及外部通知的 Token/Secret/Password 等。
+    这些是「每个用户自己的凭据」，**绝不能随发布包发出去**。
+    """
+    try:
+        with open(fp, encoding='utf-8') as f:
+            obj = json.load(f)
+    except Exception as e:
+        print('  [warn] 消毒跳过 %s（JSON 解析失败：%r）' % (rel, e))
+        return None, []
+    if not isinstance(obj, dict):
+        return None, []
+    removed = [k for k in obj if isinstance(k, str) and SECRET_KEY_RE.search(k)]
+    if not removed:
+        return None, []
+    for k in removed:
+        obj.pop(k, None)
+    return (json.dumps(obj, ensure_ascii=False, indent=2) + '\n').encode('utf-8'), removed
+
+
+# 可能藏凭据的全局配置（MFA 把全局设置写在 config/config.json 与 appsettings.json）
+# 覆盖：GitHubToken（私有库 OTA 的只读 PAT）、DownloadCDK（Mirror酱 CDK）、
+#       各类外部通知的 Token/Secret/Password/WebhookUrl/QmsgKey/OneBotKey/ServerChanKey。
+SECRET_KEY_RE = re.compile(
+    r'(?i)(token|secret|password|passwd|cdk|api_?key|(qmsg|onebot|serverchan)key|webhookurl)')
+SANITIZE_FILES = ['config/config.json', 'config/config.template.json', 'appsettings.json']
+
+n = 0
+total = 0
+sanitized = []
+with zipfile.ZipFile(OUT, 'w', zipfile.ZIP_DEFLATED) as z:
+    for dp, dirs, fns in os.walk(ROOT):
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        for fn in fns:
+            fp = os.path.join(dp, fn)
+            rel = os.path.relpath(fp, ROOT).replace('\\', '/')
+            if not keep(rel):
+                continue
+            if rel in SANITIZE_FILES:
+                data, removed = sanitize_json(fp, rel)
+                if removed:
+                    zi = zipfile.ZipInfo.from_file(fp, rel)
+                    zi.compress_type = zipfile.ZIP_DEFLATED
+                    z.writestr(zi, data)
+                    sanitized.append((rel, removed))
+                    n += 1
+                    total += len(data)
+                    continue
+            z.write(fp, rel)
+            n += 1
+            total += os.path.getsize(fp)
+
+print('打包完成: ' + OUT)
+print('文件数: %d，源体积: %.0f MB，zip: %.0f MB'
+      % (n, total / 1024 / 1024, os.path.getsize(OUT) / 1024 / 1024))
+
+# ---- 密钥消毒报告 + 复核 ----
+print('--- 密钥消毒 ---')
+if sanitized:
+    for rel, removed in sanitized:
+        print('  %s：已剔除 %s' % (rel, ', '.join(removed)))
+else:
+    print('  无需要剔除的密钥键（本机配置里没有 GitHubToken / CDK / 通知凭据等）')
+
+leftover = []
+with zipfile.ZipFile(OUT) as z:
+    names = set(z.namelist())
+    for rel in SANITIZE_FILES:
+        if rel not in names:
+            continue
+        try:
+            obj = json.loads(z.read(rel).decode('utf-8'))
+        except Exception as e:
+            leftover.append('%s（解析失败 %r）' % (rel, e))
+            continue
+        if isinstance(obj, dict):
+            for k in obj:
+                if isinstance(k, str) and SECRET_KEY_RE.search(k):
+                    leftover.append('%s → %s' % (rel, k))
+print('  复核：' + ('⚠️ 发现残留密钥 → %s' % leftover if leftover else 'OK，包内无密钥残留'))
