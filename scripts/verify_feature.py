@@ -19,12 +19,23 @@
 7. **ROI 越界检查**：坐标基准 1280×720，roi / target 超出画面即 FAIL
    （MaaFW 会静默裁剪不报错，但属数据瑕疵，统一拦在校验层）。
 8. 「点击确定」防卡死修复状态：expected 必须同时含「确定」与「确认退出」。
+9-11. ROI 越界 / 扫荡链 timeout / 点击确定兜底（见各段标题）。
+12. **真风险节点 timeout**：非终端 + 无 timeout + `next` 中无即时命中候选
+    （判据见 scripts/pj.py::is_timeout_risk）。首版 WARN，P0-2 收尾后转 FAIL。
+13. `on_error` 自环（指向自身 → 无限重试）。
+14. 生成层一致性（存在 `pipeline_src/` 时调用 `pipeline_gen.py --check`）。
+15. 资源包清单一致性（存在 `pipeline/.manifest.json` 时比对哈希）。
+16. agent 注册扫描覆盖（子目录存在时提示未递归扫描，P1-7 迁移前置护栏）。
+
+解析与判据统一由 `scripts/pj.py` 提供，本脚本不再保留第二份实现。
 
 用法：python scripts/verify_feature.py（退出码 0 = ALL_OK，1 = HAS_ISSUES）。
 """
+import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 import py_compile
 
@@ -38,40 +49,22 @@ MAIN = os.path.join(AGENT_DIR, "main.py")
 SCREEN_W, SCREEN_H = 1280, 720
 
 
-def strip_jsonc(text: str) -> str:
-    # 去掉 /* */ 块注释
-    text = re.sub(r"/\*.*?\*/", "", text, flags=re.S)
-    # 去掉 // 行注释（不与 http:// 混淆）
-    out = []
-    for line in text.split("\n"):
-        if "//" in line and "http://" not in line and "https://" not in line:
-            idx = line.find("//")
-            line = line[:idx]
-        out.append(line)
-    return "\n".join(out)
+def _pj_import():
+    """公共解析层（scripts/pj.py）。判据只写一份，禁止在此另立实现。"""
+    here = os.path.dirname(os.path.abspath(__file__))
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    import pj  # noqa: E402
+    return pj
 
 
-def load_jsonc(path: str):
-    with open(path, encoding="utf-8") as f:
-        return json.loads(strip_jsonc(f.read()))
+pj = _pj_import()
 
-
-def iter_templates(tpl):
-    """template 可能是字符串或字符串列表，统一成可迭代。"""
-    if isinstance(tpl, str):
-        return [tpl]
-    if isinstance(tpl, list):
-        return [t for t in tpl if isinstance(t, str)]
-    return []
-
-
-def strip_next_prefix(t: str) -> str:
-    """MaaFramework v5：next 支持 [JumpBack] / [Anchor] 等前缀修饰，校验目标存在性时先剥离。"""
-    base = t
-    for pfx in ("[JumpBack]", "[Anchor]"):
-        if base.startswith(pfx):
-            return base[len(pfx):]
-    return base
+# 兼容旧调用点：统一转调 pj（避免第三、第四份实现）
+strip_jsonc = pj.strip_jsonc
+load_jsonc = pj.load_jsonc
+iter_templates = pj.iter_templates
+strip_next_prefix = pj.strip_ref_prefix
 
 
 def section(title: str) -> None:
@@ -384,6 +377,121 @@ def main() -> int:
             print("  [FAIL] 点击确定 缺少「确认退出」兜底，若按钮文案为「确认退出」会永久卡死")
     else:
         print("  [NOTE] Shared.json 未找到「点击确定」节点（当期/往期活动流程可能已改名）")
+
+    # ------------------------------------------------------------------
+    section("12) 真风险节点 timeout 检查（非终端 + 无 timeout + next 无即时命中）")
+    # 判据来自 scripts/pj.py::is_timeout_risk，与 fill_timeouts.py / check_graph.py 共用。
+    # A 类（next 含 DirectHit 候选）扫描即刻返回，不写 timeout 也不构成风险 → 放行。
+    node_index = {}
+    for d in pipelines.values():
+        for n, nd in d.items():
+            node_index[n] = nd if isinstance(nd, dict) else {}
+
+    risky_by_file = {}
+    safe_count = 0
+    for fn, d in pipelines.items():
+        for name, node in d.items():
+            node = node or {}
+            nxt = node.get("next")
+            if not isinstance(nxt, list) or not nxt or "timeout" in node:
+                continue
+            if pj.is_timeout_risk(node, node_index):
+                risky_by_file.setdefault(fn, []).append(name)
+            else:
+                safe_count += 1
+    total_risky = sum(len(v) for v in risky_by_file.values())
+    print(f"  [INFO] A 类放行（next 含即时命中候选，无需 timeout）= {safe_count}")
+    if total_risky:
+        # 首版仅 WARN（P0-2 补写完成后改为 ok = False）
+        print(f"  [WARN] B 类真风险节点缺 timeout 共 {total_risky} 个（按文件聚合）：")
+        for fn in sorted(risky_by_file, key=lambda k: (-len(risky_by_file[k]), k)):
+            names = risky_by_file[fn]
+            head = "、".join(names[:5]) + ("…" if len(names) > 5 else "")
+            print(f"         {fn:<28} {len(names):>3} 个  {head}")
+    else:
+        print("  [OK] 无真风险节点（非终端节点均已显式写 timeout 或含即时命中候选）")
+
+    # ------------------------------------------------------------------
+    section("13) on_error 自环检查（指向自身会导致无限重试）")
+    oe_self = []
+    for fn, d in pipelines.items():
+        for name, node in d.items():
+            for key, ref in pj.node_refs(node or {}):
+                if key == "on_error" and pj.strip_ref_prefix(ref) == name:
+                    oe_self.append((fn, name))
+    if oe_self:
+        ok = False
+        print(f"  [FAIL] on_error 指向自身 {len(oe_self)} 处：")
+        for fn, n in oe_self:
+            print(f"         {fn} :: {n}")
+    else:
+        print("  [OK] 无 on_error 自环")
+
+    # ------------------------------------------------------------------
+    section("14) 生成层一致性（存在 pipeline_src/ 时必须与产物一致）")
+    src_dir = os.path.join(ROOT, "resource", "base", "pipeline_src")
+    gen_py = os.path.join(ROOT, "scripts", "pipeline_gen.py")
+    if not os.path.isdir(src_dir):
+        print("  [NOTE] 未启用生成层（无 resource/base/pipeline_src/），跳过")
+    elif not os.path.exists(gen_py):
+        ok = False
+        print(f"  [FAIL] 存在 pipeline_src/ 但缺少生成器 {gen_py}")
+    else:
+        r = subprocess.run(
+            [sys.executable, gen_py, "--check"],
+            capture_output=True, text=True, cwd=ROOT,
+        )
+        if r.returncode == 0:
+            print("  [OK] 生成物与 pipeline_src/ 一致")
+        else:
+            ok = False
+            print(f"  [FAIL] 生成物与源不一致（退出码 {r.returncode}）：")
+            print("         " + (r.stdout or r.stderr).strip().replace("\n", "\n         "))
+
+    # ------------------------------------------------------------------
+    section("15) 资源包清单一致性（pipeline/.manifest.json）")
+    manifest = os.path.join(PIPELINE_DIR, ".manifest.json")
+    if not os.path.exists(manifest):
+        print("  [NOTE] 未生成 .manifest.json（开发期正常；发版构建后应存在）")
+    else:
+        try:
+            mf = json.load(open(manifest, encoding="utf-8"))
+            files_mf = mf.get("files") or mf
+            bad = []
+            for rel, want in files_mf.items():
+                p = os.path.join(PIPELINE_DIR, *rel.split("/"))
+                if not os.path.exists(p):
+                    bad.append((rel, "缺失"))
+                    continue
+                got = hashlib.sha256(open(p, "rb").read()).hexdigest()
+                if got != want:
+                    bad.append((rel, "哈希不符"))
+            if bad:
+                ok = False
+                print(f"  [FAIL] 清单不符 {len(bad)} 处：")
+                for rel, why in bad[:10]:
+                    print(f"         {rel}（{why}）")
+            else:
+                print(f"  [OK] {len(files_mf)} 个文件与清单一致")
+        except Exception as e:  # noqa: BLE001
+            ok = False
+            print(f"  [FAIL] 清单解析失败: {e}")
+
+    # ------------------------------------------------------------------
+    section("16) agent 注册扫描覆盖（子目录内 .py 是否被扫到）")
+    sub_py = []
+    for root_, dirs, files_ in os.walk(AGENT_DIR):
+        dirs[:] = [x for x in dirs if x != "__pycache__"]
+        if os.path.abspath(root_) == os.path.abspath(AGENT_DIR):
+            continue
+        sub_py += [os.path.join(root_, f) for f in files_ if f.endswith(".py")]
+    if sub_py:
+        print(f"  [WARN] agent/ 下发现子目录内 .py 共 {len(sub_py)} 个，但第 2/7 段只扫 agent/*.py：")
+        for p in sub_py[:5]:
+            print(f"         {os.path.relpath(p, ROOT)}")
+        print("         迁移到 agent/maaeov/ 前必须先改为递归扫描，否则注册核对会假绿（P1-7）。")
+    else:
+        print("  [OK] agent/ 无子目录 .py，当前平铺扫描覆盖完整")
 
     # ------------------------------------------------------------------
     print("\n" + "=" * 60)
