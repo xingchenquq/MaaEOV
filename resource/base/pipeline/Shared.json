@@ -1950,6 +1950,7 @@
     // *************************************************
     // General =========================================
     "_LaunchGame": {
+        "timeout": 30000,
         "action": {
             "type": "StartApp",
             "param": {
@@ -1988,6 +1989,7 @@
 
     // Wrappers ========================================
     "_Confirm": {
+        "timeout": 930000,
         "next": [
             "_ConfirmGeneral",
             "_ConfirmMiddle",
@@ -1996,6 +1998,7 @@
     },
 
     "_Cancel": {
+        "timeout": 30000,
         "next": [
             "_CancelGeneral",
             "_Cancel1",
@@ -2006,6 +2009,7 @@
     },
 
     "_CloseWindows": {
+        "timeout": 30000,
         "next": [
             "_CloseWindowsGeneral",
             "_CloseWindow1",
@@ -2070,6 +2074,7 @@
 
     // Handle Server Maintenance
     "_ServerMaintenance": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -2114,6 +2119,7 @@
 
     // Handle Reconnect
     "_ConfrimReconnect": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -2549,6 +2555,7 @@
     },
 
     "_EnsureHomepage": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -2572,6 +2579,7 @@
     // BCR =============================================
     // Navigate to BCR Root
     "_NavigateBCR": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -2623,6 +2631,7 @@
 
     // Navigate to BCR -> Prepared
     "_NavigatePrepared": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -2674,6 +2683,7 @@
 
     // Navigate to BCR -> Prepared -> Fund
     "_NavigatePreparedFund": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -2720,6 +2730,7 @@
 
     // Navigate to BCR -> Prepared -> Tape
     "_NavigatePreparedTape": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -2766,6 +2777,7 @@
 
     // Navigate to BCR -> Prepared -> Dust
     "_NavigatePreparedDust": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -2812,6 +2824,7 @@
 
     // Navigate to BCR -> Appraisal
     "_NavigateAppraisal": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -3016,6 +3029,7 @@
 
     // Navigate to BCR -> Appraisal -> Disc
     "_NavigateAppraisalDisc": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -3064,6 +3078,7 @@
 
     // Levels in BCR -> Appraisal -> Disc
     "_NavigateG601": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -3108,6 +3123,7 @@
     },
 
     "_NavigateG602": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -3152,6 +3168,7 @@
     },
 
     "_NavigateG603": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -3196,6 +3213,7 @@
     },
 
     "_NavigateG604": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -3244,6 +3262,7 @@
 
     // Navigate to BCR -> Appraisal -> Lion
     "_NavigateAppraisalLion": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -3292,6 +3311,7 @@
 
     // Levels in BCR -> Appraisal -> Lion
     "_NavigateG301": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -3340,6 +3360,7 @@
     },
 
     "_NavigateG302": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -3386,6 +3407,7 @@
 
     // Navigate to BCR -> Appraisal -> Wolf
     "_NavigateAppraisalWolf": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -3434,6 +3456,7 @@
 
     // Levels in BCR -> Appraisal -> Wolf
     "_NavigateG401": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -3482,6 +3505,7 @@
     },
 
     "_NavigateG402": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -3531,6 +3555,7 @@
 
     // Navigate to BCR -> Appraisal -> Eagle
     "_NavigateAppraisalEagle": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -3579,6 +3604,7 @@
 
     // Levels in BCR -> Appraisal -> Eagle
     "_NavigateG501": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -3628,6 +3654,7 @@
     },
 
     "_NavigateG502": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -3678,6 +3705,7 @@
 
     // Navigate to BCR -> SideQuest -> CrisisMission
     "_NavigateCrisisMission": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -3741,6 +3769,7 @@
 
     // Navigate to BCR -> SideQuest -> CrisisMission -> OngoingMission
     "_NavigateOngoingMission": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -3786,6 +3815,7 @@
 
     // Levels in BCR -> SideQuest -> CrisisMission -> OngoingMission
     "_NavigateS001": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -3833,6 +3863,7 @@
     },
 
     "_NavigateS002": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -3880,6 +3911,7 @@
     },
 
     "_NavigateS003": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -3927,6 +3959,7 @@
     },
 
     "_NavigateS101": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -3974,6 +4007,7 @@
     },
 
     "_NavigateS102": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4021,6 +4055,7 @@
     },
 
     "_NavigateS103": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4068,6 +4103,7 @@
     },
 
     "_NavigateS201": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4115,6 +4151,7 @@
     },
 
     "_NavigateS202": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4162,6 +4199,7 @@
     },
 
     "_NavigateS203": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4209,6 +4247,7 @@
     },
 
     "_NavigateS301": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4256,6 +4295,7 @@
     },
 
     "_NavigateS302": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4303,6 +4343,7 @@
     },
 
     "_NavigateS303": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4351,6 +4392,7 @@
     },
 
     "_NavigateEventLevel": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4379,6 +4421,7 @@
     },
 
     "_FindEventLevelFromOngoingMission": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -4440,6 +4483,7 @@
 
     // Navigate to BCR -> SideQuest -> CrisisMission -> EliteMission
     "_NavigateEliteMission": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -4485,6 +4529,7 @@
 
     // Levels in BCR -> SideQuest -> CrisisMission -> EliteMission
     "_NavigateS401": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4532,6 +4577,7 @@
     },
 
     "_NavigateS402": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4579,6 +4625,7 @@
     },
 
     "_NavigateS501": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4626,6 +4673,7 @@
     },
 
     "_NavigateS502": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4673,6 +4721,7 @@
     },
 
     "_NavigateS701": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4720,6 +4769,7 @@
 
     // Navigate to BCR -> LiminalZone
     "_NavigateLiminalZone": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -4800,6 +4850,7 @@
 
     // Navigate to BCR -> LiminalZone -> ObsoleteNexus
     "_NavigateObsoleteNexus": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4848,6 +4899,7 @@
 
     // Navigate to BCR -> LiminalZone -> Corridor
     "_NavigateCorridor": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4875,6 +4927,7 @@
     },
 
     "_FindCorridorFromLiminalZone": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -4940,6 +4993,7 @@
     // Mission =========================================
     // Navigate to Mission Page
     "_NavigateMission": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -4989,6 +5043,7 @@
     // System Page =====================================
     // Navigate to System
     "_NavigateSystem": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -5034,6 +5089,7 @@
 
     // Event
     "_NavigateEvent": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -5081,12 +5137,14 @@
 
     // Option
     "FarmSelectLevel": {
+        "timeout": 30000,
         "next": [
             "_NavigatePreparedDust"
         ]
     },
 
     "ConfirmUseStaminaItem": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -5271,6 +5329,7 @@
     // 右下角识别确认按钮。注意：不同活动/版本的结果屏按钮可能是"确定"或"确认退出"，
     // 两者都要认；否则若按钮是"确认退出"，OCR "确定"匹配不上且本节点无 timeout → 永久卡死。
     "点击确定": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -5291,6 +5350,7 @@
     // 点"确定"后回到关卡详情页，需先退出该详情页，回到上一层。
     // 左上角 [11,2,413,84] 内模板匹配 当期活动/主界面图标.png（36×30）
     "退出关卡详情页": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
