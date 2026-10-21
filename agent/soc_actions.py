@@ -41,17 +41,11 @@ from maa.custom_action import CustomAction
 from maa.context import Context
 from maa.pipeline import JRecognitionType, JOCR, JTemplateMatch
 
+import evidence
 from auto_battle import _parse_param, _screencap
 from mfalog import mfa_log, mfa_err, mfa_warn
 
 _MODULE = "SoC"
-
-# 诊断目录（首次 OCR 全 miss 时保存截图供排查）
-import os as _os
-_GB_DIAG_DIR = _os.path.join(
-    _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))),
-    "debug", "gb_diag",
-)
 
 # 默认坐标（1280×720 基准）
 _GIFT_ROI = (380, 30, 520, 340)       # 「获取物资」标题（顶部居中，放宽高度）
@@ -81,6 +75,7 @@ class SoCAwaitBattle(CustomAction):
         )
 
         start = time.time()
+        img = None
         if init_wait > 0:
             time.sleep(init_wait)
 
@@ -133,8 +128,19 @@ class SoCAwaitBattle(CustomAction):
             # e) 都没有 -> 等 poll 后下一轮（下一轮开头会再次双击）
             time.sleep(poll)
 
-        mfa_warn(_MODULE, "await_battle", "超过最大等待仍未检测到「继续」，返回交回 pipeline")
-        return True
+        # 超时 = 失败（不再 return True 假装结算完成）。
+        # 历史上这里返回 True，pipeline 会认为战斗已结束并在错误界面继续点击，
+        # 最终表现为"任务成功但状态错乱"（2026-10-20 评审第 2 条）。
+        shot = evidence.save_evidence(
+            img, "await_battle_timeout", roi=task_done_roi,
+            meta={"max_wait": max_wait, "elapsed_s": round(time.time() - start, 1),
+                  "init_wait": init_wait, "poll": poll},
+        )
+        mfa_err(_MODULE, "await_battle",
+                f"超过最大等待 {max_wait}s 仍未检测到「继续」，判为失败并交 pipeline 处理"
+                f"（取证: {shot or '未落盘'}）",
+                max_wait=max_wait, elapsed_s=round(time.time() - start, 1))
+        return False
 
     @staticmethod
     def _click(context, x, y):
@@ -311,24 +317,16 @@ class SoCGBPickAvailable(CustomAction):
 
     @staticmethod
     def _save_gb_diag(img, i):
-        """首次迭代保存原始截图供排查（兼容 cv2 / PIL / 裸 RGB 字节）。"""
-        try:
-            _os.makedirs(_GB_DIAG_DIR, exist_ok=True)
-            from datetime import datetime as _dt
-            _ts = _dt.now().strftime("%Y.%m.%d-%H.%M.%S")
-            _path = _os.path.join(_GB_DIAG_DIR, f"{_ts}_iter{i}_screencap.png")
-            import numpy as _np
-            try:
-                import cv2
-                cv2.imwrite(_path, img)
-            except ImportError:
-                try:
-                    from PIL import Image as _PILImage
-                    _PILImage.fromarray(img).save(_path)
-                except Exception:
-                    _raw = _np.ascontiguousarray(img).tobytes()
-                    with open(_path, "wb") as _fh:
-                        _fh.write(_raw)
-            mfa_log(_MODULE, "gb_pick_diag", "ok", f"截图已保存: {_path}")
-        except Exception as _ex2:
-            mfa_err(_MODULE, "gb_pick_diag", "保存截图失败", error=_ex2)
+        """首轮取证（用于「OCR 全 miss」排查）。
+
+        旧实现走 cv2 → PIL → 裸字节三级回退，而本机两者都不存在，于是写出的
+        `.png` 实际是**裸 BGR 字节**（打不开），却打印「截图已保存」。现已统一到
+        `agent/evidence.py`（内置零依赖 PNG 编码器 + 元数据 JSON + TTL 清理），
+        且只在真正写盘成功时才打日志。
+        """
+        path = evidence.save_evidence(img, "gb_pick_iter0", level="info",
+                                      meta={"iter": i})
+        if path:
+            mfa_log(_MODULE, "gb_pick_diag", "ok", f"取证已保存: {path}")
+        else:
+            mfa_warn(_MODULE, "gb_pick_diag", "取证未落盘（evidence=off 或编码失败）")
