@@ -13,6 +13,7 @@
     // =================================================
     // ---------- 往期活动（整合自 MaaEOV1 v1.0） ----------
     "~已切换到往期活动": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 已切换到往期活动页签"
         },
@@ -35,6 +36,7 @@
     },
 
     "退出往期活动失败": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 正在退出活动返回主界面"
         },
@@ -63,6 +65,7 @@
     },
 
     "选择往期活动": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 正在选择活动入口"
         },
@@ -90,6 +93,7 @@
     },
 
     "~已切换到往期活动_重试2": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -109,6 +113,7 @@
     },
 
     "选择新手": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -134,6 +139,7 @@
     },
 
     "进入该往期活动事件": {
+        "timeout": 30000,
         "recognition": "DirectHit",
         "roi": [
             0,
@@ -169,6 +175,7 @@
     },
 
     "选择往期活动_重试2": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -236,6 +243,7 @@
     },
 
     "选择公馆之夜": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -261,6 +269,7 @@
     },
 
     "选择迷城之下": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -315,6 +324,7 @@
     },
 
     "往左滑动3": {
+        "timeout": 30000,
         "action": {
             "type": "Swipe",
             "param": {
@@ -345,6 +355,7 @@
     },
 
     "选择回忆重现": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -428,6 +439,7 @@
     },
 
     "点击往期活动_重试3": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -453,6 +465,7 @@
     },
 
     "选择往期活动_重试4": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -506,6 +519,7 @@
     },
 
     "点击往期活动": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 点击「往期活动」页签"
         },
@@ -534,6 +548,7 @@
     },
 
     "~调令为零": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 调令为 0，跳过扫荡并返回主界面"
         },
@@ -549,6 +564,7 @@
     },
 
     "进入作战": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 点击「作战」进入活动界面"
         },
@@ -577,6 +593,7 @@
     },
 
     "选择首演": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -741,6 +758,7 @@
     },
 
     "选择往期活动_重试3": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -776,6 +794,7 @@
     // 则依次处理服务器维护 / 重连弹窗，最后 [JumpBack]_NavigateHomepage 回主界面；
     // 之后仍从主界面按原有步骤进入往期活动。
     "往期活动": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 任务开始，正在定位入口"
         },
@@ -789,6 +808,7 @@
     },
 
     "选择困境迷途": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -814,6 +834,7 @@
     },
 
     "记录往日行动调令数": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 正在读取调令数量"
         },
@@ -842,6 +863,7 @@
     },
 
     "点击往期活动_重试2": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -867,6 +889,7 @@
     },
 
     "~已切换到往期活动_重试3": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {

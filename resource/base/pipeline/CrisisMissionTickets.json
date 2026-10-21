@@ -151,6 +151,7 @@
     },
 
     "~危机行动调令为零": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "危机行动 · 调令为 0，跳过扫荡"
         },
@@ -170,6 +171,7 @@
     // 否则后续任务从主界面起跳会找不到根屏。
     // 先点通用主页按钮（Utils/HomeButton.png，跨界面存在），再 ~Homepage 验证到家成功。
     "CrisisMissionTicketsSkipped": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "危机行动 · 跳过扫荡，正在返回主界面"
         },

@@ -21,7 +21,8 @@
 8. 「点击确定」防卡死修复状态：expected 必须同时含「确定」与「确认退出」。
 9-11. ROI 越界 / 扫荡链 timeout / 点击确定兜底（见各段标题）。
 12. **真风险节点 timeout**：非终端 + 无 timeout + `next` 中无即时命中候选
-    （判据见 scripts/pj.py::is_timeout_risk）。首版 WARN，P0-2 收尾后转 FAIL。
+    （判据见 scripts/pj.py::is_timeout_risk）。2026-10-21 已补齐全库 221 个，
+    本段由 WARN 升级为 **FAIL**；新增节点漏写会被拦下。
 13. `on_error` 自环（指向自身 → 无限重试）。
 14. 生成层一致性（存在 `pipeline_src/` 时调用 `pipeline_gen.py --check`）。
 15. 资源包清单一致性（存在 `pipeline/.manifest.json` 时比对哈希）。
@@ -402,12 +403,13 @@ def main() -> int:
     total_risky = sum(len(v) for v in risky_by_file.values())
     print(f"  [INFO] A 类放行（next 含即时命中候选，无需 timeout）= {safe_count}")
     if total_risky:
-        # 首版仅 WARN（P0-2 补写完成后改为 ok = False）
-        print(f"  [WARN] B 类真风险节点缺 timeout 共 {total_risky} 个（按文件聚合）：")
+        ok = False
+        print(f"  [FAIL] B 类真风险节点缺 timeout 共 {total_risky} 个（按文件聚合）：")
         for fn in sorted(risky_by_file, key=lambda k: (-len(risky_by_file[k]), k)):
             names = risky_by_file[fn]
             head = "、".join(names[:5]) + ("…" if len(names) > 5 else "")
             print(f"         {fn:<28} {len(names):>3} 个  {head}")
+        print("         修复：python scripts/fill_timeouts.py --file <文件> --apply")
     else:
         print("  [OK] 无真风险节点（非终端节点均已显式写 timeout 或含即时命中候选）")
 

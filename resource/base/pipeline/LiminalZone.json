@@ -70,6 +70,7 @@
 
     // Navigate to BCR -> LiminalZone -> ReceptionRoom
     "_NavigateReceptionRoom": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -128,6 +129,7 @@
 
     // Logic
     "LiminalZone": {
+        "timeout": 30000,
         "next": [
             "LiminalZoneCompletedFromSystem",
             "LiminalZoneFromSystem",
@@ -136,6 +138,7 @@
     },
 
     "LiminalZoneFromSystem": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -219,6 +222,7 @@
 
     // Option
     "LiminalZoneSelectLevel": {
+        "timeout": 30000,
         "next": [
             "_NavigateObsoleteNexus"
         ]
@@ -282,6 +286,7 @@
     },
 
     "LiminalZoneUseStaminaItem": {
+        "timeout": 30000,
         // "enabled": false,
         "recognition": {
             "type": "TemplateMatch",

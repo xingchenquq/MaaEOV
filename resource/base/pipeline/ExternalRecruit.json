@@ -96,6 +96,7 @@
     // Recruit =========================================
     // Navigate to Recruit Page
     "_NavigateRecruit": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -182,6 +183,7 @@
 
     // Navigate to External Recruit Tab
     "_NavigateExternalRecruit": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -209,6 +211,7 @@
     },
 
     "_FindExternalRecruitFromRecruit": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -264,6 +267,7 @@
 
     // Logic
     "ExternalRecruit": {
+        "timeout": 30000,
         "next": [
             "ManageExternalRecruit",
             "[JumpBack]_ServerMaintenance",
@@ -273,6 +277,7 @@
     },
 
     "ManageExternalRecruit": {
+        "timeout": 930000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -303,6 +308,7 @@
 
     // End
     "ExternalRecruitOutofOffer": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -322,6 +328,7 @@
     },
 
     "ExternalRecruitQueueFull": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {

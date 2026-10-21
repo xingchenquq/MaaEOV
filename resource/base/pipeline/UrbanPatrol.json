@@ -43,6 +43,7 @@
 
     // Navigate to Urban Patrol
     "_NavigateUrbanPatrol": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -87,6 +88,7 @@
 
     // Navigate to Mutual Aid
     "_NavigateMutualAid": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -143,6 +145,7 @@
 
     // Logic
     "UrbanPatrol": {
+        "timeout": 30000,
         "next": [
             "DailyCollabPtsCollected",
             "[JumpBack]_ServerMaintenance",
@@ -153,6 +156,7 @@
     },
 
     "CollectDailyCollabPts": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {

@@ -28,6 +28,7 @@
 
     // Stamina Bonus
     "_NavigateStaminaBonus": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -56,6 +57,7 @@
 
     // Daily Stamina Bonus Event Not Exist
     "_DailyStaminaBonusNA": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -125,6 +127,7 @@
 
     // Logic
     "DailyStaminaBonus": {
+        "timeout": 30000,
         "next": [
             "CollectStaminaBonusNoon",
             "[JumpBack]_ServerMaintenance",
@@ -134,6 +137,7 @@
     },
 
     "CollectStaminaBonusNoon": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {

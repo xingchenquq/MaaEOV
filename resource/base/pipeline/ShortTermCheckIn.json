@@ -28,6 +28,7 @@
 
     // Short-Term Check-in
     "_NavigateShortTermCheckIn": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -56,6 +57,7 @@
 
     // Daily Stamina Bonus Event Not Exist
     "_ShortTermCheckInNA": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -125,6 +127,7 @@
 
     // Logic
     "ShortTermCheckIn": {
+        "timeout": 30000,
         "next": [
             "CollectShortTermCheckIn",
             "~ShortTermCheckIn",

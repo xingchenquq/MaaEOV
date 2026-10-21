@@ -222,6 +222,7 @@
 
     // Exit The Room -> Reading Ritual
     "_ExitRitual": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -241,6 +242,7 @@
 
     // Exit The Room -> Reading Ritual -> Agent Selection Page
     "_ExitRitualAgentSelect": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -263,6 +265,7 @@
     // The Room ========================================
     // Navigate to The Room
     "_NavigateTheRoom": {
+        "timeout": 930000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -298,6 +301,7 @@
     },
 
     "_EnsureTheRoom": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -350,6 +354,7 @@
 
     // Navigate to Reading Ritual
     "_NavigateRitual": {
+        "timeout": 930000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -399,6 +404,7 @@
 
     // Navigate to Reading Ritual's Agent Selection Page
     "_NavigateRitualSelectAgent": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -453,6 +459,7 @@
 
     // Navigate to Reading Ritual's Use Key Page
     "_NavigateRitualUseKeys": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -498,6 +505,7 @@
 
     // Navigate to The Room Storage
     "_NavigateTheRoomStorage": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -553,6 +561,7 @@
 
     // Logic
     "Ritual": {
+        "timeout": 930000,
         "next": [
             "RitualCompleted",
             "RitualCompleted_NoKey2Archive",
@@ -572,6 +581,7 @@
 
     // Ritual Proceed
     "NextRitual": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -606,6 +616,7 @@
 
     // Option: Ritual Reward Select
     "RitualRewardSelect": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -630,6 +641,7 @@
 
     // Fund
     "RitualRewardFund": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -666,6 +678,7 @@
 
     // Tape
     "RitualRewardTape": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -702,6 +715,7 @@
 
     // Star Dust
     "RitualRewardDust": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -738,6 +752,7 @@
 
     // Sample
     "RitualRewardSample": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -822,6 +837,7 @@
     },
 
     "Key2ArchivePieces": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -847,6 +863,7 @@
     },
 
     "RitualUseAllKeys": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -1032,6 +1049,7 @@
     // Optional
     // Sell Out Amulets
     "SellAmulet": {
+        "timeout": 30000,
         // "enabled": false,
         "next": [
             "AmuletSoldOut",
@@ -1044,6 +1062,7 @@
     },
 
     "AmuletSoldOut": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -1064,6 +1083,7 @@
     },
 
     "NextAmulet": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -1097,6 +1117,7 @@
     },
 
     "EnterSellAmulet": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -1131,6 +1152,7 @@
     },
 
     "SelectAmuletCount": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -1168,6 +1190,7 @@
     },
 
     "ConfirmSellAmulet": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {

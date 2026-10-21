@@ -29,6 +29,7 @@
     // 仿照 DailyStaminaBonus 等任务：先尝试直接走流程，若当前不在主界面，
     // 则依次处理服务器维护 / 重连弹窗，最后 [JumpBack]_NavigateHomepage 回主界面。
     "当期活动": {
+        "timeout": 30000,
         "next": [
             "进入活动页",
             "[JumpBack]_ServerMaintenance",
@@ -46,6 +47,7 @@
     // 注：OCR「剩余X天」同时承担活动过期判定——活动结束后 OCR 无匹配则任务超时跳过；
     //     下期活动 banner 位置/样式若变需重新截图定 ROI。
     "进入活动页": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {

@@ -113,6 +113,7 @@
     // Supplies ========================================
     // Navigate to Supplies
     "_NavigateSupplies": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -163,6 +164,7 @@
 
     // Navigate to Reinforcement
     "_NavigateReinforcementSupplies": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -210,6 +212,7 @@
 
     // Navigate to Event Supplies
     "_NavigateEventSupplies": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -258,6 +261,7 @@
 
     // Navigate to Merit Redeem
     "_NavigateMeritRedeem": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -306,6 +310,7 @@
 
     // Navigate to Silver Medal Redeem
     "_NavigateSilverMedal": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -384,6 +389,7 @@
 
     // Navigate to Violet Medal Redeem
     "_NavigateVioletMedal": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -472,6 +478,7 @@
 
     // Logic
     "Supplies": {
+        "timeout": 30000,
         "next": [
             "DailyGiftCollected",
             "[JumpBack]_ServerMaintenance",
@@ -483,6 +490,7 @@
     },
 
     "DailyGift": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -553,6 +561,7 @@
 
     // Optional
     "EventSupplies": {
+        "timeout": 30000,
         // "enabled": false,
         "recognition": {
             "type": "OCR",
@@ -578,6 +587,7 @@
     },
 
     "FindEventGift": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -648,6 +658,7 @@
     },
 
     "SilverMedalRedeemRecord": {
+        "timeout": 30000,
         // "enabled": false,
         "next": [
             "SilverMedalRedeemRecordOutOfMedal",
@@ -803,6 +814,7 @@
     },
 
     "SilverMedalRedeemOffer": {
+        "timeout": 30000,
         // "enabled": false,
         "next": [
             "SilverMedalRedeemOfferOutOfMedal",
@@ -956,6 +968,7 @@
     },
 
     "SilverMedalRedeemAcc": {
+        "timeout": 30000,
         // "enabled": false,
         "next": [
             "SilverMedalRedeemAccOutOfMedal",
@@ -1107,6 +1120,7 @@
     },
 
     "VioletMedalRedeemRecord": {
+        "timeout": 30000,
         // "enabled": false,
         "next": [
             "VioletMedalRedeemRecordAtVioletMedal",
@@ -1118,6 +1132,7 @@
     },
 
     "VioletMedalRedeemRecordAtVioletMedal": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {

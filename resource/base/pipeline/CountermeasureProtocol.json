@@ -96,6 +96,7 @@
     // Countermeasure Protocol =========================
     // Navigate to Protocol Page
     "_NavigateProtocol": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -122,6 +123,7 @@
     },
 
     "_FindProtocolFromHome": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -182,6 +184,7 @@
 
     // Navigate to Protocol Mission Tab
     "_NavigateProtocolMission": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -228,6 +231,7 @@
 
     // Navigate to Protocol Weekly Mission Tab
     "_NavigateProtocolWeekly": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -271,6 +275,7 @@
 
     // Navigate to Protocol Special Mission Tab
     "_NavigateProtocolSpecial": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -314,6 +319,7 @@
 
     // Navigate to Protocol Reward Tab
     "_NavigateProtocolReward": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -367,6 +373,7 @@
 
     // Logic
     "CountermeasureProtocol": {
+        "timeout": 30000,
         "next": [
             "ProtocolFullLevel",
             "CollectProtocolWeekly",
@@ -397,6 +404,7 @@
     },
 
     "CollectProtocolWeekly": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -430,6 +438,7 @@
     },
 
     "CollectProtocolSpecial": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {

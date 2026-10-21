@@ -44,6 +44,7 @@
 
     // Logic
     "Farm": {
+        "timeout": 30000,
         "next": [
             "SelectLevelFromBCR",
             "[JumpBack]_NavigateBCR"
@@ -131,6 +132,7 @@
 
     // Optional
     "FarmUseExpiringItem": {
+        "timeout": 30000,
         // "enabled": false,
         "recognition": {
             "type": "OCR",

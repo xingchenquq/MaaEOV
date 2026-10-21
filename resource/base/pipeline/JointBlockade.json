@@ -62,6 +62,7 @@
 
     // Navigate to Joint Blockade
     "_NavigateJointBlockade": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -116,6 +117,7 @@
 
     // Logic
     "JointBlockade": {
+        "timeout": 30000,
         "next": [
             "JointBlockadeCompleteFromSystem",
             "JointBlockadeFromSystem",
