@@ -43,6 +43,7 @@
 
     // ---------- 任务入口 ----------
     "#SeaOfCognition": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "认知海域 · 任务开始"
         },
@@ -62,6 +63,7 @@
     // ⚠️ 各候选节点自身带识别+动作，命中后会直接执行该步（如点继续/点开始作战/点左卡）并沿原流程继续，
     //   因此「检测」同时也是「续跑」——无需额外跳转。
     "SoCResume": {
+        "timeout": 930000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 0／检测当前流程位置"
         },
@@ -95,6 +97,7 @@
     //   命中（模板或文字任一）→ **显式点击「灵感节点」进入节点**（SoCInspirationClick）→ 再由 SoCGBLoop 处理全局 Buff 选择。
     //   「剩余可选灵感1/0」(SoCState_GB1/GB0) 作兜底：入口屏之后底部数字才出现。
     "SoCInspirationNode": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 0／检测到入口屏（灵感节点模板）→ 点击进入"
         },
@@ -113,6 +116,7 @@
     //   同指向上方的入口屏；当 autodori 模板因分辨率/UI 微调分数不足时，OCR 仍可命中。
     //   两者在 SoCResume / SoCTeamEnter 的 next 中并列，任一命中即进入点击流程。
     "SoCInspirationNodeOCR": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 0／检测到入口屏（灵感节点文字）→ 点击进入"
         },
@@ -129,6 +133,7 @@
 
     // ---------- 全局 Buff 界面检测：剩余可选灵感 = 1（还有名额） ----------
     "SoCState_GB1": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 0／检测到全局 Buff 选择（剩余可选灵感）"
         },
@@ -160,6 +165,7 @@
 
     // ---------- 未识别到中途状态：从 BCR 选层界面开始（默认从头） ----------
     "SoCFallbackStart": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 0／未识别中途状态 → 从 BCR 开始"
         },
@@ -205,6 +211,7 @@
 
     // ---------- 选层：点「梦渊层」节点选中（右侧显示层详情、右下出现「开始下潜」） ----------
     "SoCSelectLayer": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 2／选层：梦渊层"
         },
@@ -231,6 +238,7 @@
     // ---------- 点右下角「开始下潜」→ 弹出「自由探索 / 深潜指引」二选一 ----------
     // ⚠️ 已有进行中的海域时，按钮文字变为「继续下潜」（非「开始下潜」），由 SoCContinueDive 处理。
     "SoCStartDive": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 3／点「开始下潜」"
         },
@@ -260,6 +268,7 @@
     // ⚠️ 续跑流程**不弹二选一**：点完直接进入「灵感节点入口屏」或「战斗节点屏」，无自由探索/深潜指引选择。
     //   故 next 用专属重检链（不含 SoCDeepDive/Free/Fallback），与 SoCStartDive 的二选一链分离。
     "SoCContinueDive": {
+        "timeout": 930000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 3／点「继续下潜」（已有进行中）"
         },
@@ -295,6 +304,7 @@
     // ---------- 下潜方式二选一：优先「深潜指引」（给意识碎片）；当期已完成时右卡显示
     //            「暂不可用」识别不到 → 自动退回点左卡「自由探索」 ----------
     "SoCDeepDive": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 4／下潜方式 → 深潜指引（有意识碎片）"
         },
@@ -317,6 +327,7 @@
     },
 
     "SoCDeepDiveFree": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 4／下潜方式 → 自由探索（深潜指引不可用）"
         },
@@ -344,6 +355,7 @@
     // 保底：DirectHit（必定命中）直接点 [351,581]（深潜指引卡中心，1280×720 基准）→ 进入配队。
     // ⚠️ 排在 SoCDeepDive/SoCDeepDiveFree **之后**，仅当两者都没识别到才触发。
     "SoCDeepDiveFallback": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 4／下潜方式保底 → 点深潜指引 [351,581]"
         },
@@ -366,6 +378,7 @@
 
     // ---------- 配队界面「进入海域」（不调队，直接进入） ----------
     "SoCTeamEnter": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 5／配队界面 → 进入海域"
         },
@@ -423,6 +436,7 @@
     // ⚠️ 此节点 DirectHit 必定命中，必须排在 SoCResume.next 的**最后**（SoCDeepDiveFallback 之后、SoCFallbackStart 之前），
     //   确保「二选一 / 灵感节点入口 / 全局 Buff 屏 / 战斗屏」全都 miss 才触发，绝不在全局 Buff 屏上误点 [351,581]。
     "SoCInspirationFallback": {
+        "timeout": 930000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 5b／灵感节点保底 → 点 [351,581] 进战斗节点"
         },
@@ -474,6 +488,7 @@
     //   原 GB1~5 模板逐张匹配会误点已选卡（标题完全一致）→ 死循环，已弃用。
     //   滑动参数：[1270,360]→[870,360]，400px，duration 800，end_hold 300（慢速防阻尼，仅入口 SoCState_GB1 一次）。
     "SoCGBLoop": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 7／全局 Buff 选择中…"
         },
@@ -486,6 +501,7 @@
     // 只 OCR「未激发」标签点可激活卡，已选卡无标签 → 天然排除 → 不死循环。
     // 名额耗尽（剩余可选灵感0）或视野无可点卡(左滑兜底) 或达 max_iter → 返回去点「继续」。
     "SoCGBPickAvailable": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 7／全局 Buff：选可激活卡"
         },
@@ -525,6 +541,7 @@
     // ⚠️ 点「继续」后**直接进入战斗节点**（已定位到具体节点，不需要 SoCNodeLoop 去搜索），
     //   故 next 直接连 SoCInBattleBuff（局内 Buff 选取），跳过 SoCNodeLoop 搜索入口。
     "SoCGBContinue": {
+        "timeout": 930000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 7全局 Buff → 点「继续」出发"
         },
@@ -576,6 +593,7 @@
     // 优先找局内 Buff（「激发」出现）→ 打下一节点；
     // 找不到（全部节点打完，到领奖界面）→ 落到 SoCClaim。
     "SoCNodeLoop": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 8／循环 → 找下一个战斗节点"
         },
@@ -588,6 +606,7 @@
     //   改用模板匹配此界面标题文字，比 OCR 稳定得多。
     // 识别成功后点左卡中心 [472,344]（左卡 ROI=[352,205,239,278]）；当前只点左卡两下确保选中，右卡点击留待后续加优先级。
     "SoCInBattleBuff": {
+        "timeout": 900000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 8a／局内 Buff → 识别界面 + 点左卡"
         },
@@ -620,6 +639,7 @@
     //   与 SoCInBattleBuff 同 action + next，仅识别方式不同。
     //   挂在 SoCNodeLoop.next 的 SoCInBattleBuff 之后，仅当模板 miss 才触发。
     "SoCInBattleBuffOCR": {
+        "timeout": 900000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 8a／局内 Buff → OCR 兜底识别 + 点左卡"
         },
@@ -654,6 +674,7 @@
     // 点两下 + 隔 1s 再点激发：即便首点因动画/卡顿没生效，第2下也能补上选中。
     // 左卡 ROI=[352,205,239,278]，中心≈[472,344]。
     "SoCInBattleBuff2nd": {
+        "timeout": 900000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 8b／局内 Buff → 点左卡 第2下 [472,344]"
         },
@@ -673,6 +694,7 @@
     // 模板匹配「QiFa.png」（激发按钮，按用户实测 ROI=[562,529,151,38] 重裁，151×38）。
     // ⚠️ 之前用 OCR「激发」同样可能失败；改用已裁好的按钮模板。
     "SoCInBattleBuffConfirm": {
+        "timeout": 900000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 8c／局内 Buff → 点「激发」"
         },
@@ -701,6 +723,7 @@
     //   改用模板匹配「认知海域开始作战.png」（取自 autodori，126×43），比 OCR 稳定。
     //   action 用裸 Click：TemplateMatch 命中后裸 Click 会点模板中心（同 QiFa 节点已验证）。
     "SoCStartBattle": {
+        "timeout": 900000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 9／开始作战"
         },
@@ -762,6 +785,7 @@
     // ---------- 结算：点右下「继续」进入下一节点 ----------
     // 同上，改用模板匹配「战斗完成继续.png」。roi 同样约束右下角，避免战斗中右上「继续」误匹配。
     "SoCContinue": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "步骤 11／结算 → 点「继续」"
         },
@@ -839,6 +863,7 @@
 
     // ---------- 入场券耗尽：检测到「入场券不足」类弹窗 → 正常结束 ----------
     "_SoCNoTicket": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "入场券不足 → 结束任务"
         },

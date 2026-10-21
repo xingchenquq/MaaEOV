@@ -25,12 +25,14 @@
 
     // ---------- 任务入口 ----------
     "#自动推图": {
+        "timeout": 900000,
         "next": ["播报前提"]
     },
 
     // ---------- 前提提醒（每次任务开始只打一次）----------
     // ⚠️ 本任务未做"自动吃体力"配置：请确保体力充足，否则可能进不了关卡。
     "播报前提": {
+        "timeout": 30000,
         "recognition": "DirectHit",
         "action": {
             "type": "Custom",
@@ -45,6 +47,7 @@
     // ---------- 进度播报：本关开始（让 exe 日志更直观） ----------
     // 由 CustomAction「播报进度」维护关卡计数，输出：第 N 关 · 开始
     "播报开始": {
+        "timeout": 30000,
         "recognition": "DirectHit",
         "action": {
             "type": "Custom",
@@ -60,6 +63,7 @@
     // MaaFramework：next 里多项时，前项识别不到会落到后项（前项不吃自己的 timeout）。
     // 故把"识别未完成关卡"放前面、失败兜底"推图完成"放后面。
     "巡检关卡": {
+        "timeout": 3000,
         "recognition": "DirectHit",
         "next": ["识别未完成关卡", "推图完成"]
     },
@@ -83,6 +87,7 @@
     // 全屏 ROI 覆盖整个关卡列表，避免限制位置。
     // 命中 → 点击空星所在位置（关卡卡片通常就在空星附近）。
     "识别未完成关卡": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -104,6 +109,7 @@
     // ---------- 步骤 2：进入关卡详情页后，识别并点击"出发" ----------
     // 用户给定 ROI [784,588,496,149]（h 已 clamp 到 720 边界内），OCR 期望"出发"。
     "识别出发": {
+        "timeout": 930000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -126,24 +132,28 @@
     // 规则：最多试 4 次（每次间隔 ~0.8s，避免详情页还没出来就误判失败）；
     //       仍失败 → `识别出发失败处理` 存现场截图到 debug/ 便于排查，再结束任务。
     "巡检出发": {
+        "timeout": 3000,
         "recognition": "DirectHit",
         "post_delay": 800,
         "next": ["识别出发", "巡检出发2"]
     },
 
     "巡检出发2": {
+        "timeout": 3000,
         "recognition": "DirectHit",
         "post_delay": 800,
         "next": ["识别出发", "巡检出发3"]
     },
 
     "巡检出发3": {
+        "timeout": 3000,
         "recognition": "DirectHit",
         "post_delay": 800,
         "next": ["识别出发", "巡检出发4"]
     },
 
     "巡检出发4": {
+        "timeout": 3000,
         "recognition": "DirectHit",
         "post_delay": 800,
         "next": ["识别出发", "识别出发失败处理"]
@@ -174,6 +184,7 @@
 
     // ---------- 步骤 3a：点击"出发"后先等 5s，再开始检测编队调整 ----------
     "等待编队出现": {
+        "timeout": 900000,
         "recognition": "DirectHit",
         "post_delay": 5000,
         "next": ["巡检编队"]
@@ -181,6 +192,7 @@
 
     // 巡检：先试一次"编队调整"；没命中就落到"点击跳过介绍"
     "巡检编队": {
+        "timeout": 3000,
         "recognition": "DirectHit",
         "next": ["编队调整检测", "点击跳过介绍"]
     },
@@ -192,6 +204,7 @@
     //   只匹配**不透明的"编队调整"文字**，分数稳定得多。
     // 命中即点击文字框中心（≈ 按钮中心）→ ~进入编队选择；未命中 → 巡检的 next[1] = 点击跳过介绍。
     "编队调整检测": {
+        "timeout": 3000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -207,6 +220,7 @@
 
     // 点一下 [1218,273] 跳过 boss/机制介绍，然后回"巡检编队"继续（检测 ↔ 跳过 循环）
     "点击跳过介绍": {
+        "timeout": 30000,
         "recognition": "DirectHit",
         "action": {
             "type": "Click",
@@ -247,6 +261,7 @@
     // ⚠️ 用户明确：暂不做"上滑查看更多队伍(4/5)"，故 4/5 的行 ROI 在屏外，匹配不到即安全失败。
     // UI 选项"出战队伍"通过 pipeline_override 覆盖 template 与 roi。
     "选择出战队伍": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -272,6 +287,7 @@
     // ---------- 步骤 6-fallback：当前屏没找到目标队伍 → 原地重试一次 ----------
     // （不做上滑；与上面同款，只重新匹配一遍）
     "选择出战队伍_重试": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -297,6 +313,7 @@
     // ---------- 步骤 6-fallback-2：两次都找不到 → 点关闭编队，结束任务 ----------
     // 不直接卡死，先把弹窗关上，避免影响后续任务。
     "选择出战队伍_失败停止": {
+        "timeout": 30000,
         "recognition": "DirectHit",
         "next": ["点击关闭编队"]
     },
@@ -306,6 +323,7 @@
     // 经 编队选择.png 定位：关闭按钮 box=[1115,69,38,38]，中心 (1134,88)
     // ROI 外扩 30px = [1085,39,95,98]。
     "点击关闭编队": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -325,6 +343,7 @@
 
     // ---------- 步骤 7-重试：第一次没关闭时再来一次 ----------
     "点击关闭编队_重试": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -348,6 +367,7 @@
     // ROI 外扩 30px = [1036,593,197,111]。
     // 点击后进入战斗界面（加载需时间）→ 转"战斗内流程"首节点 ~战斗界面已加载。
     "点击开始作战": {
+        "timeout": 930000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -393,6 +413,7 @@
     //           → 出现"要启用自主作战吗？"确认弹窗 → 点右下金色对号 自动战斗确认.png
     //             （对号在弹窗内 box=[694,370,58,52]，中心 (723,396)；用户给定确认区 [425,220,410,231]）
     "点击自动战斗": {
+        "timeout": 900000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -407,6 +428,7 @@
     },
 
     "点击自动确认": {
+        "timeout": 930000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -422,6 +444,7 @@
 
     // 保险：第一次没识别到对号时再试（弹窗动画可能慢）
     "点击自动确认_重试": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -437,6 +460,7 @@
 
     // 战斗内前置动作完成 → 进入"等战斗结束"轮询
     "自动战斗已开启": {
+        "timeout": 900000,
         "recognition": "DirectHit",
         "next": ["等待战斗结束"]
     },
@@ -449,6 +473,7 @@
     // ============================================================
 
     "等待战斗结束": {
+        "timeout": 900000,
         "recognition": "DirectHit",
         "next": [
             "点击未满星结算",
@@ -462,6 +487,7 @@
     },
 
     "等待战斗结束_间隔": {
+        "timeout": 900000,
         "recognition": "DirectHit",
         "post_delay": 1000,
         "next": ["等待战斗结束"]
@@ -568,6 +594,7 @@
 
     // ---------- 进度播报：本关结束 ----------
     "播报胜利": {
+        "timeout": 30000,
         "recognition": "DirectHit",
         "action": {
             "type": "Custom",
@@ -580,6 +607,7 @@
     },
 
     "播报未满星": {
+        "timeout": 30000,
         "recognition": "DirectHit",
         "action": {
             "type": "Custom",
@@ -593,6 +621,7 @@
 
     // ---------- 胜利 / 未满星 共用收尾：连点 (640,30) 8 次（每次间隔 1s）→ 回"播报开始"开下一关 ----------
     "连点退出并重扫": {
+        "timeout": 30000,
         "recognition": "DirectHit",
         "action": {
             "type": "Custom",
