@@ -31,13 +31,32 @@ _TICKET_COUNT: int = 0
 _ZERO_LOOKALIKES = str.maketrans({"O": "0", "o": "0", "〇": "0", "０": "0"})
 
 
+#: 调令数量上限。pipeline 注释（CrisisMissionTickets.json「识别危机行动调令数」）
+#: 明确 OCR roi 覆盖「调令数 0-6」，且下游按 N-1 次点加号设战斗次数。
+_MAX_TICKETS = 6
+
+
 def _parse_ticket(text: str) -> int:
-    """从 OCR 文本里解析出非负整数；失败返回 0。"""
+    """从 OCR 文本里解析出非负整数；失败返回 0。**不做钳制**（见 _clamp_tickets）。"""
     if not text:
         return 0
     text = text.strip().translate(_ZERO_LOOKALIKES)
     m = re.search(r"\d+", text)
     return int(m.group(0)) if m else 0
+
+
+def _clamp_tickets(n) -> int:
+    """把调令数钳到 0.._MAX_TICKETS。
+
+    OCR 把「5」读成「50」时，若不设上限会按 49 次点加号（v1.14.7 前的缺陷，
+    见 2026-10-20 代码评审第 1 条）。按上限截断是"多按几次无害加号"的最优降级，
+    比直接判失败（跳过整个任务）损失更小。
+    """
+    try:
+        n = int(n)
+    except (TypeError, ValueError):
+        return 0
+    return max(0, min(_MAX_TICKETS, n))
 
 
 @AgentServer.custom_action("记录危机行动调令数")
@@ -55,7 +74,12 @@ class RecordCrisisMissionTickets(CustomAction):
         try:
             detail = argv.reco_detail
             if detail and detail.best_result:
-                n = _parse_ticket(detail.best_result.text or "")
+                raw = _parse_ticket(detail.best_result.text or "")
+                n = _clamp_tickets(raw)
+                if raw > _MAX_TICKETS:
+                    mfa_warn(_MODULE, "read_ticket",
+                             f"OCR 读数 {raw} 超出合理范围 0-{_MAX_TICKETS}，按上限处理（疑误读）",
+                             raw=raw, phase="读取调令")
         except Exception as e:
             mfa_err(_MODULE, "read_ticket", "危机行动调令 OCR 读取失败", error=e, phase="读取调令")
         _TICKET_COUNT = max(0, n)

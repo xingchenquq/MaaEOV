@@ -45,6 +45,9 @@ _VAL_RE = re.compile(
     r"(?i)(token|secret|password|passwd|pwd|cookie|authorization|bearer|"
     r"api[-_]?key|access[-_]?key|secret[-_]?key)\s*[:=]\s*(\S+)"
 )
+#: `Authorization: Bearer <token>` —— `_VAL_RE` 的 `(\S+)` 只吃到 "Bearer"，
+#: 真正的凭证残留在后面（由 tests/test_agent_pure.py 暴露）。先单独处理 bearer。
+_BEARER_RE = re.compile(r"(?i)\b(bearer)\s+([A-Za-z0-9._~+/=-]{6,})")
 _JWT_RE = re.compile(r"(eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,})")
 _PREFIX_RE = re.compile(r"\b(sk-[A-Za-z0-9]{8,}|ghp_[A-Za-z0-9]{8,}|xox[baprs]-[A-Za-z0-9-]{8,}|ya29\.[A-Za-z0-9_-]{8,})\b")
 
@@ -56,7 +59,8 @@ def _now() -> str:
 def _redact_str(s: str) -> str:
     if not isinstance(s, str):
         return s
-    out = _VAL_RE.sub(lambda m: f"{m.group(1)}=****(redacted)****", s)
+    out = _BEARER_RE.sub(lambda m: f"{m.group(1)} ****(redacted)****", s)
+    out = _VAL_RE.sub(lambda m: f"{m.group(1)}=****(redacted)****", out)
     out = _JWT_RE.sub("****(redacted-jwt)****", out)
     out = _PREFIX_RE.sub("****(redacted)****", out)
     return out
