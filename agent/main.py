@@ -14,6 +14,14 @@ from mfalog import configure_stdlib_logging
 # 统一接管 stdlib logging，使 MaaFW / 各组件既有的 log.info/error 也转为结构化 [MFA]{json}
 configure_stdlib_logging()
 
+# 资源包完整性自检（P0-1）：OTA 后若 agent/ 或 pipeline 被清空，这里先报出来。
+# 只报告不阻断——自检自身异常不得变成新的故障源。
+try:
+    from selfcheck import run as _run_selfcheck
+    _run_selfcheck()
+except Exception:  # noqa: BLE001
+    pass
+
 # import my_action
 # import my_reco
 try:

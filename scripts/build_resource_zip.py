@@ -29,6 +29,29 @@ EXCLUDE_FILES = {'resource/mfa_layout.json'}
 # 排除后缀
 EXCLUDE_SUFFIXES = ('.pyc', '.bak')
 
+# 清单路径（P0-1）：agent 启动自检据此判断 pipeline 是否被清空；
+# verify_feature 第 15 段校验哈希；不要在源树里长期保留该文件（仅存在于包内）。
+MANIFEST_REL = 'resource/base/pipeline/.manifest.json'
+
+
+def _sha256(fp):
+    import hashlib
+    h = hashlib.sha256()
+    with open(fp, 'rb') as f:
+        for chunk in iter(lambda: f.read(1 << 20), b''):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _pipeline_manifest():
+    d = os.path.join(ROOT, 'resource', 'base', 'pipeline')
+    files = {}
+    for f in sorted(os.listdir(d)):
+        if f.endswith('.json'):
+            files['resource/base/pipeline/' + f] = _sha256(os.path.join(d, f))
+    return {'version': VER, 'files': files}
+
+
 
 def should_skip(rel):
     rel = rel.replace('\\', '/')
@@ -66,6 +89,10 @@ with zipfile.ZipFile(OUT, 'w', zipfile.ZIP_DEFLATED) as z:
                 z.write(fp, rel)
                 count += 1
 
+    # pipeline 清单（包内生成，不入源树）
+    z.writestr(MANIFEST_REL, json.dumps(_pipeline_manifest(), ensure_ascii=False, indent=1))
+    count += 1
+
 sz = os.path.getsize(OUT)
 print("DONE entries=%d size=%.2f MB" % (count, sz / 1024 / 1024))
 print("OUT=", OUT)
@@ -79,9 +106,16 @@ with zipfile.ZipFile(OUT) as z:
     has_iface = 'interface.json' in names
     has_resource = any(n.startswith('resource/') for n in names)
     has_agent = any(n.startswith('agent/') for n in names)
-    print("  复核：leak=%s iface=%s resource=%s agent=%s" %
-          (leaks if leaks else '无', has_iface, has_resource, has_agent))
+    has_agent_main = 'agent/main.py' in names
+    has_manifest = MANIFEST_REL in names
+    print("  复核：leak=%s iface=%s resource=%s agent=%s agent_main=%s manifest=%s" %
+          (leaks if leaks else '无', has_iface, has_resource, has_agent,
+           has_agent_main, has_manifest))
     if leaks:
         raise SystemExit("资源包泄漏了 MFA 程序文件，已中止上传：%s" % leaks)
     if not (has_iface and has_resource and has_agent):
         raise SystemExit("资源包缺少必含项（interface/resource/agent）")
+    if not has_agent_main:
+        raise SystemExit("资源包缺少 agent/main.py —— 全量更新会清空用户 agent/，程序将失效")
+    if not has_manifest:
+        raise SystemExit("资源包缺少 pipeline 清单（agent 启动自检与 verify 第 15 段依赖它）")
