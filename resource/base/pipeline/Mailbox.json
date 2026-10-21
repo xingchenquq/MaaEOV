@@ -29,6 +29,7 @@
     // Mailbox =========================================
     // Navigate to Mailbox
     "_NavigateMailbox": {
+        "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -84,6 +85,7 @@
 
     // Logic
     "Mailbox": {
+        "timeout": 30000,
         "next": [
             "CollectMail",
             "[JumpBack]_ServerMaintenance",

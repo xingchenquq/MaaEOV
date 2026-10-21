@@ -31,12 +31,16 @@ INSTANT_RECOGNITION = {"DirectHit", "directhit"}
 #: timeout 档位：(下限, 建议值)。建议值一律取上界，避免把长等待掐断。
 TIMEOUT_TIERS = {
     "probe": (1000, 3000),
-    "nav": (20000, 60000),
+    "nav": (20000, 30000),
     "wait": (600000, 900000),
 }
 
-_PROBE_KEYWORDS = ("探测", "检查", "Check", "Is", "Detect", "Probe")
-_WAIT_KEYWORDS = ("战斗", "结算", "扫荡", "加载", "推图", "等待", "Sweep", "Battle")
+#: 探测档关键词。**只收中文与明确英文词根**：
+#: 早期版本收了 `Check`/`Is`，结果 `_ShortTermCheckIn`、`IslandXxx` 被误判成
+#: 3 秒探测档（真机上必然掐断）——短词做子串匹配一律不可靠。
+_PROBE_KEYWORDS = ("探测", "检测", "巡检", "预览", "PreCheck")
+_WAIT_KEYWORDS = ("战斗", "结算", "扫荡", "加载", "推图", "等待", "快速完成",
+                  "Battle", "Sweep", "Loading", "Result")
 _WAIT_CUSTOM_ACTIONS = ("SoCAwaitBattle", "SoCAwait", "SoCBattle")
 
 
@@ -232,6 +236,42 @@ def classify_timeout_tier(name: str, node: dict) -> str:
 def recommended_timeout(name: str, node: dict) -> int:
     """建议的 timeout 值（取档位上界，防掐断）。"""
     return TIMEOUT_TIERS[classify_timeout_tier(name, node)][1]
+
+
+#: 重试/轮询类节点：`timeout` 过长会让"卡住"从 20 秒变 15 分钟，且破坏重试节奏，
+#: 因此**不参与级联**（即使下游有长等待），只取本档位建议值。
+_RETRY_KEYWORDS = ("重试", "Retry", "Loop", "循环", "_间隔")
+
+
+def suggest_timeout(name: str, node: dict, nodes: dict, margin: int = 30000) -> int:
+    """带级联的建议值：父节点的 timeout 必须覆盖其直接下游的长等待。
+
+    语义依据：节点 N 作为当前节点时，`timeout` 界定的是 N **扫描 next 候选** 的时间。
+    若某个候选要等 8 分钟才出现（如战斗结算），N 的 30 秒会在候选出现前就掐断整条链。
+
+    两条**不级联**的例外（宁可短，不可长）：
+    * 探测档：其职责是"快速判一下然后分支"，长等待应由被跳转到的节点承担；
+    * 重试/轮询节点：靠 timeout 驱动节奏，拉长等于把卡死时间放大 30 倍。
+    """
+    base = recommended_timeout(name, node)
+    tier = classify_timeout_tier(name, node)
+    if tier != "nav":
+        return base
+    if any(k in (name or "") for k in _RETRY_KEYWORDS):
+        return base
+    nxt = (node or {}).get("next")
+    if isinstance(nxt, list):
+        for ref in nxt:
+            if not isinstance(ref, str) or not ref:
+                continue
+            target_name = strip_ref_prefix(ref)
+            target = nodes.get(target_name)
+            if target is None:
+                continue
+            if classify_timeout_tier(target_name, target) == "wait":
+                base = max(base, TIMEOUT_TIERS["wait"][1] + margin)
+                break
+    return base
 
 
 def is_trap_self_loop(name: str, node: dict) -> bool:

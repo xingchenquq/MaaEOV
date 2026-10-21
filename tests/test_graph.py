@@ -108,6 +108,37 @@ class TestPjJudgement(unittest.TestCase):
         self.assertEqual(pj.classify_timeout_tier("探测关卡", {}), "probe")
         self.assertEqual(pj.classify_timeout_tier("_NavigateMailbox", {}), "nav")
 
+    def test_short_word_false_positive(self):
+        """`_ShortTermCheckIn` 曾因含 "Check" 被判成 3 秒探测档（真机必掐断）。"""
+        self.assertEqual(pj.classify_timeout_tier("_ShortTermCheckIn", {}), "nav")
+        self.assertEqual(pj.classify_timeout_tier("CheckIn", {}), "nav")
+
+    def test_suggest_timeout_cascade(self):
+        nodes = {
+            "Nav": {"next": ["BattleWait"]},
+            "BattleWait": {"next": []},
+        }
+        # 下游是 wait 档 → 父节点必须覆盖
+        self.assertEqual(pj.suggest_timeout("Nav", nodes["Nav"], nodes),
+                         pj.TIMEOUT_TIERS["wait"][1] + 30000)
+        # 普通导航 → 本档位建议值
+        plain = {"next": ["Other"], "recognition": {"type": "TemplateMatch"}}
+        nodes["Other"] = {"next": []}
+        self.assertEqual(pj.suggest_timeout("Nav", plain, nodes), pj.TIMEOUT_TIERS["nav"][1])
+
+    def test_suggest_timeout_no_cascade_for_probe_and_retry(self):
+        nodes = {
+            "探测关卡": {"next": ["BattleWait"]},
+            "重试节点": {"next": ["BattleWait"]},
+            "BattleWait": {"next": []},
+        }
+        # 探测档不级联（快速分支是它的职责）
+        self.assertEqual(pj.suggest_timeout("探测关卡", nodes["探测关卡"], nodes),
+                         pj.TIMEOUT_TIERS["probe"][1])
+        # 重试节点不级联（靠 timeout 驱动节奏，拉长=放大卡死）
+        self.assertEqual(pj.suggest_timeout("重试节点", nodes["重试节点"], nodes),
+                         pj.TIMEOUT_TIERS["nav"][1])
+
     def test_jsonc_strip_keeps_url(self):
         text = '{\n  // 注释\n  "url": "https://example.com/a",  // 尾注释\n  "n": 1\n}'
         self.assertEqual(json.loads(pj.strip_jsonc(text))["url"], "https://example.com/a")
