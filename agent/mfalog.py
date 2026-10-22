@@ -25,6 +25,7 @@
     mfa_warn("危机行动", "ticket_ocr", "调令 OCR 读取失败")
 """
 
+import itertools
 import json
 import logging
 import os
@@ -85,8 +86,35 @@ def _redact(v):
 _LOG_PATH = os.path.join("debug", "mfa_agent.log")
 _MAX_LOG_BYTES = 5 * 1024 * 1024
 
+# 进程内自增序号 + 当前任务上下文（由 task_trace 维护，自动并入每条日志）
+_SEQ = itertools.count(1)
+_CTX: dict = {}
+
+
+def set_context(**kv) -> None:
+    """设置/更新当前任务上下文（task_id / entry / node 等），之后每条日志自动携带。"""
+    _CTX.update({k: v for k, v in kv.items() if v is not None})
+
+
+def clear_context(*keys) -> None:
+    """清空上下文；不传参数则全清（任务结束时调用）。"""
+    if not keys:
+        _CTX.clear()
+    for k in keys:
+        _CTX.pop(k, None)
+
+
+def context() -> dict:
+    return dict(_CTX)
+
 
 def _emit(rec: dict) -> None:
+    # seq：进程内自增序号，保证同一次运行内可按序还原（多线程/回调乱序时仍能排序）
+    rec.setdefault("seq", next(_SEQ))
+    # ctx：由 task_trace 维护的「当前任务上下文」（task_id / entry / node），
+    # 自动并入每条日志 —— 排查时不必再靠时间戳猜"这条属于哪个任务"。
+    for _k, _v in _CTX.items():
+        rec.setdefault(_k, _v)
     try:
         line = "[MFA]" + json.dumps(rec, ensure_ascii=False, default=str)
     except Exception:

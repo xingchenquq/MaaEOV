@@ -29,6 +29,9 @@ try:
     import crisis_mission
     import past_event
     import soc_actions
+    # 2026-10-22：任务级日志上下文 + 中止留痕（诊断用，无业务逻辑）
+    import task_trace  # noqa: F401  注册 TaskerEventSink，输出任务开始/摘要
+    import diagnostics  # noqa: F401  注册 custom_action「记录任务中止」
 except Exception as exc:  # noqa: BLE001
     # Agent 由 MaaFramework 按 interface.json 的 agent 块拉起，崩溃信息只进
     # MFA 主机日志（不写 maafw.log）。这里打印显式错误，方便在主机日志里
