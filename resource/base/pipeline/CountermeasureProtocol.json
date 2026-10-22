@@ -2,11 +2,11 @@
     // ============================================================
     // CountermeasureProtocol.json
     // 功能：领取应对协议
-    // 入口节点：#CountermeasureProtocol
+    // 入口节点：CountermeasureProtocol（聚合入口见 Aggregated.json 的 #一键领取）
     // 说明：交付应对协议任务并领取奖励。
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
     // 本文件节点数 = 23
-    // 依赖 Shared.json 节点数 = 5（示例：_ConfirmMiddle, _ConfrimReconnect, _NavigateHomepage, _ServerMaintenance, _StopTask）
+    // 依赖 Shared.json 节点数 = 5（示例：_ConfirmMiddle, _ConfirmReconnect, _NavigateHomepage, _ServerMaintenance, _StopTask）
     // ============================================================
 
     // Countermeasure Protocol
@@ -55,7 +55,7 @@
                     186,
                     134
                 ],
-                "template": "Protocol/AtProtocolWeekly.png",
+                "template": "Protocol/应对协议_周常页签.png",
                 "threshold": 0.8
             }
         }
@@ -71,7 +71,7 @@
                     184,
                     133
                 ],
-                "template": "Protocol/AtProtocolSpecial.png",
+                "template": "Protocol/应对协议_特制页签.png",
                 "threshold": 0.8
             }
         }
@@ -87,7 +87,7 @@
                     172,
                     195
                 ],
-                "template": "Protocol/AtProtocolReward.png",
+                "template": "Protocol/应对协议_奖励页签.png",
                 "threshold": 0.8
             }
         }
@@ -115,7 +115,7 @@
         "next": [
             "~Protocol",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_FindProtocolFromHome",
             "[JumpBack]_NavigateHomepage"
@@ -177,6 +177,9 @@
             }
         },
         "inverse": true,
+        // 应对协议未开放：本节点位于导航链 [JumpBack]_FindProtocolFromHome 的内层，
+        // 改成空 next 会弹栈回导航父节点来回重扫（死循环），故保留 StopTask。
+        // 聚合任务里本环是最后一环，跳过即结束，不留未执行项。
         "next": [
             "_StopTask"
         ]
@@ -203,7 +206,7 @@
         "next": [
             "~ProtocolMission",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_MissionFromProtocol",
             "[JumpBack]_NavigateProtocol"
@@ -241,7 +244,7 @@
                     186,
                     134
                 ],
-                "template": "Protocol/AtProtocolWeekly.png",
+                "template": "Protocol/应对协议_周常页签.png",
                 "threshold": 0.8
             }
         },
@@ -249,7 +252,7 @@
         "next": [
             "~ProtocolWeekly",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_WeeklyFromProtocolMission",
             "[JumpBack]_NavigateProtocolMission"
@@ -285,7 +288,7 @@
                     184,
                     133
                 ],
-                "template": "Protocol/AtProtocolSpecial.png",
+                "template": "Protocol/应对协议_特制页签.png",
                 "threshold": 0.8
             }
         },
@@ -293,7 +296,7 @@
         "next": [
             "~ProtocolSpecial",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_SpecialFromProtocolMission",
             "[JumpBack]_NavigateProtocolMission"
@@ -329,7 +332,7 @@
                     172,
                     195
                 ],
-                "template": "Protocol/AtProtocolReward.png",
+                "template": "Protocol/应对协议_奖励页签.png",
                 "threshold": 0.8
             }
         },
@@ -337,7 +340,7 @@
         "next": [
             "~ProtocolReward",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_RewardFromProtocol",
             "[JumpBack]_NavigateProtocol"
@@ -361,16 +364,9 @@
         "post_wait_freezes": 1000
     },
 
-    // ---------- 任务入口：#CountermeasureProtocol（领取应对协议） ----------
+    // ---------- 子链：领取应对协议（由 Aggregated.json 的 #一键领取 经 [JumpBack]CountermeasureProtocol 调用） ----------
 
     // Countermeasure Protocol =========================
-    // Entry
-    "#CountermeasureProtocol": {
-        "next": [
-            "CountermeasureProtocol"
-        ]
-    },
-
     // Logic
     "CountermeasureProtocol": {
         "timeout": 30000,
@@ -378,7 +374,7 @@
             "ProtocolFullLevel",
             "CollectProtocolWeekly",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateProtocolWeekly"
         ]
     },
@@ -398,12 +394,14 @@
                 ]
             }
         },
-        "next": [
-            "_StopTask"
-        ]
+        // 应对协议已满级：原来是 _StopTask，聚合后改为自然结束（同 _ProtocolNA）。
+        "next": []
     },
 
     "CollectProtocolWeekly": {
+        "focus": {
+            "Node.PipelineNode.Starting": "一键领取 · 交付周常应对协议"
+        },
         "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
@@ -414,7 +412,7 @@
                     186,
                     134
                 ],
-                "template": "Protocol/AtProtocolWeekly.png"
+                "template": "Protocol/应对协议_周常页签.png"
             }
         },
         "action": {
@@ -432,12 +430,15 @@
         "next": [
             "CollectProtocolSpecial",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateProtocolSpecial"
         ]
     },
 
     "CollectProtocolSpecial": {
+        "focus": {
+            "Node.PipelineNode.Starting": "一键领取 · 交付特制应对协议"
+        },
         "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
@@ -448,7 +449,7 @@
                     184,
                     133
                 ],
-                "template": "Protocol/AtProtocolSpecial.png"
+                "template": "Protocol/应对协议_特制页签.png"
             }
         },
         "action": {
@@ -466,12 +467,15 @@
         "next": [
             "CollectProtocolReward",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateProtocolReward"
         ]
     },
 
     "CollectProtocolReward": {
+        "focus": {
+            "Node.PipelineNode.Starting": "一键领取 · 领取协议奖励"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -481,7 +485,7 @@
                     172,
                     195
                 ],
-                "template": "Protocol/AtProtocolReward.png"
+                "template": "Protocol/应对协议_奖励页签.png"
             }
         },
         "action": {

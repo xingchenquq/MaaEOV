@@ -1,10 +1,10 @@
 {
   "name": "MaaEOV",
   "interface_version": 2,
-  "version": "v1.14.7",
+  "version": "v1.15.0",
   "url": "https://github.com/xingchenquq/MaaEOV",
   "github": "https://github.com/xingchenquq/MaaEOV",
-  "custom_title": "MaaEOV v1.14.7 | 异象回声小助手",
+  "custom_title": "MaaEOV v1.15.0 | 异象回声小助手",
   "message": "异象回声小助手",
   "controller": [
     {
@@ -78,19 +78,14 @@
       "doc": "自动赠送、领取解读点数，并尝试购买全部奖励。"
     },
     {
-      "name": "领取任务奖励",
-      "entry": "#CollectRewards",
-      "doc": "领取日常任务、周常任务奖励。"
+      "name": "一键领取",
+      "entry": "#一键领取",
+      "doc": "一键领取：依次领取日常/周常任务奖励、交付应对协议并领取奖励。\n\n> 应对协议未开放或已满级时会跳过该段。\n> 由原「领取任务奖励」「领取应对协议」合并而来。"
     },
     {
-      "name": "领取应对协议",
-      "entry": "#CountermeasureProtocol",
-      "doc": "交付应对协议任务并领取奖励。\n\n> 应对协议未开放时会跳过任务。\n> 检测到应对协议已满级会跳过任务。"
-    },
-    {
-      "name": "领取邮件",
-      "entry": "#Mailbox",
-      "doc": "领取全部邮件。"
+      "name": "活动领取",
+      "entry": "#活动领取",
+      "doc": "一键领取活动与邮件：依次领取全部邮件、短期支援补贴签到、每日行动补给体力。\n\n> 对应活动未开放时自动跳过（未开放即无内容可领）。\n> 由原「领取邮件」「活动-短期支援补贴」「活动-每日行动补给」合并而来。"
     },
     {
       "name": "补给站",
@@ -118,11 +113,6 @@
       "doc": "就是退出游戏。"
     },
     {
-      "name": "活动-每日行动补给",
-      "entry": "#DailyStaminaBonus",
-      "doc": "领取“每日行动补给”活动赠送的体力，找不到该活动（活动未开放）时会跳过。"
-    },
-    {
       "name": "联线封锁",
       "entry": "#JointBlockade",
       "option": [
@@ -131,17 +121,12 @@
       "doc": "进行联线封锁扫荡，直到达到奖章上限（108/108）或联线行动指令数量为0，已达上限则跳过。\n[color:red]需通关一次当期联线封锁开放扫荡。[/color]\n\n**放弃未完成的联线封锁挑战**\n存在未完成的联线封锁挑战时的处理方式。\n\n- No：保留进度，放弃扫荡。\n- Yes：中途放弃，继续扫荡。[color:red]（按当前进度结算结果，不会返还联线行动指令。）[/color]"
     },
     {
-      "name": "活动-短期支援补贴",
-      "entry": "#ShortTermCheckIn",
-      "doc": "“短期支援补贴”自动签到，找不到该活动（活动未开放）时会跳过。"
-    },
-    {
       "name": "当期活动",
       "entry": "#当期活动",
       "option": [
-        "危险地带-选择关卡"
+        "当期活动-选择关卡"
       ],
-      "doc": "自动扫荡当期活动关卡。\n\n**当期活动**：临界视域（2026.09.30 - 2026.10.14）\n**进入方式**：主界面右上角 banner（OCR「剩余X天」定位，活动结束后自动跳过）→ 活动主页点「危险地带」→ 关卡地图。\n\n**危险地带-选择关卡**\n选择扫荡的关卡（默认 CS110）。\n- CS110 / CS111 / CS112\n\n> 关卡选择采用绿幕模板匹配：仅匹配关卡代号末位字形（三个徽章唯一差异区域），与地图相机位置无关；自身命中 ≥0.99、误匹配 ≤0.75，阈值 0.87。\n> 若目标关卡被屏幕边缘裁掉（游戏会记忆地图相机位置），自动右拖地图重试最多 2 次。\n> 仍匹配失败时任务明确报错并留存 debug/on_error 截图，不会误点其他关卡；需重新截图更新模板。"
+      "doc": "自动扫荡当期活动关卡。\n\n**当期活动**：长夜尽头的旅人（2026.10.21 - 2026.11.11）\n**进入方式**：主界面右上角 banner（OCR「剩余X天」定位）→ 活动主页右侧点「在光消失的地方」章节 → 关卡地图。\n\n**当期活动-选择关卡**\n选择扫荡的关卡（默认 WN108）。\n- WN108 / WN109 / WN110\n\n> 关卡选择用 OCR 识别徽章下方的「WNxxx」标签后点击，实测命中 0.95~0.99，与地图相机位置无关。\n> 若目标关卡被相机推出可视区，自动右拖地图重试最多 2 次；仍找不到则任务明确报错并留存 debug/on_error 截图，不会误点其他关卡。\n> 新增关卡时：裁新 case 改 expected 即可，无需重做模板。"
     },
     {
       "name": "往期活动",
@@ -208,6 +193,16 @@
               ]
             }
           }
+        },
+        {
+          "name": "回廊 42区",
+          "pipeline_override": {
+            "LiminalZoneSelectLevel": {
+              "next": [
+                "_NavigateCorridor"
+              ]
+            }
+          }
         }
       ]
     },
@@ -264,7 +259,7 @@
           }
         },
         {
-          "name": "晋阶考核-火线特攻G601（技术指南）",
+          "name": "晋阶考核-火线特攻G601（技能/时装升级材料）",
           "pipeline_override": {
             "FarmSelectLevel": {
               "next": [
@@ -274,7 +269,7 @@
           }
         },
         {
-          "name": "晋阶考核-火线特攻G602（技术指南）",
+          "name": "晋阶考核-火线特攻G602（技能/时装升级材料）",
           "pipeline_override": {
             "FarmSelectLevel": {
               "next": [
@@ -284,7 +279,7 @@
           }
         },
         {
-          "name": "晋阶考核-火线特攻G603（技术指南）",
+          "name": "晋阶考核-火线特攻G603（技能/时装升级材料）",
           "pipeline_override": {
             "FarmSelectLevel": {
               "next": [
@@ -294,7 +289,7 @@
           }
         },
         {
-          "name": "晋阶考核-火线特攻G604（技术指南）",
+          "name": "晋阶考核-火线特攻G604（技能/时装升级材料）",
           "pipeline_override": {
             "FarmSelectLevel": {
               "next": [
@@ -304,7 +299,7 @@
           }
         },
         {
-          "name": "晋阶考核-虎胆龙威G301（狮心权限卡）",
+          "name": "晋阶考核-虎胆龙威G301（刀锋/盾卫晋阶材料）",
           "pipeline_override": {
             "FarmSelectLevel": {
               "next": [
@@ -314,7 +309,7 @@
           }
         },
         {
-          "name": "晋阶考核-虎胆龙威G302（狮心权限卡）",
+          "name": "晋阶考核-虎胆龙威G302（刀锋/盾卫晋阶材料）",
           "pipeline_override": {
             "FarmSelectLevel": {
               "next": [
@@ -324,7 +319,7 @@
           }
         },
         {
-          "name": "晋阶考核-巅峰时刻G401（狼魂权限卡）",
+          "name": "晋阶考核-巅峰时刻G401（狙击手/突击手晋阶材料）",
           "pipeline_override": {
             "FarmSelectLevel": {
               "next": [
@@ -334,7 +329,7 @@
           }
         },
         {
-          "name": "晋阶考核-巅峰时刻G402（狼魂权限卡）",
+          "name": "晋阶考核-巅峰时刻G402（狙击手/突击手晋阶材料）",
           "pipeline_override": {
             "FarmSelectLevel": {
               "next": [
@@ -344,7 +339,7 @@
           }
         },
         {
-          "name": "晋阶考核-巅峰时刻G501（骏鹰权限卡）",
+          "name": "晋阶考核-铜墙铁壁G501（异能者/战术员晋阶材料）",
           "pipeline_override": {
             "FarmSelectLevel": {
               "next": [
@@ -354,7 +349,7 @@
           }
         },
         {
-          "name": "晋阶考核-巅峰时刻G502（骏鹰权限卡 ）",
+          "name": "晋阶考核-铜墙铁壁G502（异能者/战术员晋阶材料）",
           "pipeline_override": {
             "FarmSelectLevel": {
               "next": [
@@ -534,6 +529,16 @@
           }
         },
         {
+          "name": "阈限禁区-会客间（心锚）",
+          "pipeline_override": {
+            "FarmSelectLevel": {
+              "next": [
+                "_NavigateReceptionRoom"
+              ]
+            }
+          }
+        },
+        {
           "name": "阈限禁区-回廊（心锚）",
           "pipeline_override": {
             "FarmSelectLevel": {
@@ -592,7 +597,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS001"
+                "_NavigateS001",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -602,7 +608,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS002"
+                "_NavigateS002",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -612,7 +619,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS003"
+                "_NavigateS003",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -622,7 +630,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS101"
+                "_NavigateS101",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -632,7 +641,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS102"
+                "_NavigateS102",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -642,7 +652,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS103"
+                "_NavigateS103",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -652,7 +663,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS201"
+                "_NavigateS201",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -662,7 +674,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS202"
+                "_NavigateS202",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -672,7 +685,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS203"
+                "_NavigateS203",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -682,7 +696,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS301"
+                "_NavigateS301",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -692,7 +707,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS302"
+                "_NavigateS302",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -702,7 +718,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS303"
+                "_NavigateS303",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -712,7 +729,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS401"
+                "_NavigateS401",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -722,7 +740,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS402"
+                "_NavigateS402",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -732,7 +751,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS501"
+                "_NavigateS501",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -742,7 +762,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS502"
+                "_NavigateS502",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -752,7 +773,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateS701"
+                "_NavigateS701",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -762,7 +784,8 @@
           "pipeline_override": {
             "CrisisMissionTicketsSelectLevel": {
               "next": [
-                "_NavigateEventLevel"
+                "_NavigateEventLevel",
+                "CrisisMissionTicketsFromLevel"
               ]
             }
           }
@@ -1025,39 +1048,39 @@
         }
       ]
     },
-    "危险地带-选择关卡": {
+    "当期活动-选择关卡": {
       "cases": [
         {
-          "name": "CS110",
+          "name": "WN108",
           "pipeline_override": {
-            "选择危险地带关卡": {
+            "选择关卡": {
               "recognition": {
                 "param": {
-                  "template": "当期活动/危险地带_CS110.png"
+                  "expected": ["WN108"]
                 }
               }
             }
           }
         },
         {
-          "name": "CS111",
+          "name": "WN109",
           "pipeline_override": {
-            "选择危险地带关卡": {
+            "选择关卡": {
               "recognition": {
                 "param": {
-                  "template": "当期活动/危险地带_CS111.png"
+                  "expected": ["WN109"]
                 }
               }
             }
           }
         },
         {
-          "name": "CS112",
+          "name": "WN110",
           "pipeline_override": {
-            "选择危险地带关卡": {
+            "选择关卡": {
               "recognition": {
                 "param": {
-                  "template": "当期活动/危险地带_CS112.png"
+                  "expected": ["WN110"]
                 }
               }
             }

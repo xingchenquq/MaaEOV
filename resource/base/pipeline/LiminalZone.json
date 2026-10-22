@@ -6,19 +6,14 @@
     // 说明：进行每周的阈限禁区扫荡，直到达到黑胶上限（480/480），已达上限则跳过。 [color:red]目标关卡需通关过一次开放扫荡。[/color]
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
     // 本文件节点数 = 15
-    // 依赖 Shared.json 节点数 = 15（示例：ConfirmUseStaminaItem, FarmSelectLevel, _Cancel, _ConfirmMiddle, _ConfrimReconnect, _LevelUp）
+    // 依赖 Shared.json 节点数 = 15（示例：ConfirmUseStaminaItem, FarmSelectLevel, _Cancel, _ConfirmMiddle, _ConfirmReconnect, _LevelUp）
     // ============================================================
 
     "~ReceptionRoom": {
         "recognition": {
             "type": "OCR",
             "param": {
-                "roi": [
-                    47,
-                    42,
-                    173,
-                    131
-                ],
+                "roi": [0, 0, 1280, 720],
                 "expected": [
                     "会客间"
                 ]
@@ -50,6 +45,9 @@
 
     // Handle Liminal Zone Result
     "_ConfirmLiminalZoneResult": {
+        "focus": {
+            "Node.PipelineNode.Starting": "每周-阈限禁区 · 确认结算"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
@@ -74,12 +72,7 @@
         "recognition": {
             "type": "OCR",
             "param": {
-                "roi": [
-                    47,
-                    42,
-                    173,
-                    131
-                ],
+                "roi": [0, 0, 1280, 720],
                 "expected": [
                     "会客间"
                 ]
@@ -89,7 +82,7 @@
         "next": [
             "~ReceptionRoom",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
             "[JumpBack]_ReceptionRoomFromLiminalZone",
@@ -122,6 +115,11 @@
     // Weekly Liminal Zone =============================
     // Entry
     "#LiminalZone": {
+        "focus": {
+            "Node.PipelineNode.Starting": "每周-阈限禁区 · 任务开始",
+            "Node.PipelineNode.Completed": "每周-阈限禁区 · 完成",
+            "Node.PipelineNode.Failed": "每周-阈限禁区 · 失败"
+        },
         "next": [
             "LiminalZone"
         ]
@@ -179,7 +177,7 @@
                     147,
                     144
                 ],
-                "template": "BCR/AtLiminalZone.png"
+                "template": "BCR/阈限禁区_界面标志.png"
             }
         },
         "next": [
@@ -210,7 +208,7 @@
             "_CancelLiminalZoneOverflow",
             "LiminalZoneCompletedFromLevel",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmLiminalZoneResult",
             "[JumpBack]LiminalZoneOutOfStamina",
             "[JumpBack]_LevelUp",
@@ -222,6 +220,9 @@
 
     // Option
     "LiminalZoneSelectLevel": {
+        "focus": {
+            "Node.PipelineNode.Starting": "每周-阈限禁区 · 选择关卡"
+        },
         "timeout": 30000,
         "next": [
             "_NavigateObsoleteNexus"

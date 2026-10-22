@@ -6,7 +6,7 @@
     // 说明：自动扫荡往期活动（复刻）关卡。
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
     // 本文件节点数 = 36
-    // 依赖 Shared.json 节点数 = 4（示例：_ConfrimReconnect, _NavigateHomepage, _ServerMaintenance, 点击快速完成）
+    // 依赖 Shared.json 节点数 = 4（示例：_ConfirmReconnect, _NavigateHomepage, _ServerMaintenance, 点击快速完成）
     // ============================================================
 
 
@@ -785,6 +785,11 @@
     // ---------- 任务入口：#往期活动（往期活动） ----------
 
     "#往期活动": {
+        "focus": {
+            "Node.PipelineNode.Starting": "往期活动 · 任务开始",
+            "Node.PipelineNode.Completed": "往期活动 · 完成",
+            "Node.PipelineNode.Failed": "往期活动 · 失败"
+        },
         "next": ["往期活动"]
     },
 
@@ -802,7 +807,7 @@
             "进入作战",
             "点击往期活动",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateHomepage"
         ]
     },

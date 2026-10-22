@@ -25,6 +25,11 @@
 
     // ---------- 任务入口 ----------
     "#自动推图": {
+        "focus": {
+            "Node.PipelineNode.Starting": "自动推图 · 任务开始",
+            "Node.PipelineNode.Completed": "自动推图 · 完成",
+            "Node.PipelineNode.Failed": "自动推图 · 失败"
+        },
         "timeout": 900000,
         "next": ["播报前提"]
     },
@@ -280,7 +285,6 @@
             "time": 1200,
             "threshold": 0.85
         },
-        "post_delay": 3000,
         "next": ["点击关闭编队", "选择出战队伍_重试"]
     },
 
@@ -306,7 +310,6 @@
             "time": 1200,
             "threshold": 0.85
         },
-        "post_delay": 3000,
         "next": ["点击关闭编队", "选择出战队伍_失败停止"]
     },
 
@@ -337,7 +340,6 @@
             "time": 1200,
             "threshold": 0.85
         },
-        "post_delay": 1000,
         "next": ["点击开始作战", "点击关闭编队_重试"]
     },
 
@@ -357,7 +359,6 @@
             "time": 1200,
             "threshold": 0.85
         },
-        "post_delay": 1000,
         "next": ["点击开始作战"]
     },
 
@@ -381,7 +382,6 @@
             "time": 1500,
             "threshold": 0.85
         },
-        "post_delay": 1000,
         "next": ["~战斗界面已加载"]
     },
 

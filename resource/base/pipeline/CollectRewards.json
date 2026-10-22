@@ -2,11 +2,11 @@
     // ============================================================
     // CollectRewards.json
     // 功能：领取任务奖励
-    // 入口节点：#CollectRewards
+    // 入口节点：DailyReward（聚合入口见 Aggregated.json 的 #一键领取）
     // 说明：领取日常任务、周常任务奖励。
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
     // 本文件节点数 = 10
-    // 依赖 Shared.json 节点数 = 5（示例：_CloseMutualAid, _ConfirmMiddle, _ConfrimReconnect, _NavigateMission, _ServerMaintenance）
+    // 依赖 Shared.json 节点数 = 5（示例：_CloseMutualAid, _ConfirmMiddle, _ConfirmReconnect, _NavigateMission, _ServerMaintenance）
     // ============================================================
 
     "~DailyMission": {
@@ -19,7 +19,7 @@
                     214,
                     135
                 ],
-                "template": "Mission/AtDailyMission.png",
+                "template": "Mission/日常任务_页签.png",
                 "threshold": 0.8
             }
         }
@@ -35,7 +35,7 @@
                     209,
                     131
                 ],
-                "template": "Mission/AtWeeklyMission.png",
+                "template": "Mission/周常任务_页签.png",
                 "threshold": 0.8
             }
         }
@@ -53,7 +53,7 @@
                     214,
                     135
                 ],
-                "template": "Mission/AtDailyMission.png",
+                "template": "Mission/日常任务_页签.png",
                 "threshold": 0.8
             }
         },
@@ -61,7 +61,7 @@
         "next": [
             "~DailyMission",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_CloseMutualAid",
             "[JumpBack]_DailyFromMission",
@@ -98,7 +98,7 @@
                     209,
                     131
                 ],
-                "template": "Mission/AtWeeklyMission.png",
+                "template": "Mission/周常任务_页签.png",
                 "threshold": 0.8
             }
         },
@@ -106,7 +106,7 @@
         "next": [
             "~WeeklyMission",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_CloseMutualAid",
             "[JumpBack]_WeeklyFromMission",
@@ -131,28 +131,24 @@
         "post_wait_freezes": 1000
     },
 
-    // ---------- 任务入口：#CollectRewards（领取任务奖励） ----------
+    // ---------- 子链：领取任务奖励（由 Aggregated.json 的 #一键领取 经 [JumpBack]DailyReward 调用） ----------
 
     // Collect Rewards =================================
-    // Entry
-    "#CollectRewards": {
-        "next": [
-            "DailyReward"
-        ]
-    },
-
     // Logic
     "DailyReward": {
         "timeout": 30000,
         "next": [
             "CollectDailyReward",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateDailyMission"
         ]
     },
 
     "CollectDailyReward": {
+        "focus": {
+            "Node.PipelineNode.Starting": "一键领取 · 领取日常任务奖励"
+        },
         "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
@@ -163,7 +159,7 @@
                     214,
                     135
                 ],
-                "template": "Mission/AtDailyMission.png"
+                "template": "Mission/日常任务_页签.png"
             }
         },
         "action": {
@@ -181,12 +177,15 @@
         "next": [
             "CollectWeeklyReward",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateWeeklyMission"
         ]
     },
 
     "CollectWeeklyReward": {
+        "focus": {
+            "Node.PipelineNode.Starting": "一键领取 · 领取周常任务奖励"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -196,7 +195,7 @@
                     209,
                     131
                 ],
-                "template": "Mission/AtWeeklyMission.png"
+                "template": "Mission/周常任务_页签.png"
             }
         },
         "action": {
@@ -210,6 +209,10 @@
                 ]
             }
         },
-        "post_wait_freezes": 1000
+        "post_wait_freezes": 1000,
+        // 聚合接力：本任务是「一键领取」的第一环，正常领完周常奖励后交给「领取应对协议」。
+        "next": [
+            "CountermeasureProtocol"
+        ]
     }
 }

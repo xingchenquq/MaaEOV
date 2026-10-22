@@ -1,0 +1,54 @@
+{
+    // ============================================================
+    // Aggregated.json
+    // 功能：任务聚合入口（把原有多个子任务合并为一键执行）
+    // 入口节点：#一键领取 / #活动领取
+    //
+    // ⚠ 两条硬约束（2026-10-21 实机验证，勿改回 [JumpBack] 串子链）：
+    //   1. `next: ["[JumpBack]子链A", "[JumpBack]子链B"]` 会死循环——MaaFW 弹栈后回到
+    //      栈顶节点（子链首节点）重扫其 next，而不是父节点的「剩余项」。实测 120s 内
+    //      DailyReward 循环 6 次、CountermeasureProtocol 执行 0 次。
+    //      故改用**显式硬链接**：入口只指向第一条子链，由各子链的「正常终止节点」
+    //      直接 next 到下一环，形成确定的单向链。
+    //   2. 子链内部的「活动未开放 / 已满级」出口是 StopTask，**无法改成"跳到下一环"**：
+    //      这些出口位于导航链的 [JumpBack] 内层，改成空 next 或跳转都会弹栈回导航父节点
+    //      来回重扫（实测 _DailyStaminaBonusNA <-> _DailyStaminaBonusNAFromEvent 死循环，
+    //      155 节点后超时）。MaaFW 没有跨调用层跳转机制，StopTask 是唯一能终止的出口，
+    //      故**把可能不存在的活动环排在末位**：跳过时不留未执行项。
+    //
+    // 链路：
+    //   #一键领取：DailyReward -> CollectWeeklyReward.next = CountermeasureProtocol
+    //   #活动领取：Mailbox -> CollectMail.next = DailyStaminaBonus -> ShortTermCheckIn
+    //   末环的自然终止节点（CollectProtocolReward / CollectShortTermCheckIn）保持无 next。
+    //
+    // 引用方：interface.json 任务「一键领取」「活动领取」。
+    // 本文件节点数 = 2
+    // 依赖 Shared.json 节点数 = 0
+    // ============================================================
+
+    // ---------- 任务入口：#一键领取（领取任务奖励 -> 领取应对协议） ----------
+    "#一键领取": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "一键领取 · 任务开始",
+            "Node.PipelineNode.Completed": "一键领取 · 完成",
+            "Node.PipelineNode.Failed": "一键领取 · 失败"
+        },
+        "next": [
+            "DailyReward"
+        ]
+    },
+
+    // ---------- 任务入口：#活动领取（领取邮件 -> 每日行动补给 -> 短期支援补贴） ----------
+    "#活动领取": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "活动领取 · 任务开始",
+            "Node.PipelineNode.Completed": "活动领取 · 完成",
+            "Node.PipelineNode.Failed": "活动领取 · 失败"
+        },
+        "next": [
+            "Mailbox"
+        ]
+    }
+}

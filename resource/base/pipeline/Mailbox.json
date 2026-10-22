@@ -2,11 +2,11 @@
     // ============================================================
     // Mailbox.json
     // 功能：领取邮件
-    // 入口节点：#Mailbox
+    // 入口节点：Mailbox（聚合入口见 Aggregated.json 的 #活动领取）
     // 说明：领取全部邮件。
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
     // 本文件节点数 = 6
-    // 依赖 Shared.json 节点数 = 4（示例：_ConfirmMiddle, _ConfrimReconnect, _NavigateHomepage, _ServerMaintenance）
+    // 依赖 Shared.json 节点数 = 4（示例：_ConfirmMiddle, _ConfirmReconnect, _NavigateHomepage, _ServerMaintenance）
     // ============================================================
 
     // Mailbox
@@ -46,7 +46,7 @@
         "next": [
             "~Mailbox",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_MailboxFromHome",
             "[JumpBack]_NavigateHomepage"
@@ -73,28 +73,24 @@
         }
     },
 
-    // ---------- 任务入口：#Mailbox（领取邮件） ----------
+    // ---------- 子链：领取邮件（由 Aggregated.json 的 #活动领取 经 [JumpBack]Mailbox 调用） ----------
 
     // Mailbox =========================================
-    // Entry
-    "#Mailbox": {
-        "next": [
-            "Mailbox"
-        ]
-    },
-
     // Logic
     "Mailbox": {
         "timeout": 30000,
         "next": [
             "CollectMail",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateMailbox"
         ]
     },
 
     "CollectMail": {
+        "focus": {
+            "Node.PipelineNode.Starting": "活动领取 · 领取邮件"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -108,6 +104,10 @@
             }
         },
         "action": "Click",
-        "post_wait_freezes": 1000
+        "post_wait_freezes": 1000,
+        // 聚合接力：本任务是「活动领取」的第一环，领完全部邮件后交给「每日行动补给」。
+        "next": [
+            "DailyStaminaBonus"
+        ]
     }
 }

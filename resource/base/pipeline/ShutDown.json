@@ -22,6 +22,11 @@
     // Shutdown ========================================
     // Entry
     "#ShutDown": {
+        "focus": {
+            "Node.PipelineNode.Starting": "退出游戏 · 任务开始",
+            "Node.PipelineNode.Completed": "退出游戏 · 完成",
+            "Node.PipelineNode.Failed": "退出游戏 · 失败"
+        },
         "next": [
             "_ExitGame"
         ]

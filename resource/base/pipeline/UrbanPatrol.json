@@ -6,7 +6,7 @@
     // 说明：自动赠送、领取解读点数，并尝试购买全部奖励。
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
     // 本文件节点数 = 14
-    // 依赖 Shared.json 节点数 = 7（示例：_CloseMutualAid, _ConfirmMiddle, _ConfrimReconnect, _False, _NavigateMission, _ServerMaintenance）
+    // 依赖 Shared.json 节点数 = 7（示例：_CloseMutualAid, _ConfirmMiddle, _ConfirmReconnect, _False, _NavigateMission, _ServerMaintenance）
     // ============================================================
 
     "~UrbanPatrol": {
@@ -19,7 +19,7 @@
                     219,
                     136
                 ],
-                "template": "Mission/AtUrbanPatrol.png",
+                "template": "Mission/市区巡逻_页签.png",
                 "threshold": 0.8
             }
         }
@@ -35,7 +35,7 @@
                     248,
                     134
                 ],
-                "template": "Mission/AtMutualAid.png",
+                "template": "Mission/互助任务_页签.png",
                 "threshold": 0.8
             }
         }
@@ -53,7 +53,7 @@
                     219,
                     136
                 ],
-                "template": "Mission/AtUrbanPatrol.png",
+                "template": "Mission/市区巡逻_页签.png",
                 "threshold": 0.8
             }
         },
@@ -61,7 +61,7 @@
         "next": [
             "~UrbanPatrol",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_CloseMutualAid",
             "[JumpBack]_UrbanPatrolFromMission",
@@ -98,7 +98,7 @@
                     248,
                     134
                 ],
-                "template": "Mission/AtMutualAid.png",
+                "template": "Mission/互助任务_页签.png",
                 "threshold": 0.8
             }
         },
@@ -106,7 +106,7 @@
         "next": [
             "~MutualAid",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_MutualAidFromUrbanPatrol",
             "[JumpBack]_NavigateUrbanPatrol"
@@ -135,10 +135,15 @@
     // Urban Patrol ====================================
     // Entry
     "#UrbanPatrol": {
+        "focus": {
+            "Node.PipelineNode.Starting": "市区巡逻 · 任务开始",
+            "Node.PipelineNode.Completed": "市区巡逻 · 完成",
+            "Node.PipelineNode.Failed": "市区巡逻 · 失败"
+        },
         "next": [
             "UrbanPatrol",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateUrbanPatrol"
         ]
     },
@@ -149,13 +154,16 @@
         "next": [
             "DailyCollabPtsCollected",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]CollectDailyCollabPts",
             "[JumpBack]_NavigateUrbanPatrol"
         ]
     },
 
     "CollectDailyCollabPts": {
+        "focus": {
+            "Node.PipelineNode.Starting": "市区巡逻 · 领取日常协作点数"
+        },
         "timeout": 30000,
         "recognition": {
             "type": "TemplateMatch",
@@ -166,7 +174,7 @@
                     219,
                     136
                 ],
-                "template": "Mission/AtUrbanPatrol.png"
+                "template": "Mission/市区巡逻_页签.png"
             }
         },
         "action": {
@@ -202,7 +210,7 @@
         "next": [
             "_False",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]SelectAllFriends",
             "[JumpBack]_NavigateMutualAid"
         ]
@@ -218,7 +226,7 @@
                     248,
                     134
                 ],
-                "template": "Mission/AtMutualAid.png"
+                "template": "Mission/互助任务_页签.png"
             }
         },
         "action": {
@@ -236,7 +244,7 @@
         "next": [
             "_False",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]SendCollabPts",
             "[JumpBack]_NavigateMutualAid"
@@ -253,7 +261,7 @@
                     248,
                     134
                 ],
-                "template": "Mission/AtMutualAid.png"
+                "template": "Mission/互助任务_页签.png"
             }
         },
         "action": {
@@ -271,7 +279,7 @@
         "next": [
             "_False",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]CollectCollabPts",
             "[JumpBack]_NavigateMutualAid"
@@ -279,6 +287,9 @@
     },
 
     "CollectCollabPts": {
+        "focus": {
+            "Node.PipelineNode.Starting": "市区巡逻 · 领取协作点数"
+        },
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -288,7 +299,7 @@
                     248,
                     134
                 ],
-                "template": "Mission/AtMutualAid.png"
+                "template": "Mission/互助任务_页签.png"
             }
         },
         "action": {
@@ -306,14 +317,14 @@
         "next": [
             "_False",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
-            "[JumpBack]UrbanPatrolPuchase",
+            "[JumpBack]UrbanPatrolPurchase",
             "[JumpBack]_NavigateUrbanPatrol"
         ]
     },
 
-    "UrbanPatrolPuchase": {
+    "UrbanPatrolPurchase": {
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -323,7 +334,7 @@
                     219,
                     136
                 ],
-                "template": "Mission/AtUrbanPatrol.png"
+                "template": "Mission/市区巡逻_页签.png"
             }
         },
         "action": {

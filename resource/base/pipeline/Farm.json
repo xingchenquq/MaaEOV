@@ -6,7 +6,7 @@
     // 说明：进行日常的副本刷取，在指定关卡清空全部体力。 [color:red]如目标关卡为危机行动关卡，会一并消耗危机行动调令。[/color]
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
     // 本文件节点数 = 7
-    // 依赖 Shared.json 节点数 = 14（示例：ConfirmUseStaminaItem, FarmSelectLevel, _Confirm, _ConfirmSweepResult, _ConfrimReconnect, _False）
+    // 依赖 Shared.json 节点数 = 14（示例：ConfirmUseStaminaItem, FarmSelectLevel, _Confirm, _ConfirmSweepResult, _ConfirmReconnect, _False）
     // ============================================================
 
     // Handle Liminal Zone Overflow Confirmation
@@ -37,6 +37,11 @@
     // Daily Farm ======================================
     // Entry
     "#Farm": {
+        "focus": {
+            "Node.PipelineNode.Starting": "清体力 · 任务开始",
+            "Node.PipelineNode.Completed": "清体力 · 完成",
+            "Node.PipelineNode.Failed": "清体力 · 失败"
+        },
         "next": [
             "Farm"
         ]
@@ -97,7 +102,7 @@
         "next": [
             "_False",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmSweepResult",
             "[JumpBack]_ConfirmLiminalZoneOverflow",
             "[JumpBack]FarmOutOfStamina",

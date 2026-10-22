@@ -2,11 +2,11 @@
     // ============================================================
     // ShortTermCheckIn.json
     // 功能：活动-短期支援补贴
-    // 入口节点：#ShortTermCheckIn
+    // 入口节点：ShortTermCheckIn（聚合入口见 Aggregated.json 的 #活动领取）
     // 说明：“短期支援补贴”自动签到，找不到该活动（活动未开放）时会跳过。
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
     // 本文件节点数 = 8
-    // 依赖 Shared.json 节点数 = 4（示例：_ConfirmMiddle, _ConfrimReconnect, _NavigateEvent, _ServerMaintenance）
+    // 依赖 Shared.json 节点数 = 4（示例：_ConfirmMiddle, _ConfirmReconnect, _NavigateEvent, _ServerMaintenance）
     // ============================================================
 
     "~ShortTermCheckIn": {
@@ -47,7 +47,7 @@
         "next": [
             "~ShortTermCheckIn",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_ShortTermCheckInFromEvent",
             "[JumpBack]_ShortTermCheckInNA",
@@ -115,16 +115,9 @@
         "post_wait_freezes": 1000
     },
 
-    // ---------- 任务入口：#ShortTermCheckIn（活动-短期支援补贴） ----------
+    // ---------- 子链：活动-短期支援补贴（由 Aggregated.json 的 #活动领取 经 [JumpBack]ShortTermCheckIn 调用） ----------
 
     // Collect Short-Term Check-in =====================
-    // Entry
-    "#ShortTermCheckIn": {
-        "next": [
-            "ShortTermCheckIn"
-        ]
-    },
-
     // Logic
     "ShortTermCheckIn": {
         "timeout": 30000,
@@ -132,12 +125,15 @@
             "CollectShortTermCheckIn",
             "~ShortTermCheckIn",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateShortTermCheckIn"
         ]
     },
 
     "CollectShortTermCheckIn": {
+        "focus": {
+            "Node.PipelineNode.Starting": "活动领取 · 领取短期支援补贴"
+        },
         "recognition": {
             "type": "OCR",
             "param": {

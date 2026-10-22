@@ -6,7 +6,7 @@
     // 说明：进行解读仪式，分解剩余护符（可选）。
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
     // 本文件节点数 = 48
-    // 依赖 Shared.json 节点数 = 10（示例：_BackButton, _Cancel, _Confirm, _ConfirmMiddle, _ConfrimReconnect, _Escape）
+    // 依赖 Shared.json 节点数 = 10（示例：_BackButton, _Cancel, _Confirm, _ConfirmMiddle, _ConfirmReconnect, _Escape）
     // ============================================================
 
     "~Ritual": {
@@ -19,7 +19,7 @@
                     308,
                     288
                 ],
-                "template": "TheRoom/AtRitual.png",
+                "template": "TheRoom/事务所_解读仪式页.png",
                 "threshold": 0.8
             }
         }
@@ -52,7 +52,7 @@
                     136,
                     135
                 ],
-                "template": "TheRoom/AtUseKeys.png",
+                "template": "TheRoom/事务所_使用构想之钥弹窗.png",
                 "threshold": 0.8
             }
         }
@@ -68,7 +68,7 @@
                     144,
                     145
                 ],
-                "template": "TheRoom/AtStorage.png",
+                "template": "TheRoom/事务所_仓库页.png",
                 "threshold": 0.8
             }
         }
@@ -109,7 +109,7 @@
                     136,
                     135
                 ],
-                "template": "TheRoom/AtUseKeys.png"
+                "template": "TheRoom/事务所_使用构想之钥弹窗.png"
             }
         },
         "next": [
@@ -212,7 +212,7 @@
                     144,
                     145
                 ],
-                "template": "TheRoom/AtStorage.png"
+                "template": "TheRoom/事务所_仓库页.png"
             }
         },
         "next": [
@@ -232,7 +232,7 @@
                     308,
                     288
                 ],
-                "template": "TheRoom/AtRitual.png"
+                "template": "TheRoom/事务所_解读仪式页.png"
             }
         },
         "next": [
@@ -283,7 +283,7 @@
         "next": [
             "_EnsureTheRoom",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_CancelExitTheRoom",
             "[JumpBack]_CancelKey2ArchivePieces",
             "[JumpBack]_CancelKey2Agent",
@@ -318,7 +318,7 @@
         "next": [
             // popup
             "_ServerMaintenance",
-            "_ConfrimReconnect",
+            "_ConfirmReconnect",
             "_CancelExitTheRoom",
             // overlay
             "_CloseMeditationLog",
@@ -364,7 +364,7 @@
                     308,
                     288
                 ],
-                "template": "TheRoom/AtRitual.png",
+                "template": "TheRoom/事务所_解读仪式页.png",
                 "threshold": 0.8
             }
         },
@@ -372,7 +372,7 @@
         "next": [
             "~Ritual",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_CancelExitTheRoom",
             "[JumpBack]_CancelKey2ArchivePieces",
             "[JumpBack]_CancelKey2Agent",
@@ -423,7 +423,7 @@
         "next": [
             "~RitualAgentSelect",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_AgentSelectFromRitual",
             "[JumpBack]_NavigateRitual"
@@ -440,7 +440,7 @@
                     308,
                     288
                 ],
-                "template": "TheRoom/AtRitual.png"
+                "template": "TheRoom/事务所_解读仪式页.png"
             }
         },
         "action": {
@@ -477,7 +477,7 @@
         "next": [
             "~RitualUseKeys",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_UseKeysFromRitual",
             "[JumpBack]_NavigateRitual"
@@ -515,7 +515,7 @@
                     144,
                     145
                 ],
-                "template": "TheRoom/AtStorage.png",
+                "template": "TheRoom/事务所_仓库页.png",
                 "threshold": 0.8
             }
         },
@@ -523,7 +523,7 @@
         "next": [
             "~TheRoomStorage",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_CloseSellAmulet",
             "[JumpBack]_CancelExitTheRoom",
             "[JumpBack]_ConfirmMiddle",
@@ -554,6 +554,11 @@
     // The Room ========================================
     // Entry
     "#TheRoom": {
+        "focus": {
+            "Node.PipelineNode.Starting": "事务所（解读仪式） · 任务开始",
+            "Node.PipelineNode.Completed": "事务所（解读仪式） · 完成",
+            "Node.PipelineNode.Failed": "事务所（解读仪式） · 失败"
+        },
         "next": [
             "Ritual"
         ]
@@ -568,7 +573,7 @@
             "RitualCompleted_NoKey2Agent",
             "RitualNoAmulet",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]Key2Agent",
             "[JumpBack]RitualUseAllKeys",
             "[JumpBack]Key2ArchivePieces",
@@ -591,7 +596,7 @@
                     308,
                     288
                 ],
-                "template": "TheRoom/AtRitual.png"
+                "template": "TheRoom/事务所_解读仪式页.png"
             }
         },
         "action": {
@@ -609,7 +614,7 @@
         "next": [
             "RitualRewardSelect",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
@@ -634,7 +639,7 @@
         "next": [
             "RitualRewardDust",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
@@ -671,7 +676,7 @@
         "next": [
             "ConfirmRitual",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
@@ -708,7 +713,7 @@
         "next": [
             "ConfirmRitual",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
@@ -745,7 +750,7 @@
         "next": [
             "ConfirmRitual",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
@@ -782,7 +787,7 @@
         "next": [
             "ConfirmRitual",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
@@ -857,7 +862,7 @@
         "next": [
             "RitualUseAllKeys",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateRitual"
         ]
     },
@@ -873,7 +878,7 @@
                     136,
                     135
                 ],
-                "template": "TheRoom/AtUseKeys.png"
+                "template": "TheRoom/事务所_使用构想之钥弹窗.png"
             }
         },
         "action": {
@@ -891,7 +896,7 @@
         "next": [
             "ConfirmRitualUseKeys",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateRitualUseKeys"
         ]
     },
@@ -906,7 +911,7 @@
                     136,
                     135
                 ],
-                "template": "TheRoom/AtUseKeys.png"
+                "template": "TheRoom/事务所_使用构想之钥弹窗.png"
             }
         },
         "action": {
@@ -1054,7 +1059,7 @@
         "next": [
             "AmuletSoldOut",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]NextAmulet",
             "[JumpBack]_NavigateTheRoomStorage"
@@ -1093,7 +1098,7 @@
                     144,
                     145
                 ],
-                "template": "TheRoom/AtStorage.png"
+                "template": "TheRoom/事务所_仓库页.png"
             }
         },
         "action": {
@@ -1111,7 +1116,7 @@
         "next": [
             "EnterSellAmulet",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateTheRoomStorage"
         ]
     },
@@ -1127,7 +1132,7 @@
                     144,
                     145
                 ],
-                "template": "TheRoom/AtStorage.png"
+                "template": "TheRoom/事务所_仓库页.png"
             }
         },
         "action": {
@@ -1145,7 +1150,7 @@
         "next": [
             "SelectAmuletCount",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]NextAmulet",
             "[JumpBack]_NavigateTheRoomStorage"
         ]
@@ -1183,7 +1188,7 @@
         "next": [
             "ConfirmSellAmulet",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]NextAmulet",
             "[JumpBack]_NavigateTheRoomStorage"
         ]

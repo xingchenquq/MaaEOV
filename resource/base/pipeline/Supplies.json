@@ -6,7 +6,7 @@
     // 说明：领取每日礼包，活动货柜中的可领取项目，胶卷兑换银心奖章，自动购买部分银心奖章商店、紫心奖章商店的商品。
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
     // 本文件节点数 = 55
-    // 依赖 Shared.json 节点数 = 6（示例：_Cancel, _Cancel4, _ConfirmMiddle, _ConfrimReconnect, _NavigateHomepage, _ServerMaintenance）
+    // 依赖 Shared.json 节点数 = 6（示例：_Cancel, _Cancel4, _ConfirmMiddle, _ConfirmReconnect, _NavigateHomepage, _ServerMaintenance）
     // ============================================================
 
     // Supplies
@@ -20,7 +20,7 @@
                     331,
                     655
                 ],
-                "template": "Supplies/AtSupplies.png",
+                "template": "Supplies/补给站_界面标志.png",
                 "threshold": 0.8
             }
         }
@@ -88,7 +88,7 @@
                     268,
                     145
                 ],
-                "template": "Supplies/AtSilverMedal.png",
+                "template": "Supplies/补给站_银心奖章页签.png",
                 "threshold": 0.8
             }
         }
@@ -104,7 +104,7 @@
                     269,
                     148
                 ],
-                "template": "Supplies/AtVioletMedal.png",
+                "template": "Supplies/补给站_紫心奖章页签.png",
                 "threshold": 0.8
             }
         }
@@ -123,7 +123,7 @@
                     331,
                     655
                 ],
-                "template": "Supplies/AtSupplies.png",
+                "template": "Supplies/补给站_界面标志.png",
                 "threshold": 0.8
             }
         },
@@ -131,7 +131,7 @@
         "next": [
             "~Supplies",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_Cancel4",
             "[JumpBack]_SuppliesFromHome",
             "[JumpBack]_NavigateHomepage"
@@ -155,7 +155,6 @@
             }
         },
         "action": "Click",
-        "post_delay": 500,
         "post_wait_freezes": {
             "time": 1000,
             "threshold": 0.8
@@ -183,7 +182,7 @@
         "next": [
             "~ReinforcementSupplies",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_Cancel4",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_ReinforcementSuppliesFromSupplies",
@@ -232,7 +231,7 @@
         "next": [
             "~EventSupplies",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_Cancel4",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_EventSuppliesFromSupplies",
@@ -280,7 +279,7 @@
         "next": [
             "~MeritRedeem",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_Cancel4",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_MeritRedeemFromSupplies",
@@ -320,7 +319,7 @@
                     268,
                     145
                 ],
-                "template": "Supplies/AtSilverMedal.png",
+                "template": "Supplies/补给站_银心奖章页签.png",
                 "threshold": 0.8
             }
         },
@@ -328,7 +327,7 @@
         "next": [
             "~SilverMedal",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_Cancel4",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_SilverMedalFromMeritRedeem",
@@ -363,7 +362,7 @@
                     268,
                     145
                 ],
-                "template": "Supplies/AtSilverMedal.png"
+                "template": "Supplies/补给站_银心奖章页签.png"
             }
         },
         "action": {
@@ -399,7 +398,7 @@
                     269,
                     148
                 ],
-                "template": "Supplies/AtVioletMedal.png",
+                "template": "Supplies/补给站_紫心奖章页签.png",
                 "threshold": 0.8
             }
         },
@@ -407,7 +406,7 @@
         "next": [
             "~VioletMedal",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_Cancel4",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_VioletMedalFromMeritRedeem",
@@ -442,7 +441,7 @@
                     269,
                     148
                 ],
-                "template": "Supplies/AtVioletMedal.png"
+                "template": "Supplies/补给站_紫心奖章页签.png"
             }
         },
         "action": {
@@ -471,6 +470,11 @@
     // Supplies ========================================
     // Entry
     "#Supplies": {
+        "focus": {
+            "Node.PipelineNode.Starting": "补给站 · 任务开始",
+            "Node.PipelineNode.Completed": "补给站 · 完成",
+            "Node.PipelineNode.Failed": "补给站 · 失败"
+        },
         "next": [
             "Supplies"
         ]
@@ -482,7 +486,7 @@
         "next": [
             "DailyGiftCollected",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]DailyGift",
             "[JumpBack]_NavigateReinforcementSupplies"
@@ -508,7 +512,7 @@
         "next": [
             "CollectDailyGift",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]DailyGift",
             "[JumpBack]_NavigateReinforcementSupplies"
@@ -516,6 +520,9 @@
     },
 
     "CollectDailyGift": {
+        "focus": {
+            "Node.PipelineNode.Starting": "补给站 · 领取每日礼包"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
@@ -580,7 +587,7 @@
         "next": [
             "FindEventGift",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_NavigateEventSupplies"
         ]
@@ -606,7 +613,7 @@
         "next": [
             "NoEventGift",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]CollectEventGift",
             "[JumpBack]_NavigateEventSupplies"
@@ -614,6 +621,9 @@
     },
 
     "CollectEventGift": {
+        "focus": {
+            "Node.PipelineNode.Starting": "补给站 · 领取活动货柜奖励"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
@@ -664,7 +674,7 @@
             "SilverMedalRedeemRecordOutOfMedal",
             "SilverMedalRedeemRecordComplete",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]SilverMedalRedeemRecordMax",
             "[JumpBack]SilverMedalRedeemRecordFound",
@@ -779,7 +789,7 @@
             "SilverMedalRedeemRecordConfirm",
             "SilverMedalRedeemRecord",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_NavigateSilverMedal"
         ]
@@ -820,7 +830,7 @@
             "SilverMedalRedeemOfferOutOfMedal",
             "SilverMedalRedeemOfferComplete",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]SilverMedalRedeemOfferMax",
             "[JumpBack]SilverMedalRedeemOfferFound",
@@ -933,7 +943,7 @@
             "SilverMedalRedeemOfferConfirm",
             "SilverMedalRedeemOffer",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_NavigateSilverMedal"
         ]
@@ -974,7 +984,7 @@
             "SilverMedalRedeemAccOutOfMedal",
             "SilverMedalRedeemAccComplete",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]SilverMedalRedeemAccMax",
             "[JumpBack]SilverMedalRedeemAccFound",
@@ -1085,7 +1095,7 @@
             "SilverMedalRedeemAccConfirm",
             "SilverMedalRedeemAcc",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_NavigateSilverMedal"
         ]
@@ -1125,7 +1135,7 @@
         "next": [
             "VioletMedalRedeemRecordAtVioletMedal",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_NavigateVioletMedal"
         ]
@@ -1142,14 +1152,14 @@
                     269,
                     148
                 ],
-                "template": "Supplies/AtVioletMedal.png"
+                "template": "Supplies/补给站_紫心奖章页签.png"
             }
         },
         "next": [
             "VioletMedalRedeemRecordOutOfMedal",
             "VioletMedalRedeemRecordComplete",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]VioletMedalRedeemRecordMax",
             "[JumpBack]VioletMedalRedeemRecordFound",
@@ -1252,7 +1262,7 @@
             "VioletMedalRedeemRecordConfirm",
             "VioletMedalRedeemRecord",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_VioletMedalTail",
             "[JumpBack]_NavigateVioletMedal"

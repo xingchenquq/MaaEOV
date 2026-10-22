@@ -1,0 +1,409 @@
+{
+    // ============================================================
+    // CrisisMissionLevelDone.json
+    // 功能：危机行动「选关到站」接力节点（由 CrisisMissionTickets 引用）
+    // 说明：`~Sxxx` 是 terminal（命中即结束并弹回调用者），在 [JumpBack] 弹栈重扫的
+    //       结构里会与 `_NavigateSxxx`（inverse gate）形成判定抖动，实测
+    //       `_NavigateS303 → ~S303 → SelectLevel → _NavigateS303 → …` 循环 200+ 节点超时。
+    //       这里为每个关卡建一个「到站即接力」副本：识别条件与 `~Sxxx` 完全一致，
+    //       但命中后直接 next 到 CrisisMissionTicketsFromLevel，不再弹回重扫。
+    // 本文件节点数 = 18
+    // 依赖：CrisisMissionTickets.json 的 CrisisMissionTicketsFromLevel
+    // ============================================================
+
+    "~EventLevel_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "活动"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S001_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "混合体Ⅰ",
+                    "混合体I$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S002_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "混合体Ⅱ",
+                    "混合体II$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S003_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "混合体Ⅲ",
+                    "混合体III$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S101_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "奇点列车Ⅰ",
+                    "奇点列车I$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S102_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "奇点列车Ⅱ",
+                    "奇点列车II$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S103_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "奇点列车Ⅲ",
+                    "奇点列车III$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S201_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "洛伦佐Ⅰ",
+                    "洛伦佐I$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S202_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "洛伦佐Ⅱ",
+                    "洛伦佐II$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S203_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "洛伦佐Ⅲ",
+                    "洛伦佐III$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S301_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "乐园梦魇Ⅰ",
+                    "乐园梦魇I$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S302_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "乐园梦魇Ⅱ",
+                    "乐园梦魇II$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S303_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "乐园梦魇Ⅲ",
+                    "乐园梦魇III$",
+                    "乐园梦魔IⅢ"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S401_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "总控一号Ⅰ",
+                    "总控一号I$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S402_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "总控一号Ⅱ",
+                    "总控一号II$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S501_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "幻影人偶Ⅰ",
+                    "幻影人偶I$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S502_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "幻影人偶Ⅱ",
+                    "幻影人偶II$"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    },
+
+    "~S701_GoLevel": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    821,
+                    70,
+                    240,
+                    115
+                ],
+                "expected": [
+                    "罪与罚"
+                ]
+            }
+        },
+        "next": [
+            "CrisisMissionTicketsFromLevel"
+        ]
+    }
+
+}

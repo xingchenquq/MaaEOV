@@ -2,11 +2,11 @@
     // ============================================================
     // DailyStaminaBonus.json
     // 功能：活动-每日行动补给
-    // 入口节点：#DailyStaminaBonus
+    // 入口节点：DailyStaminaBonus（聚合入口见 Aggregated.json 的 #活动领取）
     // 说明：领取“每日行动补给”活动赠送的体力，找不到该活动（活动未开放）时会跳过。
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
     // 本文件节点数 = 9
-    // 依赖 Shared.json 节点数 = 4（示例：_ConfirmMiddle, _ConfrimReconnect, _NavigateEvent, _ServerMaintenance）
+    // 依赖 Shared.json 节点数 = 4（示例：_ConfirmMiddle, _ConfirmReconnect, _NavigateEvent, _ServerMaintenance）
     // ============================================================
 
     "~DailyStaminaBonus": {
@@ -47,7 +47,7 @@
         "next": [
             "~DailyStaminaBonus",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_StaminaBonusFromEvent",
             "[JumpBack]_DailyStaminaBonusNA",
@@ -115,28 +115,24 @@
         "post_wait_freezes": 1000
     },
 
-    // ---------- 任务入口：#DailyStaminaBonus（活动-每日行动补给） ----------
+    // ---------- 子链：活动-每日行动补给（由 Aggregated.json 的 #活动领取 经 [JumpBack]DailyStaminaBonus 调用） ----------
 
     // Collect Daily Stamina Bonus =====================
-    // Entry
-    "#DailyStaminaBonus": {
-        "next": [
-            "DailyStaminaBonus"
-        ]
-    },
-
     // Logic
     "DailyStaminaBonus": {
         "timeout": 30000,
         "next": [
             "CollectStaminaBonusNoon",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateStaminaBonus"
         ]
     },
 
     "CollectStaminaBonusNoon": {
+        "focus": {
+            "Node.PipelineNode.Starting": "活动领取 · 领取每日行动补给（午间）"
+        },
         "timeout": 30000,
         "recognition": {
             "type": "OCR",
@@ -167,12 +163,15 @@
         "next": [
             "CollectStaminaBonusEvening",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateStaminaBonus"
         ]
     },
 
     "CollectStaminaBonusEvening": {
+        "focus": {
+            "Node.PipelineNode.Starting": "活动领取 · 领取每日行动补给（晚间）"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
@@ -198,6 +197,10 @@
                 ]
             }
         },
-        "post_wait_freezes": 1000
+        "post_wait_freezes": 1000,
+        // 聚合接力：本任务是「活动领取」的第二环，领完午/晚两档体力后交给「短期支援补贴」。
+        "next": [
+            "ShortTermCheckIn"
+        ]
     }
 }

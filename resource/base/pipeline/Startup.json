@@ -17,8 +17,19 @@
     // *************************************************
     // StartUp =========================================
     // Entry
+    // 2026-10-22：先判「是否已在主界面」——在的话直接结束，不再调 StartApp。
+    // 原因：游戏已在运行时 StartApp 会失败且耗时 ~120s（实测 125s 才走 on_error 兜底），
+    //      而绝大多数场景是"MaaEOV 启动时游戏本来就在跑"，没必要重启。
+    // timeout 180000：不在主界面时下游 _LaunchGame 需 120s 冷启动窗口。
     "#StartUp": {
+        "timeout": 180000,
+        "focus": {
+            "Node.PipelineNode.Starting": "启动游戏 · 任务开始",
+            "Node.PipelineNode.Completed": "启动游戏 · 完成",
+            "Node.PipelineNode.Failed": "启动游戏 · 失败"
+        },
         "next": [
+            "~Homepage",
             "_LaunchGame"
         ]
     }

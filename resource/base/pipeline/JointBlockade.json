@@ -6,7 +6,7 @@
     // 说明：进行联线封锁扫荡，直到达到奖章上限（108/108）或联线行动指令数量为0，已达上限则跳过。 [color:red]需通关一次当期联线封锁开放扫荡。[/color]
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
     // 本文件节点数 = 13
-    // 依赖 Shared.json 节点数 = 7（示例：_ConfirmMiddle, _ConfrimReconnect, _NavigateBCR, _NavigateSystem, _ServerMaintenance, _SweepConfirm）
+    // 依赖 Shared.json 节点数 = 7（示例：_ConfirmMiddle, _ConfirmReconnect, _NavigateBCR, _NavigateSystem, _ServerMaintenance, _SweepConfirm）
     // ============================================================
 
     "~JointBlockade": {
@@ -19,7 +19,7 @@
                     146,
                     132
                 ],
-                "template": "BCR/AtJointBlockade.png"
+                "template": "BCR/联线封锁_界面标志.png"
             }
         }
     },
@@ -41,6 +41,9 @@
 
     // Handle Joint Blockade Result
     "_ConfirmJointBlockadeResult": {
+        "focus": {
+            "Node.PipelineNode.Starting": "联线封锁 · 确认结算"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
@@ -72,14 +75,14 @@
                     146,
                     132
                 ],
-                "template": "BCR/AtJointBlockade.png"
+                "template": "BCR/联线封锁_界面标志.png"
             }
         },
         "inverse": true,
         "next": [
             "~JointBlockade",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_JointBlockadeFromBCR",
             "[JumpBack]_NavigateBCR"
@@ -110,6 +113,11 @@
     // Joint Blockade ==================================
     // Entry
     "#JointBlockade": {
+        "focus": {
+            "Node.PipelineNode.Starting": "联线封锁 · 任务开始",
+            "Node.PipelineNode.Completed": "联线封锁 · 完成",
+            "Node.PipelineNode.Failed": "联线封锁 · 失败"
+        },
         "next": [
             "JointBlockade"
         ]
@@ -148,7 +156,7 @@
             "JointBlockadeCompleteFromLevel",
             "JointBlockadeTicketsCompleteFromLevel",
             "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfrimReconnect",
+            "[JumpBack]_ConfirmReconnect",
             "[JumpBack]ConfirmDiscardJointBlockadeUnfinishedGame",
             "[JumpBack]_ConfirmJointBlockadeResult",
             "[JumpBack]_SweepConfirm",
