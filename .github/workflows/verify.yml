@@ -1,9 +1,12 @@
 name: verify
 
-# 资源/agent 校验门禁：push 与 PR 均强制执行 scripts/verify_feature.py，
-# 并检查 docs/任务流程与UI重测清单.md 是否与 pipeline 同步（由 gen_flow_doc.py 再生比对）。
-# 校验失败（死链 / 跨文件同名节点 / 扫荡链缺 timeout / ROI 越界 / override 断链 / 文档过期）
-# 时本 workflow 标红，阻止问题进入 master。
+# 资源/agent 校验门禁：push 与 PR 均强制执行四道检查 ——
+#   ① verify_feature.py  静态全量校验（死链/同名节点/切图/扫荡链 timeout/ROI 越界/override）
+#   ② check_graph --strict 任务图（悬空引用/陷阱自环/入口终止可达性，warn 也阻断）
+#   ③ check_levels.py    关卡配置自洽（case 名 ↔ 节点 ID ↔ 卡片归属，见 level_groups.json）
+#   ④ unittest           47 例回归
+# 并检查 docs/任务流程与UI重测清单.md 是否与 pipeline 同步。
+# 2026-10-22：②③④ 此前未接入，导致「不可达节点 / G501 错标 / 结构回归」三类问题都只能靠人工发现。
 on:
   push:
     branches: [master]
@@ -11,8 +14,8 @@ on:
       - "resource/**"
       - "agent/**"
       - "interface.json"
-      - "scripts/verify_feature.py"
-      - "scripts/gen_flow_doc.py"
+      - "scripts/**"
+      - "tests/**"
       - "docs/任务流程与UI重测清单.md"
       - ".github/workflows/verify.yml"
   pull_request:
@@ -20,8 +23,8 @@ on:
       - "resource/**"
       - "agent/**"
       - "interface.json"
-      - "scripts/verify_feature.py"
-      - "scripts/gen_flow_doc.py"
+      - "scripts/**"
+      - "tests/**"
       - "docs/任务流程与UI重测清单.md"
       - ".github/workflows/verify.yml"
 
@@ -43,6 +46,19 @@ jobs:
       # 纯标准库脚本，无需安装依赖；py_compile 只查语法不执行 import，ubuntu 可跑。
       - name: Run verify_feature.py
         run: python scripts/verify_feature.py
+
+      # 任务图检查：--strict 让「不可达节点」也阻断（2026-10-22 删除 ~Appraisal 后靠它兜住）。
+      - name: Run check_graph.py (strict)
+        run: python scripts/check_graph.py --strict
+
+      # 关卡自洽：一个关卡信息分散在 case 名 / 节点 ID / 模板名 / 判据四处，
+      # 靠 resource/base/data/level_groups.json 这份真值表反查一致性。
+      - name: Run check_levels.py
+        run: python scripts/check_levels.py
+
+      # 单元测试回归（pj 判据 / 图算法 / 自检脚本）。
+      - name: Run unit tests
+        run: python -m unittest discover -s tests -v
 
       # 文档同步检查：重新生成流程清单并与仓库版本比对，不一致即 FAIL，
       # 提示在本地重跑 python scripts/gen_flow_doc.py 并提交。

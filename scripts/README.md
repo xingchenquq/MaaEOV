@@ -15,6 +15,9 @@
 | 脚本 | 用途 | 运行时机 |
 |---|---|---|
 | `verify_feature.py` | **主校验**（CI push/PR 强制）：JSONC 解析、跨文件同名节点、死链、模板切图、custom_action 注册、任务 entry/option 引用、pipeline_override 目标、扫荡链 timeout、ROI 越界。`RESULT: ALL_OK` = 通过 | 每次改 pipeline / agent / interface 后；提交前必跑 |
+| `check_graph.py` | 任务图护栏（CI 强制 `--strict`）：悬空引用、陷阱自环、「从任务入口不可达」的孤儿节点、终止可达性 | 删除/重连节点后；CI 每次跑 |
+| `check_levels.py` | **关卡自洽校验**（CI 强制）：以 `resource/base/data/level_groups.json` 为真值，反查 interface case 名 / pipeline 节点 ID / 卡片归属 三者是否一致。2026-10-22「G501 错标巅峰时刻」即由它拦下 | 增删关卡、改 case 名后 |
+| `run_tasks.py` | **逐任务实机冒烟 / 回归驱动**：按任务跑一遍并输出「真实节点路径 + 每个识别节点的 text/score/box + 失败截图」，产出 `debug/task_runs/report_*.json`。支持 `--only / --smoke / --override / --disable`。adb 配置读 `config/maa_pi_config.json`，换机免改代码 | 改完 pipeline 后逐任务验证；**需模拟器 + 游戏状态，不进 CI** |
 | `gen_flow_doc.py` | 从 pipeline 再生 `docs/任务流程与UI重测清单.md`（CI 校验文档同步，勿手改该文档） | 每次改 pipeline 后 |
 | `package_full.py` | **完整包打包**（发版唯一通道）：前置自动跑 `verify_feature.py` → 按排除规则收集 → 密钥消毒 → 包内复核，产出 `dist/MaaEOV-<版本>-full-package.zip`。发布流程见 `docs/release.md` | 每次发版 |
 | `build_resource_zip.py` | **资源 OTA 包**：`interface.json` + `resource/` + `agent/`，构建后做 `LEAK_MARKERS` 程序文件泄漏阻断，产出 `dist/MaaEOV-<版本>-resource-win-x64.zip` | 发版需增量更新时 |
