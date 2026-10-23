@@ -22,16 +22,43 @@
 #      不会自动被读取；Maa.* 包需要 maaxyz.github.io 源。
 #   5. 在受限沙箱/安全策略环境下构建可能报 "Access to the path ... is denied"，
 #      此时需要获得非沙箱执行权限后再跑。
+#   6. -p:Brand=MaaEOV（2026-10-23 加）**只在 MFA_SRC 指向定制分支时才有意义**。
+#      本脚本默认指向 vendor/MFAAvalonia —— 上游 tag 的独立副本，不含任何定制代码，
+#      此时该参数被 MSBuild 静默忽略（无害）。若临时把 MFA_SRC 指到含定制的分支
+#      （如 Maadori 的 maadori-custom），**必须保留该参数**，否则会走「兼容模式」
+#      = 定制功能全开，产物里带出 QQ 机器人设置页、成绩图推送、日志图。
 # =============================================================================
 set -euo pipefail
 
-SRC="${MFA_SRC:-C:/Users/Lee/Documents/Python/MFAAvalonia}"
-OUT="${MFA_OUT:-C:/Users/Lee/Documents/Python/MaaEOV/.mfa_build/win-x64}"
+# 由脚本自身位置推导项目根，避免写死 C:/Users/Lee/...（换机、换目录、换用户名即失效）
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# 默认使用项目内的**独立副本**，不再指向 C:/Users/Lee/Documents/Python/MFAAvalonia。
+# 那份是 Maadori 独享的构建源（含 2603 行定制，且分支状态随开发变动），
+# MaaEOV 依赖它会出现「上游 tag 里混进别人定制」「切分支把别人状态带走」两类问题。
+SRC="${MFA_SRC:-$PROJECT_ROOT/vendor/MFAAvalonia}"
+OUT="${MFA_OUT:-$PROJECT_ROOT/.mfa_build/win-x64}"
 VER="${MFA_VER:-1.1.0}"
-ICON="${MFA_ICON:-C:/Users/Lee/Documents/Python/MaaEOV/Assets/logo.ico}"
+ICON="${MFA_ICON:-$PROJECT_ROOT/Assets/logo.ico}"
 DOTNET="${DOTNET:-/c/Program Files/dotnet/dotnet.exe}"
 
+if [ ! -f "$SRC/MFAAvalonia.Desktop/MFAAvalonia.Desktop.csproj" ]; then
+  echo "错误：MFA 源码不存在或不是 MFAAvalonia 仓库" >&2
+  echo "  实际路径：$SRC" >&2
+  echo "  首次使用请先初始化副本：" >&2
+  echo "    bash scripts/sync_mfa_src.sh v2.16.1" >&2
+  exit 1
+fi
+
+SRC_VERSION="$(git -C "$SRC" describe --tags --always --dirty 2>/dev/null || echo '未知（非 git 仓库）')"
+SRC_DIRTY=""
+if [ -n "$(git -C "$SRC" status --porcelain 2>/dev/null)" ]; then
+  SRC_DIRTY="  ⚠️ 工作区有未提交改动，产物可能不可复现"
+fi
+
 echo "源码仓库 : $SRC"
+echo "源码版本 : $SRC_VERSION$SRC_DIRTY"
 echo "输出目录 : $OUT"
 echo "版本号   : $VER"
 echo "图标     : $ICON"
@@ -50,6 +77,7 @@ cd "$SRC"
   -p:DisableBeauty=True \
   -p:DebugType=none \
   -p:DebugSymbols=false \
+  -p:Brand=MaaEOV \
   -p:ApplicationIcon="$ICON" \
   -p:AssemblyTitle=MaaEOV \
   -p:Product=MaaEOV \
