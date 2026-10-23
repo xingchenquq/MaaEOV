@@ -34,7 +34,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
-# 默认使用项目内的**独立副本**，不再指向 C:/Users/Lee/Documents/Python/MFAAvalonia。
+# 默认使用项目内的**独立副本**，不再指向 Maadori 那份 MFA 源码目录。
 # 那份是 Maadori 独享的构建源（含 2603 行定制，且分支状态随开发变动），
 # MaaEOV 依赖它会出现「上游 tag 里混进别人定制」「切分支把别人状态带走」两类问题。
 SRC="${MFA_SRC:-$PROJECT_ROOT/vendor/MFAAvalonia}"

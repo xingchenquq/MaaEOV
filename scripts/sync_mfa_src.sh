@@ -11,7 +11,7 @@
 #   后续 → fetch 该 tag 并 checkout（detached HEAD，不建分支，不留本地修改）
 #
 # 为什么要有这个副本：
-#   `C:/Users/Lee/Documents/Python/MFAAvalonia` 是 **Maadori 独享**的构建源，
+#   `C:/Users/Lee/Documents/Python/MFAAvalonia-maadori` 是 **Maadori 独享**的构建源，
 #   停在 maadori-custom 分支、含 2603 行定制。MaaEOV 直接用它会有两个问题：
 #     (a) 产物里带出 Maadori 专属功能（QQ 机器人通知、成绩图推送、日志图）；
 #     (b) 升级时 `git checkout <tag>` 会把 Maadori 的分支状态切走，
@@ -26,7 +26,7 @@ DEST="$PROJECT_ROOT/vendor/MFAAvalonia"
 
 UPSTREAM_URL="https://github.com/MaaXYZ/MFAAvalonia.git"
 #: 首次克隆的本地源；不存在时自动退回 GitHub。可用环境变量覆盖。
-LOCAL_MIRROR="${MFA_LOCAL_MIRROR:-C:/Users/Lee/Documents/Python/MFAAvalonia}"
+LOCAL_MIRROR="${MFA_LOCAL_MIRROR:-C:/Users/Lee/Documents/Python/MFAAvalonia-maadori}"
 
 TAG="${1:-}"
 if [ -z "$TAG" ]; then
