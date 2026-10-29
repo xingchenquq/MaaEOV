@@ -76,5 +76,8 @@ Thumbs.db
 # ---- 临时工作区（脚本/中间产物/备份，不入库）----
 /temp/
 
+# ---- pipeline 改判据前的手工备份（*.bak-YYYYMMDD，不入库）----
+*.bak-*
+
 # ---- MFA 源码独立副本（scripts/sync_mfa_src.sh 生成，不入库） ----
 /vendor/
