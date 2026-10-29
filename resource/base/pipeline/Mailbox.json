@@ -73,17 +73,16 @@
         }
     },
 
-    // ---------- 子链：领取邮件（由 Aggregated.json 的 #活动领取 经 [JumpBack]Mailbox 调用） ----------
+    // ---------- 子链：领取邮件（由 Aggregated.json 的 #活动领取 经 _EventGateMail 调用） ----------
+    // 转场说明：领完邮件不再直接指向下一环，而是指向下一环的 Gate（Aggregated.json），
+    // 这样本环节被开关禁用时链路仍能继续（见 Aggregated.json 文件头「开关设计」）。
 
     // Mailbox =========================================
     // Logic
     "Mailbox": {
         "timeout": 30000,
         "next": [
-            "CollectMail",
-            "[JumpBack]_ServerMaintenance",
-            "[JumpBack]_ConfirmReconnect",
-            "[JumpBack]_NavigateMailbox"
+            "_EventGateMail"
         ]
     },
 
@@ -105,9 +104,9 @@
         },
         "action": "Click",
         "post_wait_freezes": 1000,
-        // 聚合接力：本任务是「活动领取」的第一环，领完全部邮件后交给「每日行动补给」。
+        // 聚合接力：本任务是「活动领取」的第一环，领完全部邮件后交给「每日行动补给」所在闸门。
         "next": [
-            "DailyStaminaBonus"
+            "_EventGateStamina"
         ]
     }
 }

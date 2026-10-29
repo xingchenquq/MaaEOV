@@ -17,13 +17,29 @@
     //      故**把可能不存在的活动环排在末位**：跳过时不留未执行项。
     //
     // 链路：
-    //   #一键领取：DailyReward -> CollectWeeklyReward.next = CountermeasureProtocol
-    //   #活动领取：Mailbox -> CollectMail.next = DailyStaminaBonus -> ShortTermCheckIn
+    //   #一键领取：DailyReward -> _OneClickGateDaily -> CollectDailyReward
+    //            -> _OneClickGateWeekly -> CollectWeeklyReward
+    //            -> _OneClickGateProtocol -> CountermeasureProtocol
+    //   #活动领取：Mailbox -> _EventGateMail -> CollectMail
+    //            -> _EventGateStamina -> DailyStaminaBonus（内部分午/晚两档）
+    //            -> _EventGateShortTerm -> ShortTermCheckIn
     //   末环的自然终止节点（CollectProtocolReward / CollectShortTermCheckIn）保持无 next。
     //
+    // 【开关设计】「一键领取」三个领取项 + 「活动领取」三个领取项，各配一个 Yes/No 开关
+    //   （interface.json 的「一键领取-…」/「活动领取-…」）。开关关闭时该环节的执行节点
+    //   enabled=false，MaaFW 在 next 扫描时**跳过禁用节点**（同 Shared.json 的
+    //   _DiscardUnfinishedGame），于是落到同一 next 里的下一环 Gate 兜底项，链路继续 ——
+    //   不必改上游 next，因此各开关的 override 互不冲突（组合全覆盖）。
+    //   Gate 同时是「本环节导航兜底」的宿主：原各处 next 里的 [JumpBack]_Navigate*
+    //   已下移到对应 Gate，避免关闭环节时空跑一次导航。
+    //   注：DailyStaminaBonus / ShortTermCheckIn 本身是路由节点（无 recognition），
+    //   自带导航兜底，其 Gate 不需要再挂 [JumpBack]_Navigate*。
+    //
     // 引用方：interface.json 任务「一键领取」「活动领取」。
-    // 本文件节点数 = 2
-    // 依赖 Shared.json 节点数 = 0
+    // 本文件节点数 = 10
+    // 跨文件依赖：Shared.json 的 _ServerMaintenance / _ConfirmReconnect；
+    //            CollectRewards.json 的 _NavigateDailyMission / _NavigateWeeklyMission；
+    //            Mailbox.json 的 _NavigateMailbox。
     // ============================================================
 
     // ---------- 任务入口：#一键领取（领取任务奖励 -> 领取应对协议） ----------
@@ -39,6 +55,48 @@
         ]
     },
 
+    // ---------- 一键领取：三个环节闸门（DirectHit 转场，同时承担本环节导航兜底） ----------
+    // 作用：把「执行节点」与「继续往下走」拆开。环节节点被开关禁用时，
+    // 本节点的 next 扫描会跳过它，落到下一环的 Gate，链路不中断。
+
+    "_OneClickGateDaily": {
+        "timeout": 60000,
+        "next": [
+            "CollectDailyReward",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfirmReconnect",
+            "[JumpBack]_NavigateDailyMission",
+            "_OneClickGateWeekly"
+        ]
+    },
+
+    "_OneClickGateWeekly": {
+        "timeout": 60000,
+        "next": [
+            "CollectWeeklyReward",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfirmReconnect",
+            "[JumpBack]_NavigateWeeklyMission",
+            "_OneClickGateProtocol"
+        ]
+    },
+
+    "_OneClickGateProtocol": {
+        "timeout": 60000,
+        "next": [
+            "CountermeasureProtocol",
+            // 兜底：若 CountermeasureProtocol 被开关禁用而 Gate 的 next 未同步改空，
+            // 直接按成功结束，而不是白等 60s 报超时。不用 _StopTask —— 那是中止出口，
+            // 会写「记录任务中止」留痕 + 截图，正常跳过不应留痕。
+            "_OneClickDone"
+        ]
+    },
+
+    // 「一键领取」正常收尾（DirectHit + 空 next = 成功结束，无留痕）
+    "_OneClickDone": {
+        "next": []
+    },
+
     // ---------- 任务入口：#活动领取（领取邮件 -> 每日行动补给 -> 短期支援补贴） ----------
     "#活动领取": {
         "timeout": 30000,
@@ -50,5 +108,43 @@
         "next": [
             "Mailbox"
         ]
+    },
+
+    // ---------- 活动领取：三个环节闸门 ----------
+    // 与上方 _OneClickGate* 同构。区别：Mailbox 环节的执行节点 CollectMail 是识别型
+    // （需要先导航到邮件界面），故 Gate 保留 [JumpBack]_NavigateMailbox 兜底；
+    // 另两环的入口 DailyStaminaBonus / ShortTermCheckIn 本身是路由节点，自带导航。
+
+    "_EventGateMail": {
+        "timeout": 60000,
+        "next": [
+            "CollectMail",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfirmReconnect",
+            "[JumpBack]_NavigateMailbox",
+            "_EventGateStamina"
+        ]
+    },
+
+    "_EventGateStamina": {
+        "timeout": 60000,
+        "next": [
+            "DailyStaminaBonus",
+            "_EventGateShortTerm"
+        ]
+    },
+
+    "_EventGateShortTerm": {
+        "timeout": 60000,
+        "next": [
+            "ShortTermCheckIn",
+            // 兜底：ShortTermCheckIn 被开关禁用而 Gate 的 next 未同步改空时，直接成功结束。
+            "_EventDone"
+        ]
+    },
+
+    // 「活动领取」正常收尾（DirectHit + 空 next = 成功结束，无留痕）
+    "_EventDone": {
+        "next": []
     }
 }
