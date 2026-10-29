@@ -9,16 +9,31 @@
     // 依赖 Shared.json 节点数 = 15（示例：ConfirmUseStaminaItem, FarmSelectLevel, _Cancel, _ConfirmMiddle, _ConfirmReconnect, _LevelUp）
     // ============================================================
 
+    // 2026-10-29 修复（第二轮，实机核对）：
+    // 【第一轮遗留缺陷】三个关卡的判据曾统一改成 [900,590,380,130]+「进入探索/扫荡」
+    // —— 该区域是**详情页通用按钮**，会客间/废弃枢纽/回廊 42区三页都会命中，
+    // 三个 ~Xxx 互相冒充：选「回廊」时若停在废弃枢纽详情页，会直接扫废弃枢纽，
+    // 白吃每周 480 上限。实测矩阵见 temp/verify（3 页 × 3 判据）。
+    // 【本轮判据】改用详情页**左上角标题区** [40,75,320,70] 的关卡名 ——
+    // 实测该区域只显示当前关卡名，且与选择页卡片上的同名文字不重叠：
+    //   会客间页 = 命中(68,94) / 废弃枢纽页 = 未命中 / 回廊页 = 未命中 / 选择页 = 未命中
+    // 三关各自只命中自己，互斥。
     "~ReceptionRoom": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
-                "roi": [0, 0, 1280, 720],
+                "roi": [40, 75, 320, 70],
                 "expected": [
                     "会客间"
                 ]
             }
-        }
+        },
+        // 到达目标关卡 -> 交给扫荡入口（2026-10-29 第二轮：原来由 SelectLevelFromLiminalZone
+        // 直接挂 LiminalZoneFromLevel，会在别的关卡详情页误命中，见该节点注释）
+        "next": [
+            "LiminalZoneFromLevel"
+        ]
     },
 
     "_CancelLiminalZoneOverflow": {
@@ -67,24 +82,21 @@
     },
 
     // Navigate to BCR -> LiminalZone -> ReceptionRoom
+    // 2026-10-29 修复：原为 inverse + expected「会客间」，在选择页 OCR 必然命中 → 恒失败，
+    // 日志表现为 NextList 在 2ms 内 Failed、随后空转 30s 超时。
+    // 改为纯调度节点：next 首项 ~ReceptionRoom 判断「已在详情页」即结束；
+    // 否则由 _ReceptionRoomFromLiminalZone 点击卡片，点完 JumpBack 回本节点重新判定即可收敛。
+    // 2026-10-29 第二轮：插入 [JumpBack]_LiminalZoneBackToSelect —— 若当前停在
+    // **别的**关卡详情页，点不到卡片，必须先返回选择页（判据 = 详情页「扫荡」按钮）。
     "_NavigateReceptionRoom": {
-        "timeout": 30000,
-        "recognition": {
-            "type": "OCR",
-            "param": {
-                "roi": [0, 0, 1280, 720],
-                "expected": [
-                    "会客间"
-                ]
-            }
-        },
-        "inverse": true,
+        "timeout": 60000,
         "next": [
             "~ReceptionRoom",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
+            "[JumpBack]_LiminalZoneBackToSelect",
             "[JumpBack]_ReceptionRoomFromLiminalZone",
             "[JumpBack]_LiminalZoneHead",
             "[JumpBack]_NavigateLiminalZone"
@@ -167,7 +179,17 @@
         ]
     },
 
+    // 2026-10-29 修复（第二轮，实机核对）：原顺序把 LiminalZoneFromLevel 排在选关卡之前，
+    // 而它的判据是详情页通用的「扫荡」按钮 —— 只要角色停在上次那关的详情页就先命中，
+    // 「选关卡」永远不执行，直接扫了上一关（实测 3 个关卡页全部命中该判据）。
+    // 修法：选关卡走**硬链接**，且不再把 LiminalZoneFromLevel 放在这里 ——
+    // LiminalZoneSelectLevel 是路由节点恒命中，用 [JumpBack] 会让它在父节点重扫时
+    // 每轮重新命中、后面的候选永远轮不到（实测空转 300s 超时）。
+    // 「到达目标关卡后开始扫荡」改由 ~Xxx 的 next 接管：
+    //   SelectLevelFromLiminalZone -> LiminalZoneSelectLevel -> _NavigateXxx
+    //     -> ~Xxx（标题区关卡名命中）-> LiminalZoneFromLevel（扫荡）
     "SelectLevelFromLiminalZone": {
+        "timeout": 120000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -182,8 +204,7 @@
         },
         "next": [
             "~LiminalZoneNA",
-            "LiminalZoneFromLevel",
-            "[JumpBack]LiminalZoneSelectLevel"
+            "LiminalZoneSelectLevel"
         ]
     },
 

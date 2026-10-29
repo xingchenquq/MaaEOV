@@ -324,18 +324,24 @@
     },
 
     // BCR
+    // 2026-10-29 修复：「主线故事」是 BCR 的底部页签，而 BCR 所有子页
+    // （终局行动 / 阈限禁区 / 特别行动 / 资源筹备）底部都有同一排页签 ——
+    // 用它当"已在 BCR"的判据，会让 _NavigateBCR 的 inverse 在子页提前成立，
+    // 误判"已经在 BCR 了"→ 不导航 → 节点链失败。
+    // 改用 BCR 首页顶部按钮组的「往期活动」。实测四页：
+    //   BCR首页=命中 / 限区选择页=未命中 / 关卡详情页=未命中 / 主界面=未命中。
     "~BCR": {
         "recognition": {
             "type": "OCR",
             "param": {
                 "roi": [
-                    1080,
-                    607,
-                    200,
-                    113
+                    600,
+                    0,
+                    680,
+                    95
                 ],
                 "expected": [
-                    "主线故事"
+                    "往期活动"
                 ]
             }
         }
@@ -704,28 +710,41 @@
         }
     },
 
+    // 2026-10-29 修复（第二轮，实机核对）：第一轮改成 [900,590,380,130]+「进入探索/扫荡」
+    // 是错的 —— 那是详情页通用按钮，三关详情页全命中，三个 ~Xxx 互相冒充。
+    // 改用详情页左上角标题区的关卡名，三关互斥（实测矩阵见 temp/verify）。
     "~ObsoleteNexus": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
-                "roi": [0, 0, 1280, 720],
+                "roi": [40, 75, 320, 70],
                 "expected": [
                     "废弃枢纽"
                 ]
             }
-        }
+        },
+        // 到达目标关卡 -> 交给扫荡入口（见 ~ReceptionRoom 同款注释）
+        "next": [
+            "LiminalZoneFromLevel"
+        ]
     },
 
+    // 2026-10-29 修复（第二轮）：同上，改用标题区关卡名。
     "~Corridor": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
-                "roi": [0, 0, 1280, 720],
+                "roi": [40, 75, 320, 70],
                 "expected": [
-                    "回廊\\d+区"
+                    "回廊"
                 ]
             }
-        }
+        },
+        "next": [
+            "LiminalZoneFromLevel"
+        ]
     },
 
     "~LevelNA": {
@@ -2262,23 +2281,11 @@
 
     // BCR =============================================
     // Navigate to BCR Root
+    // 2026-10-29 修复：去掉 recognition + inverse，改纯调度节点（与 _NavigateReceptionRoom 同款）。
+    // next 首项 ~BCR 判断"已在 BCR 首页"，否则依次尝试弹窗处理 → _BCRFromHome → 回主页再进，
+    // 这样在 BCR 子页（页签命中但不在首页）也能正确往下走，而不是原地失败。
     "_NavigateBCR": {
         "timeout": 30000,
-        "recognition": {
-            "type": "OCR",
-            "param": {
-                "roi": [
-                    1080,
-                    607,
-                    200,
-                    113
-                ],
-                "expected": [
-                    "主线故事"
-                ]
-            }
-        },
-        "inverse": true,
         "next": [
             "~BCR",
             "[JumpBack]_ServerMaintenance",
@@ -4489,25 +4496,43 @@
         ]
     },
 
-    // Navigate to BCR -> LiminalZone -> ObsoleteNexus
-    "_NavigateObsoleteNexus": {
-        "timeout": 30000,
+    // ---------- 阈限禁区：从任意关卡详情页退回选择页（2026-10-29 第二轮新增） ----------
+    // 判据 = 详情页通用的「扫荡」按钮（实测：会客间 / 废弃枢纽 / 回廊 42区 三页详情页均命中，
+    // 关卡选择页不命中）。动作点左上角固定返回箭头（实测箭头中心 (77,36)）。
+    // 用途：选目标关卡时若角色停在**别的**关卡详情页，点不到卡片，必须先退回选择页。
+    "_LiminalZoneBackToSelect": {
+        "timeout": 10000,
         "recognition": {
             "type": "OCR",
             "param": {
-                "roi": [0, 0, 1280, 720],
+                "roi": [804, 591, 273, 129],
                 "expected": [
-                    "废弃枢纽"
+                    "扫荡",
+                    "扫汤"
                 ]
             }
         },
-        "inverse": true,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [77, 36, 1, 1]
+            }
+        },
+        "post_wait_freezes": 1000
+    },
+
+    // Navigate to BCR -> LiminalZone -> ObsoleteNexus
+    // 2026-10-29 修复：同 _NavigateReceptionRoom —— 去掉 inverse + 关卡名判据，改纯调度。
+    // 第二轮：插入 _LiminalZoneBackToSelect —— 停在别的关卡详情页时先返回选择页，否则点不到卡片。
+    "_NavigateObsoleteNexus": {
+        "timeout": 60000,
         "next": [
             "~ObsoleteNexus",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
+            "[JumpBack]_LiminalZoneBackToSelect",
             "[JumpBack]_ObsoleteNexusFromLiminalZone",
             "[JumpBack]_LiminalZoneHead",
             "[JumpBack]_NavigateLiminalZone"
@@ -4534,24 +4559,17 @@
     },
 
     // Navigate to BCR -> LiminalZone -> Corridor
+    // 2026-10-29 修复：同 _NavigateReceptionRoom —— 去掉 inverse + 关卡名判据，改纯调度。
+    // 第二轮：插入 _LiminalZoneBackToSelect（同 _NavigateObsoleteNexus）。
     "_NavigateCorridor": {
-        "timeout": 30000,
-        "recognition": {
-            "type": "OCR",
-            "param": {
-                "roi": [0, 0, 1280, 720],
-                "expected": [
-                    "回廊\\d+区"
-                ]
-            }
-        },
-        "inverse": true,
+        "timeout": 60000,
         "next": [
             "~Corridor",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
+            "[JumpBack]_LiminalZoneBackToSelect",
             "[JumpBack]_FindCorridorFromLiminalZone",
             "[JumpBack]_NavigateLiminalZone"
         ]
@@ -4983,7 +5001,7 @@
             "time": 1200,
             "threshold": 0.85
         },
-        "next": ["退出关卡详情页"]
+        "next": ["退出关卡详情页", "~Homepage"]
     },
 
 
@@ -5008,7 +5026,54 @@
         // 兜底 ~Homepage：实测危机行动扫荡结算后，这一下点击往往已经回到主界面，
         // 左上角不再有"返回"图标 → 「返回主界面」匹配不到 → next 空 → 任务被误判失败
         // （2026-10-21 实测：全链路成功，最后卡在退出关卡详情页之后的空 next）。
-        "next": ["返回主界面", "~Homepage"]
+        // 兜底 个人信息页返回：2026-10-29 新增 —— ROI [11,2,413,84] 覆盖整个左上角，
+        // 会误命中个人信息页的返回箭头（实测 score 0.543 / box [103,17,48,43]），
+        // 被带进个人信息页后上面两个候选全部落空，只能空转到 30s 超时。
+        "next": ["返回主界面", "~Homepage", "个人信息页返回"]
+    },
+
+
+    // ---------- 步骤 8a-2：个人信息页兜底（2026-10-29 新增，同日实机修正判据） ----------
+    // 背景：退出关卡详情页的模板 ROI 过宽，会把个人信息页左上角的返回箭头误判为
+    // 「当期活动/主界面图标」(实测 score 0.543 / box [103,17,48,43])。一旦界面被带到
+    // 个人信息页，8a 的两个候选（返回主界面 0.543、~Homepage 0.247）全部够不到 0.85，
+    // next 为空 → 空转 30s → 任务被判失败（调令已消耗、扫荡收益却拿不到）。
+    //
+    // ⚠ 原判据 ["UID","签到","公告"] 实机验证**无效**：真正的个人信息页上
+    //   - 页面写的是「ID: 2726584023」而不是「UID」，OCR 也识别不出 "UID"
+    //   - 没有「签到」「公告」字样
+    //   → 该节点在个人信息页 hit=False，兜底形同虚设；而 p1（公告列表页）却因「公告」
+    //     二字命中 box(78,64)，属于跨页误命中（点一下左上角会打开别的界面）。
+    // 修正判据：改用个人信息页**独有**文案，实测 5 页矩阵只在本页命中：
+    //   个人信息页 = HIT(86,284) / 主界面 = 未命中 / 公告页 = 未命中 /
+    //   关卡选择页 = 未命中 / 关卡详情页 = 未命中
+    // 点击坐标：左上角返回箭头实测中心 (77,36)。
+    "个人信息页返回": {
+        "timeout": 10000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "expected": [
+                    "登录统计",
+                    "我的名片",
+                    "好友名册"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    127,
+                    38,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1200,
+        "next": []
     },
 
 
