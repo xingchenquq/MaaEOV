@@ -233,19 +233,33 @@ def main() -> int:
     section("7) custom_action / custom_recognition 注册核对")
     used_actions = set()
     used_recos = set()
+    bad_shape = []      # custom_action/recognition 写在了 param 外层 → 框架静默忽略
     for fn, d in pipelines.items():
         for name, node in d.items():
             node = node or {}
             act = node.get("action")
             if isinstance(act, dict):
-                ca = act.get("param", {}).get("custom_action")
+                # JAction{type,param} → JCustomAction 必须嵌在 param 内。
+                # 写在 action 顶层时 C++ 侧 param 为空，动作**不会执行**且不报错
+                # （2026-10-31 认知海域 SoCGBPickAvailable 实战踩坑：一张卡都没选）。
+                if act.get("type") == "Custom" and "custom_action" in act:
+                    bad_shape.append(f"{fn} 节点 {name} 的 custom_action 写在了 action 顶层（应嵌在 action.param 内）")
+                ca = (act.get("param") or {}).get("custom_action")
                 if ca:
                     used_actions.add(ca)
             rec = node.get("recognition")
             if isinstance(rec, dict):
-                cr = rec.get("param", {}).get("custom_recognition")
+                if rec.get("type") == "Custom" and "custom_recognition" in rec:
+                    bad_shape.append(f"{fn} 节点 {name} 的 custom_recognition 写在了 recognition 顶层（应嵌在 recognition.param 内）")
+                cr = (rec.get("param") or {}).get("custom_recognition")
                 if cr:
                     used_recos.add(cr)
+    if bad_shape:
+        ok = False
+        for b in bad_shape:
+            print(f"  [FAIL] {b}")
+    else:
+        print("  [OK] 全部 Custom action/recognition 的命名均写在 param 内")
     miss_a = used_actions - action_names
     miss_r = used_recos - reco_names
     if miss_a or miss_r:

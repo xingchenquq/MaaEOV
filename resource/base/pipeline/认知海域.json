@@ -72,6 +72,8 @@
         "recognition": "DirectHit",
         "post_delay": 300,
         "next": [
+            "_SoCAbandonDive",
+            "_SoCScoreFull",
             "SoCClaim",
             "SoCContinue",
             "SoCStartBattle",
@@ -81,6 +83,7 @@
             "SoCInspirationNodeOCR",
             "SoCState_GB1",
             "SoCState_GB0",
+            "SoCStartDive",
             "SoCContinueDive",
             "SoCDeepDive",
             "SoCDeepDiveFree",
@@ -91,6 +94,123 @@
             "[JumpBack]_LevelUp",
             "[JumpBack]_NavigateBCR"
         ]
+    },
+
+    // ---------- 发现进行中的下潜 → 放弃，重新开始 ----------
+    // 实机 2026-11-01 04:19 确认的界面：选层界面右下角在「有进行中的海域」时会变成
+    //   「终止下潜」+「继续下潜」两个按钮（正常状态下只有单个「开始下潜」），
+    //   下方还有「探索进度 N/14」。
+    // 设计决策：**不做续跑，直接放弃重开**。理由——
+    //   ① 续跑时局内状态（已选 Buff、已打的节点、剩余灵感）我们无记忆，接上去大概率错乱；
+    //   ② 放弃重开的代价只是这一轮的进度，而单轮仅 8~19 分钟，重开比"接错"便宜得多；
+    //   ③ 这条链天然把「上次任务中途失败留下的烂摊子」清干净，每次从确定状态开始。
+    // 放弃三步：终止下潜 → 确认「是否放弃本次探索」→ 「探索终止」结算屏 →点掉 → 回选层重开。
+    "_SoCAbandonDive": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 0／发现进行中的下潜 → 放弃并重新开始"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [790, 610, 240, 70],
+                "expected": ["[终終][止比]下[潜潛]"],
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_delay": 1500,
+        "next": ["_SoCAbandonConfirm"]
+    },
+
+    // 确认框「注意 · 是否放弃本次探索」：✓ 确认放弃（✕ 是取消）
+    "_SoCAbandonConfirm": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 0b／确认放弃本次探索"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [200, 250, 880, 120],
+                "expected": ["放弃本次探索", "是否放弃"],
+                "threshold": 0.8
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [732, 407, 1, 1]
+            }
+        },
+        "post_delay": 2000,
+        "next": ["_SoCAbandonResult"]
+    },
+
+    // 「探索终止」结算屏（标题「探索终止」+「完成节点 0/14」）→ 点屏幕任意处继续
+    "_SoCAbandonResult": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 0c／探索终止结算 → 继续"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [0, 0, 1280, 720],
+                "expected": ["探索[终終]止", "完成节点", "完成節點"],
+                "threshold": 0.8
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [640, 360, 1, 1]
+            }
+        },
+        "post_delay": 2000,
+        // 放弃后回到选层界面（此时未选中层、两个按钮都消失）：
+        // 先判满分（已满则收尾回主界面，不留进行中的垃圾状态），否则重新选层开始。
+        "next": ["_SoCScoreFull", "SoCSelectLayer"]
+    },
+
+    // ---------- 入场券不足 2 张 → 收尾 ----------
+    // 一层只有 500 分，打满 1000 需要 2 轮 = 2 张券。只剩 1 张时开新一轮必然打不满，
+    // 白亏一张券和 8~19 分钟，不如直接结束等下期刷新。
+    // 券数在选层界面右上角（券图标 + 数字，约 (1114,36)），只在选层后挂，不在 Resume 首位，
+    // 避免在主界面把右上角资源数误读成 1。
+    "_SoCTicketLow": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "入场券不足 2 张 → 无法打满，收尾结束"
+        },
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "SoCTicketLow"
+            }
+        },
+        "next": ["_SoCReturnHome"]
+    },
+
+    // ---------- 积分已满 → 直接结束 ----------
+    // 实机 2026-11-01：意识碎片 1000/1000 后游戏**不会阻止继续下潜**，
+    // 只是把「深潜指引」变灰、自动降到「自由探索」（无奖励），程序会无意义地一直打下去白耗券。
+    // 所以在选层界面读左下角「意识碎片 1000/1000」，满了就收工。
+    // 该节点排 SoCResume.next 首位：只在选层界面能命中（左下角计数器），战斗中不会误判。
+    "_SoCScoreFull": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "完成判定／意识碎片已满 1000 → 结束"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [20, 630, 250, 82],
+                "expected": ["1000\\s*/\\s*1000", "1000/1000", "1000／1000"],
+                "threshold": 0.8
+            }
+        },
+        "next": ["_SoCReturnHome"]
     },
 
     // ---------- 全局 Buff 入口屏检测：「灵感节点 选择」卡片（最优先） ----------
@@ -182,32 +302,123 @@
         ]
     },
 
-    // ---------- 进入认知海域：选层界面底部「认知海域」图标 ----------
-    // 模板 SeaOfCognition/认知海域图标.png（用户给定）。图标在选层界面底部，ROI 取下半屏。
+    // ---------- 进入认知海域：BCR 底部条「终局行动」 ----------
+    // ⚠️ 2026-10-31 实机核对，原实现路径**完全错误**：
+    //   原假设「BCR 底部条直接有认知海域图标」→ 实际 BCR 底部只有 5 项
+    //   （终局行动 / 阈限禁区 / 特别行动 / 资源筹备 / 主线故事），认知海域在**终局行动**的二级菜单里，
+    //   与「联线封锁」并排两张卡片。这才是 SoCAtBCR 永远匹配不到、进而与 ~BCR 自旋 289 次的真因。
+    //   正确链路：BCR 底部「终局行动」→ 卡片区「认知海域」的「进入」→ 公告弹窗 → 奖励一览 → 选层。
     "SoCAtBCR": {
+        "timeout": 30000,
         "focus": {
-            "Node.PipelineNode.Starting": "步骤 1／点「认知海域」图标（选层界面）"
+            "Node.PipelineNode.Starting": "步骤 1／BCR 底部 → 点「终局行动」"
         },
         "recognition": {
-            "type": "TemplateMatch",
+            "type": "OCR",
             "param": {
-                "roi": [0, 500, 1280, 220],
-                "template": "SeaOfCognition/认知海域图标.png",
+                "roi": [420, 630, 300, 90],
+                "expected": ["[终終]局行动", "[终終]局行動"],
                 "threshold": 0.8
             }
         },
         "action": "Click",
-        "post_delay": 1000,
+        "post_delay": 1500,
         "next": [
-            "SoCSelectLayer",
+            "SoCEntryCognition",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
             "[JumpBack]_NavigateBCR",
-            "[JumpBack]_BCRHead",
-            "[JumpBack]_BCRTail",
             "[JumpBack]_NavigateHomepage"
+        ]
+    },
+
+    // ---------- 进入认知海域：终局行动界面点「认知海域」卡片的「进入」 ----------
+    // 该界面有两张卡（左「联线封锁」、右「认知海域」），底部各有一个「进入」按钮。
+    // 用 roi 限定到右卡范围，避免点中左卡的「进入」。
+    "SoCEntryCognition": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 1b／终局行动 → 点「认知海域」进入"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [430, 555, 270, 120],
+                "expected": ["进入", "進入"],
+                "threshold": 0.8
+            }
+        },
+        "action": "Click",
+        "post_delay": 2500,
+        "next": [
+            "_SoCNoticeClose",
+            "_SoCRewardPanelClose",
+            "_SoCTicketLow",
+            "_SoCScoreFull",
+            "SoCSelectLayer",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfirmReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp"
+        ]
+    },
+
+    // ---------- 首次进入的「注意 · 认知海域奖励已更新」公告 ----------
+    // 实机 2026-10-31：进入后必定先弹此窗（居中标题「注意」+ 副标题「认知海域奖励已更新」+ 中央 ✓）。
+    // 原实现完全没处理 → 任何「探测不到」都会落到 SoCFallbackStart 重新导航，形成空转。
+    "_SoCNoticeClose": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 1c／关闭「奖励已更新」公告"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [300, 180, 700, 150],
+                "expected": ["奖励已更新", "認知海域奖励", "认知海域奖励"],
+                "threshold": 0.8
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [646, 391, 1, 1]
+            }
+        },
+        "post_delay": 1500,
+        "next": [
+            "_SoCRewardPanelClose",
+            "SoCSelectLayer"
+        ]
+    },
+
+    // ---------- 奖励一览面板（右上 ✕ 关闭） ----------
+    // 实机 2026-10-31：公告关闭后弹「奖励」面板，含进度条 100/200/.../500 与「奖励倒计时」。
+    // 用「奖励倒计时」作判据（选层界面无此文案，不会误判）。
+    "_SoCRewardPanelClose": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 1d／关闭奖励一览面板"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [300, 190, 500, 70],
+                "expected": ["奖励倒计时", "奖励倒計時"],
+                "threshold": 0.8
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [1177, 214, 1, 1]
+            }
+        },
+        "post_delay": 1500,
+        "next": [
+            "SoCSelectLayer"
         ]
     },
 
@@ -227,6 +438,9 @@
         "action": "Click",
         "post_delay": 800,
         "next": [
+            "_SoCAbandonDive",
+            "_SoCTicketLow",
+            "_SoCScoreFull",
             "SoCStartDive",
             "SoCContinueDive",
             "[JumpBack]_ServerMaintenance",
@@ -467,10 +681,12 @@
     //     Step1 OCR["未激发","未激活","可激发","待激发"] 在 label_roi 找标签 → Step2 点标签上方卡片主体。
     //     收敛式终止：同屏可点卡点完才左滑一次；视野内卡都已点过 → 视为选满 → BREAK。
     // 布局：5 张 Buff 卡横排（≈y230-530），屏幕只能同时显示 ~2.5 张 → 需**左滑**才能看到右侧卡。
-    // 📁 5 张卡面模板已就位（resource/base/image/SeaOfCognition/，234~238×160，取自 autodori）：
-    //   能量涌流.png / 战前准备.png / 环境遮蔽.png / 应急护盾.png / 身心调和.png
-    //   —— 当前**尚未接入** pipeline（选卡靠 OCR 标签，不依赖卡面）。保留供后续「全局 Buff 优先级」功能使用。
-    // 优先级（未来接入时用）：能量涌流 > 战前准备 > 环境遮蔽 > 应急护盾 > 身心调和。
+    // 📁 卡面模板**并未入库**（2026-10-31 核对：resource/base/image/SeaOfCognition/ 下只有
+    //   BuffContinue / QiFa / 剩余可选灵感0 / 局内buff选择 / 战斗完成继续 / 认知海域图标 /
+    //   认知海域开始作战 / 认知海域灵感节点 / 认知海域继续下潜 / 进入海域 共 10 张，
+    //   早期注释声称的 能量涌流/战前准备/环境遮蔽/应急护盾/身心调和 五张全都不存在）。
+    //   → 若要接「按优先级选卡」，必须重新取图，且实测裸卡面匹配只有 0.18~0.53，不宜作为门控。
+    // 优先级（未来接入时用，需配 OCR 卡名而非模板匹配）：能量涌流 > 战前准备 > 环境遮蔽 > 应急护盾 > 身心调和。
     // ---------- 全局 Buff：循环入口（右区识别 + 点匹配位置 + 滑动重试） ----------
     // ⚠️ 关键约束（用户实测）：「继续」按钮从进入 Buff 界面起**就一直存在**，
     //   因此「继续」不能当作「选完」的信号，否则一进来就点继续、跳过选 Buff。
@@ -494,9 +710,12 @@
         "focus": {
             "Node.PipelineNode.Starting": "步骤 7／全局 Buff 选择中…"
         },
-        // PickAvailable 返回 True(选完/有选卡)→ SoCGBContinue 点继续；
-        // 返回 False(0 张选中)→ 框架试下一项 SoCGBSwipe 滑一下再回来重试。
-        "next": ["SoCGBPickAvailable", "SoCGBSwipe"]
+        // ⚠️ 机制更正（2026-10-31）：next 是按「识别命中顺序」推进的，**不看 action 返回值**。
+        //   旧注释写的「PickAvailable 返回 False → 框架试下一项 SoCGBSwipe」是错的：
+        //   CustomAction 返回 False 只会让该节点判定失败并走 on_error，不会落到 next 第二项。
+        //   而 SoCGBPickAvailable 是 DirectHit（必中），排在它后面的 SoCGBSwipe 永远不可达 →
+        //   已从 next 移除。滑屏由 SoCGBPickAvailable 内部 _swipe 负责，无需外部再滑。
+        "next": ["SoCGBPickAvailable"]
     },
 
     // ---------- 全局 Buff：单节点选卡（CustomAction 内部轮询） ----------
@@ -508,10 +727,23 @@
             "Node.PipelineNode.Starting": "步骤 7／全局 Buff：选可激活卡"
         },
         "recognition": "DirectHit",
+        // ⚠️ custom_action 必须嵌在 action.param 内（JAction{type,param} → JCustomAction）。
+        //   2026-10-31 修复：原写法把 custom_action 写在 action 顶层，C++ 侧 param 为空、
+        //   该自定义动作从未被执行（agent 日志无 gb_pick 记录可证），表现为「一张卡都不选」
+        //   直接去点「继续」→ 弹「未选择灵感／是否放弃激发」→ 点✓放弃 → 回环，永远选满不了。
+        //   全库其余 14 处 Custom action 均为 param 嵌套写法，仅此处例外。
         "action": {
             "type": "Custom",
-            "custom_action": "SoCGBPickAvailable"
+            "param": {
+                "custom_action": "SoCGBPickAvailable"
+            }
         },
+        // 选到卡（clicked>0）→ SoCGBContinue 点「继续」；
+        // 一张都没选到（action 返回 False）→ 不再让整个任务失败，仍去点「继续」，
+        // 由 _SoCGBAbandonConfirm 处理「未选择灵感」弹窗后回 SoCGBLoop 重试。
+        "on_error": [
+            "SoCGBContinue"
+        ],
         "next": ["SoCGBContinue"]
     },
 
@@ -569,11 +801,18 @@
     },
 
     // ---------- 全局 Buff：「未选择灵感／是否放弃激发？」弹窗处理 ----------
-    // 没选卡（clicked=0）就点「继续」时游戏弹此窗。点 ✓ [760,520] 确认放弃，
-    // 回到 SoCGBLoop 重新尝试选卡（而非回退父 next 的 SoCGBContinue → 死循环）。
-    // ↓ 原本定义在 Tasks.json 公共 JumpBack，但 next 引用 SoCGBLoop 属 GB 流程私有，
-    //   故移到本文件使引用同文件、可通过 verify_feature 校验。
+    // 没选卡（clicked=0）就点「继续」时游戏弹此窗。
+    // ⚠️ 2026-10-31 实机修正：原 target [760,520] 是空坐标，点了没反应 → 弹窗常驻遮挡界面
+    //   → 后续 OCR 只能看到边缘被裁切的那张卡 → 选卡永远失败 → 回环。
+    //   实测弹窗按钮：✕(取消放弃) 中心 [562,407]、✓(确认放弃) 中心 [732,407]。
+    //   ⚠️ 2026-11-01 二次修正：原先点 ✕（取消放弃、回去继续选）会造成死循环——
+    //   选卡失败时 → 点继续 → 弹窗 → 点 ✕ → 回 SoCGBLoop → 再选同一张 → 再失败，实测空转 12 分钟。
+    //   改为点 **✓ 确认放弃激发**，直接进入战斗：宁可少拿 Buff 也不能把任务卡死在这里。
     "_SoCGBAbandonConfirm": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 7b／未选到灵感 → 放弃激发，直接进入战斗"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
@@ -584,11 +823,12 @@
         "action": {
             "type": "Click",
             "param": {
-                "target": [760, 520, 1, 1]
+                "target": [732, 407, 1, 1]
             }
         },
-        "post_delay": 1000,
-        "next": ["SoCGBLoop"]
+        "post_delay": 1500,
+        // 放弃激发后回到阶段判定，由它决定进战斗还是别的，避免再回到选卡形成环
+        "next": ["SoCResume"]
     },
 
     // ---------- 战斗节点循环入口 ----------
@@ -599,7 +839,16 @@
         "focus": {
             "Node.PipelineNode.Starting": "步骤 8／循环 → 找下一个战斗节点"
         },
-        "next": ["SoCInBattleBuff", "SoCInBattleBuffOCR", "SoCClaim"]
+        // ⚠️ 2026-11-01 实机：最后一场战斗点完「继续」后，若界面还在结算动画里，
+        //   原 next（只有局内 Buff + 领奖）会全部 miss → 任务直接 FAIL（实测第 2 轮 40 节点处）。
+        //   补两条：仍在结算界面 → 再点一次继续；已退回选层 → 本轮结束。
+        "next": [
+            "SoCInBattleBuff",
+            "SoCInBattleBuffOCR",
+            "SoCContinue",
+            "SoCClaim",
+            "_SoCBackToLayer"
+        ]
     },
 
     // ---------- 局内 Buff：识别界面 + 点左卡 ----------
@@ -620,15 +869,19 @@
                 "threshold": 0.8
             }
         },
+        // 2026-11-01：由「死点左卡 [472,344]」改为 CustomAction，读左右卡标题后按
+        // resource/base/data/soc/buff_priority.json 打分选高分那张（低配可选生存向配置）。
         "action": {
-            "type": "Click",
+            "type": "Custom",
             "param": {
-                "target": [472, 344, 1, 1]
+                "custom_action": "SoCPickInBattleBuff"
             }
         },
+        // 选卡失败（截图/OCR 崩）→ 兜底回到原逻辑：点左卡两次 + 激发
+        "on_error": ["SoCInBattleBuff2nd"],
         "post_delay": 800,
         "next": [
-            "SoCInBattleBuff2nd",
+            "SoCInBattleBuffConfirm",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
@@ -649,20 +902,22 @@
         "recognition": {
             "type": "OCR",
             "param": {
-                "roi": [850, 0, 430, 50],
+                "roi": [490, 125, 320, 55],
                 "expected": ["请选择一个短暂灵感"],
                 "threshold": 0.8
             }
         },
+        // 同 SoCInBattleBuff：按优先级表选卡，不再死点左卡
         "action": {
-            "type": "Click",
+            "type": "Custom",
             "param": {
-                "target": [472, 344, 1, 1]
+                "custom_action": "SoCPickInBattleBuff"
             }
         },
+        "on_error": ["SoCInBattleBuff2nd"],
         "post_delay": 800,
         "next": [
-            "SoCInBattleBuff2nd",
+            "SoCInBattleBuffConfirm",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
@@ -781,12 +1036,40 @@
             "_StopTask"
         ],
         "next": [
+            "_SoCBackToLayer",
             "SoCContinue",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
             "[JumpBack]_SeaOfCognitionReward"
+        ]
+    },
+
+    // ---------- 战斗结束后已退回选层界面 → 本轮完成 ----------
+    // 实机 2026-11-01：本轮最后一个战斗节点打完后，游戏直接退回选层界面
+    // （左下意识碎片 500/1000、右下「开始下潜」），不存在「战斗完成继续」按钮。
+    // 原实现只有 SoCContinue 一条路 → 匹配不到就一直等到 SoCAutoBattle 的 max_wait 超时被误判失败。
+    // 现在由 SoCAwaitBattle 内部直接识别到站并返回 True，本节点再做一次确认并分流：
+    //   · 本层只有 500 分，满额需 2 轮 → 未满必须继续下潜，不能就此收工
+    //   · 已满 1000 → _SoCScoreFull 命中 → 回主界面收尾
+    "_SoCBackToLayer": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 11c／本轮结束 → 判断是否继续下潜"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [820, 545, 460, 175],
+                "expected": ["开始下[潜潛]", "继续下[潜潛]", "繼續下[潜潛]", "開始下[潜潛]"],
+                "threshold": 0.8
+            }
+        },
+        "next": [
+            "_SoCScoreFull",
+            "_SoCTicketLow",
+            "SoCStartDive"
         ]
     },
 
@@ -806,7 +1089,8 @@
             }
         },
         "action": "Click",
-        "post_delay": 1000,
+        // 结算→过场动画较长，1.0s 常常还在转场中就被下游重新扫描（实测导致 SoCNodeLoop 全 miss）
+        "post_delay": 1800,
         "next": [
             "SoCAfterContinue",
             "[JumpBack]_ServerMaintenance",
@@ -880,6 +1164,49 @@
             "param": {
                 "roi": [0, 0, 1280, 720],
                 "expected": ["入场券不足", "入场券数量不足"]
+            }
+        },
+        "next": ["_SoCReturnHome"]
+    },
+
+    // ---------- 收尾：返回游戏主界面 ----------
+    // 完成/满分/券尽后，游戏仍停在认知海域选层界面。任务不能就这么结束——
+    // 后续任务（清体力、补给站…）都假设从主界面开始，停在选层界面会让下一个任务直接失败。
+    // 这里复用 Shared 的 _NavigateHomepage（含返回键 / 各弹窗兜底），退到主界面后再收尾。
+    // ~Homepage 用左下角系统按钮模板判定；选层界面左下角是「意识碎片」，不会误判。
+    "_SoCReturnHome": {
+        "timeout": 240000,
+        "focus": {
+            "Node.PipelineNode.Starting": "收尾／返回游戏主界面"
+        },
+        // 退不出去不判失败：奖励已入账，卡在某个界面属于「尽力了」，交给下一个任务自己导航。
+        "on_error": ["SoCDone"],
+        "next": [
+            "~SoCHome",
+            "[JumpBack]_NavigateHomepage",
+            "[JumpBack]_CancelGeneral",
+            "[JumpBack]_CloseWindowsGeneral",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfirmReconnect",
+            "[JumpBack]_LevelUp"
+        ]
+    },
+
+    // ---------- 主界面汇点副本（识别同 ~Homepage，命中后收尾到 SoCDone） ----------
+    // 不能直接挂 Shared 的 ~Homepage：它 next 为空，会在返回主界面后立刻结束任务，
+    // 使 SoCDone 变成不可达孤儿节点（check_graph 会报）。
+    "~SoCHome": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "收尾／已回到游戏主界面"
+        },
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [32, 562, 137, 145],
+                "template": "Homepage/SystemButton.png",
+                "threshold": 0.8
             }
         },
         "next": ["SoCDone"]

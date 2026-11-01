@@ -164,17 +164,33 @@ def _save_png(path, img):
 
 
 def _screencap(context: Context):
-    """拿最新截图（numpy 数组），兼容 v4/v5 两种 Job 返回值写法。"""
+    """拿最新截图（numpy BGR 数组）。
+
+    ⚠️ 2026-10-31 修正（重大）：`post_screencap()` 返回的是 `JobWithResult[numpy.ndarray]`，
+    而 `JobWithResult.wait()` 返回**它自己**（Job 对象），不是结果！必须走 `.get()` 才拿得到 numpy。
+    原实现 `img = job.wait()` 于是把 Job 对象当成图像返回，随后 `job.get()` 抛异常又被
+    `except: pass` 吞掉 —— 结果所有调用方（SoCAwaitBattle / SoCGBPickAvailable / 存失败截图）
+    拿到的都是 Job 对象，识别一律失败、动作空转且**不打任何错误日志**。
+
+    正确顺序：先 get(wait=True)；拿不到再退化为 wait() 之后 get()（兼容旧版 SDK）。
+    """
     try:
         job = context.tasker.controller.post_screencap()
-        img = job.wait()
-        if hasattr(job, "get"):
-            try:
-                g = job.get()
-                if g is not None:
-                    img = g
-            except Exception:
-                pass
+        # 首选：直接阻塞取结果（JobWithResult.get(wait=True) → numpy.ndarray）
+        try:
+            img = job.get(wait=True)
+            if img is not None:
+                return img
+        except TypeError:
+            # 旧版签名 get() 无参数
+            pass
+        except Exception as e:
+            mfa_err(_MODULE, "screencap", "get(wait=True) 失败，尝试退化路径", error=e)
+
+        job.wait()
+        img = job.get() if hasattr(job, "get") else None
+        if img is None:
+            mfa_err(_MODULE, "screencap", "截图返回空（Job 未产出 numpy）")
         return img
     except Exception as e:
         mfa_err(_MODULE, "screencap", "截图失败", error=e)
