@@ -1,10 +1,10 @@
 {
   "name": "MaaEOV",
   "interface_version": 2,
-  "version": "v1.16.0",
+  "version": "v1.17.0",
   "url": "https://github.com/xingchenquq/MaaEOV",
   "github": "https://github.com/xingchenquq/MaaEOV",
-  "custom_title": "MaaEOV v1.16.0 | 异象回声小助手",
+  "custom_title": "MaaEOV v1.17.0 | 异象回声小助手",
   "message": "异象回声小助手",
   "controller": [
     {
@@ -153,7 +153,7 @@
       "doc": "自动推图：自动找到未通关（0星）主线关卡并依次推图，直到全部推完。\n\n流程：识别未完成关卡 → 出发 → 战斗准备 → 选择队伍 → 开始作战 → 开启 AUTO → 等待结算（胜利/未满星/失败）→ 连点退出 → 循环。\n\n[color:red]请确保体力充足（未做自动吃体力配置）。[/color]\n倍速由游戏自动保持，脚本不切。未完成关卡在屏幕外（需翻页）时暂不支持。"
     },
     {
-      "name": "认知海域（开发中）",
+      "name": "认知海域",
       "entry": "#SeaOfCognition",
       "option": [
         "认知海域-目标层",
