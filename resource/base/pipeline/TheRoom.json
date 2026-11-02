@@ -568,15 +568,15 @@
     "Ritual": {
         "timeout": 930000,
         "next": [
+            // 先尝试追加残片（仅 option=Yes 时启用），再判「残片耗尽」。
+            // 追加弹窗若点不动，由 _CloseUseKeyPopup 取消退出，不会卡住。
+            "[JumpBack]Key2ArchivePieces",
             "RitualCompleted",
-            "RitualCompleted_NoKey2Archive",
-            "RitualCompleted_NoKey2Agent",
             "RitualNoAmulet",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]Key2Agent",
             "[JumpBack]RitualUseAllKeys",
-            "[JumpBack]Key2ArchivePieces",
             "[JumpBack]_CloseRitualResult",
             "[JumpBack]RitualRewardSelect",
             "[JumpBack]NextRitual",
@@ -619,7 +619,12 @@
         ]
     },
 
-    // Option: Ritual Reward Select
+    // 探员页：按卡位顺序选第一个「可开始仪式」的探员。
+    // 2026-11-02 实测：休息中的卡按钮不是「开始仪式」，OCR 匹配不到会自动落位下一张，
+    // 因此「只认第一张卡」和「有人休息就整单结束」两个问题一并解决。
+    // 卡位按钮坐标（1280x720 实测）：卡1 (209,546) 卡2 (509,546) 卡3 (808,550) 卡4 (1086,550)。
+    // 卡4 右半被右侧资源图例条遮挡，OCR 只读得出「开始仪」，故用前缀匹配。
+    // 四张卡都不可用时，落到 RitualCompleted_NoKey2Agent（OCR「加速」）→ 按选项结束或花钥匙加速。
     "RitualRewardSelect": {
         "timeout": 30000,
         "recognition": {
@@ -637,16 +642,30 @@
             }
         },
         "next": [
-            "RitualRewardDust",
+            "RitualAgent1",
+            "RitualAgent2",
+            "RitualAgent3",
+            "RitualAgent4",
+            "RitualCompleted_NoKey2Agent",
+            "[JumpBack]Key2Agent",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
 
-    // Fund
+    // ---------- 「解读仪式偏好」4 个筛选位 ----------
+    // 2026-11-02 实测：探员页右侧竖条**是可点的需求筛选器**（点击后左侧探员列表整批替换、
+    // 「必要物品」图标同步变化）。此前误判为"纯装饰"，实为当时筛完结果恰好相同、画面无变化。
+    //
+    // 竖条 4 个图标自上而下的语义（用户确认，与 interface「解读仪式偏好」case 同序）：
+    //   ① 行动资金        (1185, 240)
+    //   ② 思维加速磁带    (1185, 330)
+    //   ③ 原星砂          (1185, 415)
+    //   ④ 异化样本        (1185, 500)
+    // 点击筛选后统一交给 RitualAgent1~4 从筛选结果里挑第一个可用探员。
     "RitualRewardFund": {
-        "timeout": 30000,
+        "timeout": 15000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -665,7 +684,7 @@
             "type": "Click",
             "param": {
                 "target": [
-                    1179,
+                    1185,
                     240,
                     1,
                     1
@@ -674,16 +693,19 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "ConfirmRitual",
+            "RitualAgent1",
+            "RitualAgent2",
+            "RitualAgent3",
+            "RitualAgent4",
+            "RitualCompleted_NoKey2Agent",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
 
-    // Tape
     "RitualRewardTape": {
-        "timeout": 30000,
+        "timeout": 15000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -702,8 +724,8 @@
             "type": "Click",
             "param": {
                 "target": [
-                    1179,
-                    329,
+                    1185,
+                    330,
                     1,
                     1
                 ]
@@ -711,16 +733,19 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "ConfirmRitual",
+            "RitualAgent1",
+            "RitualAgent2",
+            "RitualAgent3",
+            "RitualAgent4",
+            "RitualCompleted_NoKey2Agent",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
 
-    // Star Dust
     "RitualRewardDust": {
-        "timeout": 30000,
+        "timeout": 15000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -739,7 +764,7 @@
             "type": "Click",
             "param": {
                 "target": [
-                    1179,
+                    1185,
                     415,
                     1,
                     1
@@ -748,16 +773,19 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "ConfirmRitual",
+            "RitualAgent1",
+            "RitualAgent2",
+            "RitualAgent3",
+            "RitualAgent4",
+            "RitualCompleted_NoKey2Agent",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
 
-    // Sample
     "RitualRewardSample": {
-        "timeout": 30000,
+        "timeout": 15000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -776,8 +804,8 @@
             "type": "Click",
             "param": {
                 "target": [
-                    1179,
-                    501,
+                    1185,
+                    500,
                     1,
                     1
                 ]
@@ -785,42 +813,140 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "ConfirmRitual",
+            "RitualAgent1",
+            "RitualAgent2",
+            "RitualAgent3",
+            "RitualAgent4",
+            "RitualCompleted_NoKey2Agent",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateRitualSelectAgent"
         ]
     },
 
-    "ConfirmRitual": {
+    // 卡位 1（麦娅/斯托尔位）
+    "RitualAgent1": {
+        "timeout": 15000,
         "recognition": {
             "type": "OCR",
             "param": {
                 "roi": [
-                    187,
-                    0,
-                    197,
-                    129
+                    130,
+                    520,
+                    160,
+                    55
                 ],
                 "expected": [
-                    "探员需求"
+                    "开始仪式"
                 ]
             }
         },
-        "post_wait_freezes": 1000,
         "action": {
             "type": "Click",
             "param": {
                 "target": [
-                    217,
-                    562,
+                    209,
+                    546,
                     1,
                     1
                 ]
             }
-        }
+        },
+        "post_wait_freezes": 1000
     },
 
+    // 卡位 2
+    "RitualAgent2": {
+        "timeout": 15000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    430,
+                    520,
+                    160,
+                    55
+                ],
+                "expected": [
+                    "开始仪式"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    509,
+                    546,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    },
+
+    // 卡位 3
+    "RitualAgent3": {
+        "timeout": 15000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    728,
+                    520,
+                    162,
+                    62
+                ],
+                "expected": [
+                    "开始仪式"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    808,
+                    550,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    },
+
+    // 卡位 4（右半被资源图例条压住，只能读「开始仪」）
+    "RitualAgent4": {
+        "timeout": 15000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1030,
+                    530,
+                    140,
+                    50
+                ],
+                "expected": [
+                    "开始仪"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1086,
+                    550,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000
+    },
     // Optional
     "Key2Agent": {
         "recognition": {
@@ -902,6 +1028,7 @@
     },
 
     "ConfirmRitualUseKeys": {
+        "timeout": 15000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -925,21 +1052,73 @@
                 ]
             }
         },
-        "post_wait_freezes": 1000
+        // 点「追加」后游戏约 2~3s 才关弹窗；等不住会误判"追加失败"并取消（实测 1000ms 不够）。
+        "post_wait_freezes": 1500,
+        "next": [
+            "_CloseUseKeyPopup",
+            "RitualUseKeyDone"
+        ]
     },
 
-    // Success
-    "RitualCompleted": {
+    // 追加成功（弹窗已关闭）→ 子链正常收尾，弹栈回 Ritual 继续解读下一个残片。
+    "RitualUseKeyDone": {
+        "recognition": "DirectHit",
+        "next": []
+    },
+
+    // 追加失败兜底（2026-11-02 实测）：点完「追加」后弹窗仍开着（按钮处于禁用态，点击无响应）。
+    // 若不处理，Ritual 会反复命中 Key2ArchivePieces 重开弹窗直到 930s 超时，
+    // 或误判「已完成」直接结束（旧 RitualCompleted 模板即此弹窗的「追加」按钮）。
+    // 这里点「取消」退出弹窗后直接收尾，任务判成功但不会假装"已追加"。
+    "_CloseUseKeyPopup": {
+        "timeout": 8000,
+        "pre_wait_freezes": 500,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
                 "roi": [
-                    620,
-                    420,
-                    377,
-                    179
+                    432,
+                    195,
+                    136,
+                    135
                 ],
-                "template": "TheRoom/RitualCompleted.png"
+                "template": "TheRoom/事务所_使用构想之钥弹窗.png"
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    489,
+                    510,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 800,
+        "next": [
+            "_StopTask"
+        ]
+    },
+
+    // Success = 残片耗尽（页面中央显示「暂无档案残片」）
+    // 旧实现用 TemplateMatch[TheRoom/RitualCompleted.png]（即「追加」按钮图，277x79），
+    // 残片为 0 时该模板会命中「追加档案残片」弹窗内的「追加」按钮（box 670,470,277,79 score 0.984），
+    // 导致弹窗未关就判任务完成 → 假成功（2026-11-02 实测 12.5s 报 OK，钥匙/残片均未变动）。
+    "RitualCompleted": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    420,
+                    290,
+                    440,
+                    110
+                ],
+                "expected": [
+                    "暂无档案残片"
+                ]
             }
         },
         "next": [
@@ -960,29 +1139,8 @@
                     126
                 ],
                 "expected": [
-                    "加速"
-                ]
-            }
-        },
-        "next": [
-            "SellAmulet",
-            "RitualDone"
-        ]
-    },
-
-    "RitualCompleted_NoKey2Archive": {
-        "enabled": false,
-        "recognition": {
-            "type": "OCR",
-            "param": {
-                "roi": [
-                    879,
-                    584,
-                    247,
-                    135
-                ],
-                "expected": [
-                    "追加档案残片"
+                    "加速",
+                    "休息"
                 ]
             }
         },
@@ -1223,7 +1381,30 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "_ConfirmMiddle"
+            "_ConfirmSellAmuletMiddle"
+        ]
+    },
+
+    // 分解确认后回到仓库重判（原实现 next=_ConfirmMiddle 是终端，只分解一次就收工，
+    // 仓库里还有别的护符也不会继续 —— 与「分解全部剩余护符」的承诺不符）。
+    "_ConfirmSellAmuletMiddle": {
+        "timeout": 15000,
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    558,
+                    1,
+                    164,
+                    719
+                ],
+                "template": "Utils/ConfirmMiddle.png"
+            }
+        },
+        "action": "Click",
+        "post_wait_freezes": 1000,
+        "next": [
+            "SellAmulet"
         ]
     }
 }

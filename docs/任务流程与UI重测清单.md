@@ -4,7 +4,7 @@
 
 > 基准分辨率：1280×720。所有坐标、ROI 均为该基准下的像素值，UI 改版后需逐项复核。
 
-> 共解析到 **16** 个任务入口、**605** 个节点。
+> 共解析到 **16** 个任务入口、**633** 个节点。
 
 ## 公共约定（所有任务共用）
 
@@ -37,19 +37,22 @@
 | 0 | `LiminalZone` | — | —(仅路由) | `LiminalZoneCompletedFromSystem` / `LiminalZoneFromSystem` |
 | &nbsp;&nbsp;1 | `LiminalZoneCompletedFromSystem` | OCR['480/480'] roi=[199, 312, 223, 128] | —(仅路由) | （结束） |
 | &nbsp;&nbsp;1 | `LiminalZoneFromSystem` | 模板[SystemPage/Settings.png] roi=[0, 559, 149, 149] | Click@[337, 362, 1, 1] | `SelectLevelFromLiminalZone` |
-| &nbsp;&nbsp;&nbsp;&nbsp;2 | `SelectLevelFromLiminalZone` | 模板[BCR/阈限禁区_界面标志.png] roi=[45, 81, 147, 144] | —(仅路由) | `~LiminalZoneNA` / `LiminalZoneFromLevel` |
+| &nbsp;&nbsp;&nbsp;&nbsp;2 | `SelectLevelFromLiminalZone` | 模板[BCR/阈限禁区_界面标志.png] roi=[45, 81, 147, 144] | —(仅路由) | `~LiminalZoneNA` / `LiminalZoneSelectLevel` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `~LiminalZoneNA` | 模板[BCR/LiminalZoneNA.png] roi=[859, 585, 140, 135] | —(仅路由) | （结束） |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `LiminalZoneFromLevel` | OCR['扫荡', '扫汤'] roi=[804, 591, 273, 129] | —(仅路由) | `_CancelLiminalZoneOverflow` / `LiminalZoneCompletedFromLevel` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `_CancelLiminalZoneOverflow` | OCR['进行探索', '回收物'] roi=[222, 225, 834, 136] | —(仅路由) | `_Cancel` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `_Cancel` | — | —(仅路由) | `_CancelGeneral` / `_Cancel1` / `_Cancel2` / `_Cancel3` / `_Cancel4` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `_CancelGeneral` | 模板[Utils/CancelGeneral.png] roi=[481, 318, 155, 153] | Click | （结束） |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `_Cancel1` | OCR['取消'] roi=[469, 412, 174, 142] | Click | （结束） |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `_Cancel2` | OCR['取消'] roi=[716, 586, 175, 134] | Click | （结束） |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `_Cancel3` | OCR['取消'] roi=[465, 590, 150, 130] | Click | （结束） |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `_Cancel4` | OCR['取消'] roi=[574, 448, 162, 125] | Click | （结束） |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `LiminalZoneCompletedFromLevel` | OCR['480/480'] roi=[92, 620, 225, 100] | —(仅路由) | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `LiminalZoneSelectLevel` | — | —(仅路由) | `_NavigateObsoleteNexus` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `_NavigateObsoleteNexus` | — | —(仅路由) | `~ObsoleteNexus` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `~ObsoleteNexus` | OCR['废弃枢纽'] roi=[40, 75, 320, 70] | —(仅路由) | `LiminalZoneFromLevel` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `LiminalZoneFromLevel` | OCR['扫荡', '扫汤'] roi=[804, 591, 273, 129] | —(仅路由) | `_CancelLiminalZoneOverflow` / `LiminalZoneCompletedFromLevel` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `_CancelLiminalZoneOverflow` | OCR['进行探索', '回收物'] roi=[222, 225, 834, 136] | —(仅路由) | `_Cancel` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `_Cancel` | — | —(仅路由) | `_CancelGeneral` / `_Cancel1` / `_Cancel2` / `_Cancel3` / `_Cancel4` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `_CancelGeneral` | 模板[Utils/CancelGeneral.png] roi=[481, 318, 155, 153] | Click | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `_Cancel1` | OCR['取消'] roi=[469, 412, 174, 142] | Click | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `_Cancel2` | OCR['取消'] roi=[716, 586, 175, 134] | Click | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `_Cancel3` | OCR['取消'] roi=[465, 590, 150, 130] | Click | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `_Cancel4` | OCR['取消'] roi=[574, 448, 162, 125] | Click | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `LiminalZoneCompletedFromLevel` | OCR['480/480'] roi=[92, 620, 225, 100] | —(仅路由) | （结束） |
 
-> 该任务挂载的中断保底：`[JumpBack]_ServerMaintenance`, `[JumpBack]_ConfirmReconnect`, `[JumpBack]_ConfirmLiminalZoneResult`, `[JumpBack]LiminalZoneOutOfStamina`, `[JumpBack]_LevelUp`, `[JumpBack]_SweepMax`, `[JumpBack]_SweepFromLevel`, `[JumpBack]FarmSelectLevel`, `[JumpBack]LiminalZoneSelectLevel`, `[JumpBack]_NavigateLiminalZone`, `[JumpBack]_NavigateSystem`
+> 该任务挂载的中断保底：`[JumpBack]_ServerMaintenance`, `[JumpBack]_ConfirmReconnect`, `[JumpBack]_ConfirmLiminalZoneResult`, `[JumpBack]LiminalZoneOutOfStamina`, `[JumpBack]_LevelUp`, `[JumpBack]_SweepMax`, `[JumpBack]_SweepFromLevel`, `[JumpBack]FarmSelectLevel`, `[JumpBack]_ConfirmMiddle`, `[JumpBack]_LiminalZoneBackToSelect`, `[JumpBack]_ObsoleteNexusFromLiminalZone`, `[JumpBack]_LiminalZoneHead`, `[JumpBack]_NavigateLiminalZone`, `[JumpBack]_NavigateSystem`
 
 
 ## `#Farm`（清体力）
@@ -88,8 +91,8 @@
 | 步骤 | 节点 | 识别方式 (UI 依赖) | 动作 | 后续 (主链路 / 路由候选) |
 |----|------|------------------|------|--------------------------|
 | 0 | `TheRoom` | — | —(仅路由) | `Ritual` |
-| &nbsp;&nbsp;1 | `Ritual` | — | —(仅路由) | `RitualCompleted` / `RitualCompleted_NoKey2Archive` / `RitualCompleted_NoKey2Agent` / `RitualNoAmulet` |
-| &nbsp;&nbsp;&nbsp;&nbsp;2 | `RitualCompleted` | 模板[TheRoom/RitualCompleted.png] roi=[620, 420, 377, 179] | —(仅路由) | `SellAmulet` / `RitualDone` |
+| &nbsp;&nbsp;1 | `Ritual` | — | —(仅路由) | `RitualCompleted` / `RitualNoAmulet` |
+| &nbsp;&nbsp;&nbsp;&nbsp;2 | `RitualCompleted` | OCR['暂无档案残片'] roi=[420, 290, 440, 110] | —(仅路由) | `SellAmulet` / `RitualDone` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `SellAmulet` | — | —(仅路由) | `AmuletSoldOut` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `AmuletSoldOut` | OCR['^0/'] roi=[721, 0, 180, 136] | —(仅路由) | `_NavigateTheRoom` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `_NavigateTheRoom` | 模板[TheRoom/Ritual.png] roi=[1115, 566, 159, 154] thr=0.8 | —(仅路由) | `_EnsureTheRoom` |
@@ -336,17 +339,11 @@
 | · | `~TheRoom` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `_NavigateTheRoom` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `RitualDone` | DirectHit | —(仅路由) | （结束） |
-| &nbsp;&nbsp;&nbsp;&nbsp;2 | `RitualCompleted_NoKey2Archive` | OCR['追加档案残片'] roi=[879, 584, 247, 135] | —(仅路由) | `SellAmulet` / `RitualDone` |
-| · | `SellAmulet` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| · | `RitualDone` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| &nbsp;&nbsp;&nbsp;&nbsp;2 | `RitualCompleted_NoKey2Agent` | OCR['加速'] roi=[125, 500, 182, 126] | —(仅路由) | `SellAmulet` / `RitualDone` |
-| · | `SellAmulet` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| · | `RitualDone` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | &nbsp;&nbsp;&nbsp;&nbsp;2 | `RitualNoAmulet` | OCR['不足'] roi=[123, 500, 185, 127] | —(仅路由) | `SellAmulet` / `RitualDone` |
 | · | `SellAmulet` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `RitualDone` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 
-> 该任务挂载的中断保底：`[JumpBack]_ServerMaintenance`, `[JumpBack]_ConfirmReconnect`, `[JumpBack]_CancelExitTheRoom`, `[JumpBack]_CancelKey2ArchivePieces`, `[JumpBack]_CancelKey2Agent`, `[JumpBack]_CloseSellAmulet`, `[JumpBack]_ConfirmMiddle`, `[JumpBack]_CloseMeditationLog`, `[JumpBack]_CloseRitualResult`, `[JumpBack]_ExitTheRoomStorage`, `[JumpBack]_ExitRitual`, `[JumpBack]_ExitRitualAgentSelect`, `[JumpBack]_Loading`, `[JumpBack]_TheRoomFromHome`, `[JumpBack]_NavigateHomepage`, `[JumpBack]NextAmulet`, `[JumpBack]_NavigateTheRoomStorage`, `[JumpBack]Key2Agent`, `[JumpBack]RitualUseAllKeys`, `[JumpBack]Key2ArchivePieces`, `[JumpBack]RitualRewardSelect`, `[JumpBack]NextRitual`, `[JumpBack]_NavigateRitual`
+> 该任务挂载的中断保底：`[JumpBack]Key2ArchivePieces`, `[JumpBack]_ServerMaintenance`, `[JumpBack]_ConfirmReconnect`, `[JumpBack]_CancelExitTheRoom`, `[JumpBack]_CancelKey2ArchivePieces`, `[JumpBack]_CancelKey2Agent`, `[JumpBack]_CloseSellAmulet`, `[JumpBack]_ConfirmMiddle`, `[JumpBack]_CloseMeditationLog`, `[JumpBack]_CloseRitualResult`, `[JumpBack]_ExitTheRoomStorage`, `[JumpBack]_ExitRitual`, `[JumpBack]_ExitRitualAgentSelect`, `[JumpBack]_Loading`, `[JumpBack]_TheRoomFromHome`, `[JumpBack]_NavigateHomepage`, `[JumpBack]NextAmulet`, `[JumpBack]_NavigateTheRoomStorage`, `[JumpBack]Key2Agent`, `[JumpBack]RitualUseAllKeys`, `[JumpBack]RitualRewardSelect`, `[JumpBack]NextRitual`, `[JumpBack]_NavigateRitual`
 
 
 ## `#UrbanPatrol`（市区巡逻）
@@ -365,14 +362,20 @@
 | 步骤 | 节点 | 识别方式 (UI 依赖) | 动作 | 后续 (主链路 / 路由候选) |
 |----|------|------------------|------|--------------------------|
 | 0 | `一键领取` | — | —(仅路由) | `DailyReward` |
-| &nbsp;&nbsp;1 | `DailyReward` | — | —(仅路由) | `CollectDailyReward` |
-| &nbsp;&nbsp;&nbsp;&nbsp;2 | `CollectDailyReward` | 模板[Mission/日常任务_页签.png] roi=[677, 0, 214, 135] | Click@[1151, 669, 1, 1] | `CollectWeeklyReward` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `CollectWeeklyReward` | 模板[Mission/周常任务_页签.png] roi=[867, 0, 209, 131] | Click@[1151, 669, 1, 1] | `CountermeasureProtocol` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `CountermeasureProtocol` | — | —(仅路由) | `ProtocolFullLevel` / `CollectProtocolWeekly` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `ProtocolFullLevel` | OCR['已满级'] roi=[550, 65, 171, 133] | —(仅路由) | （结束） |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `CollectProtocolWeekly` | 模板[Protocol/应对协议_周常页签.png] roi=[556, 135, 186, 134] | Click@[1103, 640, 1, 1] | `CollectProtocolSpecial` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `CollectProtocolSpecial` | 模板[Protocol/应对协议_特制页签.png] roi=[927, 135, 184, 133] | Click@[1103, 640, 1, 1] | `CollectProtocolReward` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `CollectProtocolReward` | 模板[Protocol/应对协议_奖励页签.png] roi=[414, 172, 172, 195] | Click@[1103, 640, 1, 1] | （结束） |
+| &nbsp;&nbsp;1 | `DailyReward` | — | —(仅路由) | `_OneClickGateDaily` |
+| &nbsp;&nbsp;&nbsp;&nbsp;2 | `_OneClickGateDaily` | — | —(仅路由) | `CollectDailyReward` / `_OneClickGateWeekly` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `CollectDailyReward` | 模板[Mission/日常任务_页签.png] roi=[677, 0, 214, 135] | Click@[1151, 669, 1, 1] | `_OneClickGateWeekly` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `_OneClickGateWeekly` | — | —(仅路由) | `CollectWeeklyReward` / `_OneClickGateProtocol` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `CollectWeeklyReward` | 模板[Mission/周常任务_页签.png] roi=[867, 0, 209, 131] | Click@[1151, 669, 1, 1] | `_OneClickGateProtocol` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `_OneClickGateProtocol` | — | —(仅路由) | `CountermeasureProtocol` / `_OneClickDone` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `CountermeasureProtocol` | — | —(仅路由) | `ProtocolFullLevel` / `CollectProtocolWeekly` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `ProtocolFullLevel` | OCR['已满级'] roi=[550, 65, 171, 133] | —(仅路由) | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `CollectProtocolWeekly` | 模板[Protocol/应对协议_周常页签.png] roi=[556, 135, 186, 134] | Click@[1103, 640, 1, 1] | `CollectProtocolSpecial` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `CollectProtocolSpecial` | 模板[Protocol/应对协议_特制页签.png] roi=[927, 135, 184, 133] | Click@[1103, 640, 1, 1] | `CollectProtocolReward` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10 | `CollectProtocolReward` | 模板[Protocol/应对协议_奖励页签.png] roi=[414, 172, 172, 195] | Click@[1103, 640, 1, 1] | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `_OneClickDone` | — | —(仅路由) | （结束） |
+| · | `_OneClickGateProtocol` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `_OneClickGateWeekly` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 
 > 该任务挂载的中断保底：`[JumpBack]_ServerMaintenance`, `[JumpBack]_ConfirmReconnect`, `[JumpBack]_NavigateProtocolReward`, `[JumpBack]_NavigateProtocolSpecial`, `[JumpBack]_NavigateProtocolWeekly`, `[JumpBack]_NavigateWeeklyMission`, `[JumpBack]_NavigateDailyMission`
 
@@ -382,14 +385,20 @@
 | 步骤 | 节点 | 识别方式 (UI 依赖) | 动作 | 后续 (主链路 / 路由候选) |
 |----|------|------------------|------|--------------------------|
 | 0 | `活动领取` | — | —(仅路由) | `Mailbox` |
-| &nbsp;&nbsp;1 | `Mailbox` | — | —(仅路由) | `CollectMail` |
-| &nbsp;&nbsp;&nbsp;&nbsp;2 | `CollectMail` | 模板[Mailbox/CollectMail.png] roi=[55, 586, 229, 132] | Click | `DailyStaminaBonus` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `DailyStaminaBonus` | — | —(仅路由) | `CollectStaminaBonusNoon` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `CollectStaminaBonusNoon` | OCR['每日行动'] roi=[419, 24, 446, 170] | Click@[431, 584, 1, 1] | `CollectStaminaBonusEvening` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `CollectStaminaBonusEvening` | OCR['每日行动'] roi=[419, 24, 446, 170] | Click@[708, 582, 1, 1] | `ShortTermCheckIn` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `ShortTermCheckIn` | — | —(仅路由) | `CollectShortTermCheckIn` / `~ShortTermCheckIn` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `CollectShortTermCheckIn` | OCR['点击领取'] roi=[1035, 117, 179, 547] | Click | （结束） |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `~ShortTermCheckIn` | OCR['短期支援'] roi=[254, 377, 396, 190] | —(仅路由) | （结束） |
+| &nbsp;&nbsp;1 | `Mailbox` | — | —(仅路由) | `_EventGateMail` |
+| &nbsp;&nbsp;&nbsp;&nbsp;2 | `_EventGateMail` | — | —(仅路由) | `CollectMail` / `_EventGateStamina` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `CollectMail` | 模板[Mailbox/CollectMail.png] roi=[55, 586, 229, 132] | Click | `_EventGateStamina` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `_EventGateStamina` | — | —(仅路由) | `DailyStaminaBonus` / `_EventGateShortTerm` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `DailyStaminaBonus` | — | —(仅路由) | `CollectStaminaBonusNoon` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `CollectStaminaBonusNoon` | OCR['每日行动'] roi=[419, 24, 446, 170] | Click@[431, 584, 1, 1] | `CollectStaminaBonusEvening` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `CollectStaminaBonusEvening` | OCR['每日行动'] roi=[419, 24, 446, 170] | Click@[708, 582, 1, 1] | `_EventGateShortTerm` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `_EventGateShortTerm` | — | —(仅路由) | `ShortTermCheckIn` / `_EventDone` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `ShortTermCheckIn` | — | —(仅路由) | `CollectShortTermCheckIn` / `~ShortTermCheckIn` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10 | `CollectShortTermCheckIn` | OCR['点击领取'] roi=[1035, 117, 179, 547] | Click | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10 | `~ShortTermCheckIn` | OCR['短期支援'] roi=[254, 377, 396, 190] | —(仅路由) | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `_EventDone` | — | —(仅路由) | （结束） |
+| · | `_EventGateShortTerm` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `_EventGateStamina` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 
 > 该任务挂载的中断保底：`[JumpBack]_ServerMaintenance`, `[JumpBack]_ConfirmReconnect`, `[JumpBack]_NavigateShortTermCheckIn`, `[JumpBack]_NavigateStaminaBonus`, `[JumpBack]_NavigateMailbox`
 
@@ -411,9 +420,11 @@
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10 | `SilverMedalRedeemAccOutOfMedal` | 模板[Utils/Tips.png] roi=[868, 95, 142, 300] | —(仅路由) | `VioletMedalRedeemRecord` / `_Done` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11 | `VioletMedalRedeemRecord` | — | —(仅路由) | `VioletMedalRedeemRecordAtVioletMedal` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12 | `VioletMedalRedeemRecordAtVioletMedal` | 模板[Supplies/补给站_紫心奖章页签.png] roi=[697, 28, 269, 148] | —(仅路由) | `VioletMedalRedeemRecordOutOfMedal` / `VioletMedalRedeemRecordComplete` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13 | `VioletMedalRedeemRecordOutOfMedal` | 模板[Utils/Tips.png] roi=[868, 95, 142, 300] | —(仅路由) | （结束） |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13 | `VioletMedalRedeemRecordComplete` | OCR['剩余购买次数0'] roi=[876, 151, 230, 125] | Click@[652, 512, 1, 1] | （结束） |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11 | `_Done` | DirectHit | —(仅路由) | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13 | `VioletMedalRedeemRecordOutOfMedal` | 模板[Utils/Tips.png] roi=[868, 95, 142, 300] | Click@[652, 512, 1, 1] | `_Done` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;14 | `_Done` | DirectHit | —(仅路由) | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13 | `VioletMedalRedeemRecordComplete` | OCR['剩余购买次数0'] roi=[876, 151, 230, 125] | Click@[652, 512, 1, 1] | `_Done` |
+| · | `_Done` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `_Done` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10 | `SilverMedalRedeemAccComplete` | OCR['剩余购买次数0'] roi=[876, 151, 230, 125] | Click@[652, 512, 1, 1] | `VioletMedalRedeemRecord` / `_Done` |
 | · | `VioletMedalRedeemRecord` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `_Done` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
@@ -487,26 +498,33 @@
 
 | 步骤 | 节点 | 识别方式 (UI 依赖) | 动作 | 后续 (主链路 / 路由候选) |
 |----|------|------------------|------|--------------------------|
-| 0 | `当期活动` | — | —(仅路由) | `进入活动页` |
-| &nbsp;&nbsp;1 | `进入活动页` | OCR['剩余'] roi=[1045, 212, 235, 194] | Click | `关闭活动提示` / `进入关卡章节` |
-| &nbsp;&nbsp;&nbsp;&nbsp;2 | `关闭活动提示` | OCR['今日获得', '硬币', '注意'] roi=[400, 180, 520, 180] | Click@[640, 380, 1, 1] | `进入关卡章节` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `进入关卡章节` | OCR['在光消失的地方', '消失的地方'] roi=[950, 460, 330, 90] | Click | `选择关卡` / `_关卡地图平移1` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `选择关卡` | OCR['WN108'] roi=[0, 150, 1280, 480] | Click | `点击快速完成` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `点击快速完成` | OCR['快速完成'] roi=[700, 600, 400, 120] | Click | `行动力判定` / `行动次数确定` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `行动力判定` | OCR['下次恢复时间', '恢复时间'] roi=[400, 60, 720, 300] | Click@[640, 580, 1, 1] | `_Done` |
+| 0 | `当期活动` | — | —(仅路由) | `当前无活动` / `进入活动页` |
+| &nbsp;&nbsp;1 | `当前无活动` | 模板[Homepage/SystemButton.png] roi=[32, 562, 137, 145] thr=0.8 | —(仅路由) | `当前无活动确认` / `进入活动页` |
+| &nbsp;&nbsp;&nbsp;&nbsp;2 | `当前无活动确认` | OCR['剩余'] roi=[1045, 212, 235, 194] | —(仅路由) | `_StopTask` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `_StopTask` | — | Custom['记录任务中止'] | `_HaltTask` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `_HaltTask` | — | StopTask | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;2 | `进入活动页` | OCR['剩余'] roi=[1045, 212, 235, 194] | Click | `关闭活动提示` / `进入关卡章节` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `关闭活动提示` | OCR['今日获得', '硬币', '注意'] roi=[400, 180, 520, 180] | Click@[640, 380, 1, 1] | `进入关卡章节` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `进入关卡章节` | OCR['在光消失的地方', '消失的地方'] roi=[950, 460, 330, 90] | Click | `选择关卡` / `_关卡地图平移1` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `选择关卡` | OCR['WN108'] roi=[0, 150, 1280, 480] | Click | `点击快速完成` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `点击快速完成` | OCR['快速完成'] roi=[700, 600, 400, 120] | Click | `行动力判定` / `行动次数确定` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `行动力判定` | OCR['下次恢复时间', '恢复时间'] roi=[400, 60, 720, 300] | Click@[640, 580, 1, 1] | `_Done` |
 | · | `_Done` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `行动次数确定` | OCR['快速完成次数'] roi=[640, 365, 240, 40] | Click@[955, 457, 1, 1] | `点击出发` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `点击出发` | OCR['出发'] roi=[740, 480, 400, 165] | Click | `~等待快速完成结果` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `~等待快速完成结果` | OCR['快速完成结果', '完成次数', '认知度'] roi=[0, 0, 1280, 720] | —(仅路由) | `点击确定` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `点击确定` | OCR['确定', '确认退出'] roi=[940, 600, 340, 120] | Click | `退出关卡详情页` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10 | `退出关卡详情页` | 模板[当期活动/主界面图标.png] roi=[11, 2, 413, 84] thr=0.85 | Click | `返回主界面` / `~Homepage` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11 | `返回主界面` | 模板[当期活动/主界面图标.png] roi=[11, 2, 413, 84] thr=0.85 | Click | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `行动次数确定` | OCR['快速完成次数'] roi=[640, 365, 240, 40] | Click@[955, 457, 1, 1] | `点击出发` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `点击出发` | OCR['出发'] roi=[740, 480, 400, 165] | Click | `~等待快速完成结果` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `~等待快速完成结果` | OCR['快速完成结果', '完成次数', '认知度'] roi=[0, 0, 1280, 720] | —(仅路由) | `点击确定` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10 | `点击确定` | OCR['确定', '确认退出'] roi=[940, 600, 340, 120] | Click | `退出关卡详情页` / `~Homepage` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11 | `退出关卡详情页` | 模板[当期活动/主界面图标.png] roi=[11, 2, 413, 84] thr=0.85 | Click | `返回主界面` / `~Homepage` / `个人信息页返回` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12 | `返回主界面` | 模板[当期活动/主界面图标.png] roi=[11, 2, 413, 84] thr=0.85 | Click | （结束） |
 | · | `~Homepage` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `_关卡地图平移1` | OCR['在光消失的地方', '消失的地方'] roi=[0, 60, 400, 60] | Swipe | `选择关卡` / `_关卡地图平移2` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12 | `个人信息页返回` | OCR['登录统计', '我的名片', '好友名册'] roi=[0, 0, 1280, 720] | Click@[127, 38, 1, 1] | （结束） |
+| · | `~Homepage` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `_关卡地图平移1` | OCR['在光消失的地方', '消失的地方'] roi=[0, 60, 400, 60] | Swipe | `选择关卡` / `_关卡地图平移2` |
 | · | `选择关卡` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `_关卡地图平移2` | OCR['在光消失的地方', '消失的地方'] roi=[0, 60, 400, 60] | Swipe | `选择关卡` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `_关卡地图平移2` | OCR['在光消失的地方', '消失的地方'] roi=[0, 60, 400, 60] | Swipe | `选择关卡` |
 | · | `选择关卡` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `进入关卡章节` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `进入活动页` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 
 > 该任务挂载的中断保底：`[JumpBack]_ServerMaintenance`, `[JumpBack]_ConfirmReconnect`, `[JumpBack]_NavigateHomepage`
 
@@ -615,29 +633,41 @@
 
 
 
-## `#SeaOfCognition`（认知海域（开发中））
+## `#SeaOfCognition`（认知海域）
 
 | 步骤 | 节点 | 识别方式 (UI 依赖) | 动作 | 后续 (主链路 / 路由候选) |
 |----|------|------------------|------|--------------------------|
 | 0 | `SeaOfCognition` | — | —(仅路由) | `SoCResume` |
-| &nbsp;&nbsp;1 | `SoCResume` | DirectHit | —(仅路由) | `SoCClaim` / `SoCContinue` / `SoCStartBattle` / `SoCInBattleBuff` / `SoCInBattleBuffOCR` / `SoCInspirationNode` / `SoCInspirationNodeOCR` / `SoCState_GB1` / `SoCState_GB0` / `SoCContinueDive` / `SoCDeepDive` / `SoCDeepDiveFree` / `SoCFallbackStart` |
-| &nbsp;&nbsp;&nbsp;&nbsp;2 | `SoCClaim` | OCR['[领領]取', '[确確][认認]'] roi=[0, 0, 1280, 720] | Click | `SoCAtBCR` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `SoCAtBCR` | 模板[SeaOfCognition/认知海域图标.png] roi=[0, 500, 1280, 220] thr=0.8 | Click | `SoCSelectLayer` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `SoCSelectLayer` | OCR['[梦夢][渊淵][层層]'] roi=[0, 0, 1280, 720] | Click | `SoCStartDive` / `SoCContinueDive` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `SoCStartDive` | OCR['开始下[潜潛]'] roi=[820, 545, 460, 175] | Click | `SoCResume` / `SoCDeepDive` / `SoCDeepDiveFree` / `SoCDeepDiveFallback` |
+| &nbsp;&nbsp;1 | `SoCResume` | DirectHit | —(仅路由) | `_SoCAbandonDive` / `_SoCScoreFull` / `SoCClaim` / `SoCContinue` / `SoCStartBattle` / `SoCInBattleBuff` / `SoCInBattleBuffOCR` / `SoCInspirationNode` / `SoCInspirationNodeOCR` / `SoCState_GB1` / `SoCState_GB0` / `SoCStartDive` / `SoCContinueDive` / `SoCDeepDive` / `SoCDeepDiveFree` / `SoCFallbackStart` |
+| &nbsp;&nbsp;&nbsp;&nbsp;2 | `_SoCAbandonDive` | OCR['[终終][止比]下[潜潛]'] roi=[790, 610, 240, 70] | Click | `_SoCAbandonConfirm` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `_SoCAbandonConfirm` | OCR['放弃本次探索', '是否放弃'] roi=[200, 250, 880, 120] | Click@[732, 407, 1, 1] | `_SoCAbandonResult` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `_SoCAbandonResult` | OCR['探索[终終]止', '完成节点', '完成節點'] roi=[0, 0, 1280, 720] | Click@[640, 360, 1, 1] | `_SoCScoreFull` / `SoCSelectLayer` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `_SoCScoreFull` | OCR['1000\\s*/\\s*1000', '1000/1000', '1000／1000'] roi=[20, 630, 250, 82] | —(仅路由) | `_SoCReturnHome` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `_SoCReturnHome` | — | —(仅路由) | `~SoCHome` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `~SoCHome` | 模板[Homepage/SystemButton.png] roi=[32, 562, 137, 145] thr=0.8 | —(仅路由) | `SoCDone` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `SoCDone` | DirectHit | —(仅路由) | （结束） |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `SoCSelectLayer` | OCR['[梦夢][渊淵][层層]'] roi=[0, 0, 1280, 720] | Click | `_SoCAbandonDive` / `_SoCTicketLow` / `_SoCScoreFull` / `SoCStartDive` / `SoCContinueDive` |
+| · | `_SoCAbandonDive` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `_SoCTicketLow` | Custom['SoCTicketLow'] | —(仅路由) | `_SoCReturnHome` |
+| · | `_SoCReturnHome` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `_SoCScoreFull` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `SoCStartDive` | OCR['开始下[潜潛]'] roi=[820, 545, 460, 175] | Click | `SoCResume` / `SoCDeepDive` / `SoCDeepDiveFree` / `SoCDeepDiveFallback` |
 | · | `SoCResume` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `SoCDeepDive` | OCR['深[潜潛]指引'] roi=[0, 0, 1280, 720] | Click | `SoCTeamEnter` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `SoCTeamEnter` | 模板[SeaOfCognition/进入海域.png] roi=[0, 0, 1280, 720] thr=0.8 | Click | `SoCInspirationNode` / `SoCInspirationNodeOCR` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `SoCInspirationNode` | 模板[SeaOfCognition/认知海域灵感节点.png] roi=[192, 159, 358, 556] thr=0.8 | —(仅路由) | `SoCInspirationClick` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `SoCInspirationClick` | OCR['[灵靈]感[节節][点點]'] roi=[0, 0, 1280, 720] | Click | `SoCGBLoop` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10 | `SoCGBLoop` | — | —(仅路由) | `SoCGBPickAvailable` / `SoCGBSwipe` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11 | `SoCGBPickAvailable` | DirectHit | Custom['None'] | `SoCGBContinue` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12 | `SoCGBContinue` | 模板[SeaOfCognition/BuffContinue.png] roi=[450, 600, 380, 100] thr=0.8 | Click | `SoCInBattleBuff` / `SoCInBattleBuffOCR` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13 | `SoCInBattleBuff` | 模板[SeaOfCognition/局内buff选择.png] roi=None thr=0.8 | Click@[472, 344, 1, 1] | `SoCInBattleBuff2nd` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;14 | `SoCInBattleBuff2nd` | DirectHit | Click@[472, 344, 1, 1] | `SoCInBattleBuffConfirm` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `SoCDeepDive` | OCR['深[潜潛]指引'] roi=[0, 0, 1280, 720] | Click | `SoCTeamEnter` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `SoCTeamEnter` | 模板[SeaOfCognition/进入海域.png] roi=[0, 0, 1280, 720] thr=0.8 | Click | `SoCInspirationNode` / `SoCInspirationNodeOCR` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `SoCInspirationNode` | 模板[SeaOfCognition/认知海域灵感节点.png] roi=[192, 159, 358, 556] thr=0.8 | —(仅路由) | `SoCInspirationClick` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10 | `SoCInspirationClick` | OCR['[灵靈]感[节節][点點]'] roi=[0, 0, 1280, 720] | Click | `SoCGBLoop` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11 | `SoCGBLoop` | — | —(仅路由) | `SoCGBPickAvailable` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12 | `SoCGBPickAvailable` | DirectHit | Custom['SoCGBPickAvailable'] | `SoCGBContinue` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13 | `SoCGBContinue` | 模板[SeaOfCognition/BuffContinue.png] roi=[450, 600, 380, 100] thr=0.8 | Click | `SoCInBattleBuff` / `SoCInBattleBuffOCR` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;14 | `SoCInBattleBuff` | 模板[SeaOfCognition/局内buff选择.png] roi=None thr=0.8 | Custom['SoCPickInBattleBuff'] | `SoCInBattleBuffConfirm` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;15 | `SoCInBattleBuffConfirm` | 模板[SeaOfCognition/QiFa.png] roi=None thr=0.8 | Click | `SoCStartBattle` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;16 | `SoCStartBattle` | 模板[SeaOfCognition/认知海域开始作战.png] roi=None thr=0.8 | Click | `SoCAutoBattle` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;17 | `SoCAutoBattle` | DirectHit | Custom['SoCAwaitBattle'] | `SoCContinue` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;17 | `SoCAutoBattle` | DirectHit | Custom['SoCAwaitBattle'] | `_SoCBackToLayer` / `SoCContinue` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;18 | `_SoCBackToLayer` | OCR['开始下[潜潛]', '继续下[潜潛]', '繼續下[潜潛]', '開始下[潜潛]'] roi=[820, 545, 460, 175] | —(仅路由) | `_SoCScoreFull` / `_SoCTicketLow` / `SoCStartDive` |
+| · | `_SoCScoreFull` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `_SoCTicketLow` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `SoCStartDive` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;18 | `SoCContinue` | 模板[SeaOfCognition/战斗完成继续.png] roi=[950, 600, 330, 120] thr=0.8 | Click | `SoCAfterContinue` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;19 | `SoCAfterContinue` | DirectHit | —(仅路由) | `SoCState_GB1` / `SoCState_GB0` / `SoCNodeLoop` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;20 | `SoCState_GB1` | OCR['剩余可选灵感'] roi=[400, 560, 500, 110] | —(仅路由) | `SoCGBSwipe` |
@@ -645,20 +675,31 @@
 | · | `SoCGBLoop` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;20 | `SoCState_GB0` | 模板[SeaOfCognition/剩余可选灵感0.png] roi=None thr=0.8 | —(仅路由) | `SoCGBLoop` |
 | · | `SoCGBLoop` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;20 | `SoCNodeLoop` | — | —(仅路由) | `SoCInBattleBuff` / `SoCInBattleBuffOCR` / `SoCClaim` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;20 | `SoCNodeLoop` | — | —(仅路由) | `SoCInBattleBuff` / `SoCInBattleBuffOCR` / `SoCContinue` / `SoCClaim` / `_SoCBackToLayer` |
 | · | `SoCInBattleBuff` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;21 | `SoCInBattleBuffOCR` | OCR['请选择一个短暂灵感'] roi=[850, 0, 430, 50] | Click@[472, 344, 1, 1] | `SoCInBattleBuff2nd` |
-| · | `SoCInBattleBuff2nd` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| · | `SoCClaim` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;21 | `SoCInBattleBuffOCR` | OCR['请选择一个短暂灵感'] roi=[490, 125, 320, 55] | Custom['SoCPickInBattleBuff'] | `SoCInBattleBuffConfirm` |
+| · | `SoCInBattleBuffConfirm` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `SoCContinue` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;21 | `SoCClaim` | OCR['[领領]取', '[确確][认認]'] roi=[0, 0, 1280, 720] | Click | `SoCAtBCR` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;22 | `SoCAtBCR` | OCR['[终終]局行动', '[终終]局行動'] roi=[420, 630, 300, 90] | Click | `SoCEntryCognition` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;23 | `SoCEntryCognition` | OCR['进入', '進入'] roi=[430, 555, 270, 120] | Click | `_SoCNoticeClose` / `_SoCRewardPanelClose` / `_SoCTicketLow` / `_SoCScoreFull` / `SoCSelectLayer` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;24 | `_SoCNoticeClose` | OCR['奖励已更新', '認知海域奖励', '认知海域奖励'] roi=[300, 180, 700, 150] | Click@[646, 391, 1, 1] | `_SoCRewardPanelClose` / `SoCSelectLayer` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;25 | `_SoCRewardPanelClose` | OCR['奖励倒计时', '奖励倒計時'] roi=[300, 190, 500, 70] | Click@[1177, 214, 1, 1] | `SoCSelectLayer` |
+| · | `SoCSelectLayer` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `SoCSelectLayer` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `_SoCRewardPanelClose` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `_SoCTicketLow` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `_SoCScoreFull` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `SoCSelectLayer` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `_SoCBackToLayer` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `SoCInBattleBuffOCR` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| · | `SoCGBSwipe` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `SoCInspirationNodeOCR` | OCR['[灵靈]感[节節][点點]'] roi=[192, 159, 358, 556] | —(仅路由) | `SoCInspirationClick` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `SoCInspirationNodeOCR` | OCR['[灵靈]感[节節][点點]'] roi=[192, 159, 358, 556] | —(仅路由) | `SoCInspirationClick` |
 | · | `SoCInspirationClick` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `SoCDeepDiveFree` | OCR['自由探索', '自由', '探索'] roi=[0, 0, 1280, 720] | Click | `SoCTeamEnter` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `SoCDeepDiveFree` | OCR['自由探索', '自由', '探索'] roi=[0, 0, 1280, 720] | Click | `SoCTeamEnter` |
 | · | `SoCTeamEnter` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `SoCDeepDiveFallback` | DirectHit | Click@[351, 581, 1, 1] | `SoCTeamEnter` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `SoCDeepDiveFallback` | DirectHit | Click@[351, 581, 1, 1] | `SoCTeamEnter` |
 | · | `SoCTeamEnter` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `SoCContinueDive` | 模板[SeaOfCognition/认知海域继续下潜.png] roi=[820, 545, 460, 175] thr=0.8 | Click | `SoCInspirationNode` / `SoCInspirationNodeOCR` / `SoCState_GB1` / `SoCState_GB0` / `SoCInBattleBuff` / `SoCInBattleBuffOCR` / `SoCStartBattle` / `SoCClaim` / `SoCContinue` / `SoCInspirationFallback` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `SoCContinueDive` | 模板[SeaOfCognition/认知海域继续下潜.png] roi=[820, 545, 460, 175] thr=0.8 | Click | `SoCInspirationNode` / `SoCInspirationNodeOCR` / `SoCState_GB1` / `SoCState_GB0` / `SoCInBattleBuff` / `SoCInBattleBuffOCR` / `SoCStartBattle` / `SoCClaim` / `SoCContinue` / `SoCInspirationFallback` |
 | · | `SoCInspirationNode` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `SoCInspirationNodeOCR` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `SoCState_GB1` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
@@ -668,9 +709,11 @@
 | · | `SoCStartBattle` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `SoCClaim` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `SoCContinue` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `SoCInspirationFallback` | DirectHit | Click@[351, 581, 1, 1] | `SoCInBattleBuff` / `SoCInBattleBuffOCR` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `SoCInspirationFallback` | DirectHit | Click@[351, 581, 1, 1] | `SoCInBattleBuff` / `SoCInBattleBuffOCR` |
 | · | `SoCInBattleBuff` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `SoCInBattleBuffOCR` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `_SoCScoreFull` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `SoCClaim` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `SoCContinue` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `SoCStartBattle` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `SoCInBattleBuff` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
@@ -679,13 +722,14 @@
 | · | `SoCInspirationNodeOCR` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `SoCState_GB1` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `SoCState_GB0` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
+| · | `SoCStartDive` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `SoCContinueDive` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `SoCDeepDive` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `SoCDeepDiveFree` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | &nbsp;&nbsp;&nbsp;&nbsp;2 | `SoCFallbackStart` | DirectHit | —(仅路由) | `SoCAtBCR` |
 | · | `SoCAtBCR` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 
-> 该任务挂载的中断保底：`[JumpBack]_ServerMaintenance`, `[JumpBack]_ConfirmReconnect`, `[JumpBack]_ConfirmMiddle`, `[JumpBack]_LevelUp`, `[JumpBack]_SeaOfCognitionReward`, `[JumpBack]_SoCGBAbandonConfirm`, `[JumpBack]_SoCNoTicket`, `[JumpBack]_NavigateBCR`, `[JumpBack]_BCRHead`, `[JumpBack]_BCRTail`, `[JumpBack]_NavigateHomepage`, `[JumpBack]_CloseWindows`
+> 该任务挂载的中断保底：`[JumpBack]_NavigateHomepage`, `[JumpBack]_CancelGeneral`, `[JumpBack]_CloseWindowsGeneral`, `[JumpBack]_ConfirmMiddle`, `[JumpBack]_ServerMaintenance`, `[JumpBack]_ConfirmReconnect`, `[JumpBack]_LevelUp`, `[JumpBack]_SeaOfCognitionReward`, `[JumpBack]_NavigateBCR`, `[JumpBack]_CloseWindows`, `[JumpBack]_SoCGBAbandonConfirm`, `[JumpBack]_SoCNoTicket`
 
 ---
 

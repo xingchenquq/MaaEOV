@@ -33,6 +33,8 @@
     "当期活动": {
         "timeout": 30000,
         "next": [
+            // 活动已结束（主界面没有「剩余X天」banner）→ 直接收尾，不要等 30s 超时报失败。
+            "当前无活动",
             "进入活动页",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
@@ -45,6 +47,57 @@
     // 主界面右上角 banner，OCR「剩余X天」同时承担活动过期判定。
     // 2026-10-22 实测：新版本 banner 位置未变，本节点无需改动
     //   （「长夜尽头的旅人 · 剩余19天」命中 score 0.9994，box≈(1171,360,76,21)）。
+    // 主界面 + 无活动 banner ⇒ 本期活动已结束（2026-11-02 修：旧实现会 30s 超时 → 任务 FAIL，
+    // 与 interface doc 里写的「活动结束后自动跳过」不符）。
+    "当前无活动": {
+        "timeout": 8000,
+        "focus": {
+            "Node.PipelineNode.Starting": "当期活动 · 检查活动是否开放"
+        },
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    32,
+                    562,
+                    137,
+                    145
+                ],
+                "template": "Homepage/SystemButton.png",
+                "threshold": 0.8
+            }
+        },
+        "next": [
+            "当前无活动确认",
+            "进入活动页"
+        ]
+    },
+
+    "当前无活动确认": {
+        "timeout": 8000,
+        "focus": {
+            "Node.PipelineNode.Starting": "当期活动 · 未开放，跳过"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1045,
+                    212,
+                    235,
+                    194
+                ],
+                "expected": [
+                    "剩余"
+                ]
+            }
+        },
+        "inverse": true,
+        "next": [
+            "_StopTask"
+        ]
+    },
+
     "进入活动页": {
         "timeout": 30000,
         "recognition": {

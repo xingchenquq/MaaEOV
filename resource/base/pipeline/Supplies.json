@@ -3,7 +3,8 @@
     // Supplies.json
     // 功能：补给站
     // 入口节点：#Supplies
-    // 说明：领取每日礼包，活动货柜中的可领取项目，胶卷兑换银心奖章，自动购买部分银心奖章商店、紫心奖章商店的商品。
+    // 说明：领取每日礼包，活动货柜中的可领取项目，自动购买部分银心奖章商店、紫心奖章商店的商品。
+    // 注意：商店底部的「胶卷兑换」（多余探员碎片换银心奖章）**不在本任务范围内**，代码里没有任何入口。
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
     // 本文件节点数 = 55
     // 依赖 Shared.json 节点数 = 6（示例：_Cancel, _Cancel4, _ConfirmMiddle, _ConfirmReconnect, _NavigateHomepage, _ServerMaintenance）
@@ -1170,6 +1171,7 @@
     },
 
     "VioletMedalRedeemRecordComplete": {
+        "timeout": 15000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -1195,10 +1197,15 @@
                 ]
             }
         },
-        "post_wait_freezes": 1000
+        "post_wait_freezes": 1000,
+        "next": [
+            "_Done"
+        ]
     },
 
+    // 货币不足：弹窗还开着，必须点掉再收尾，否则下一轮又会点开同一商品 → 死循环。
     "VioletMedalRedeemRecordOutOfMedal": {
+        "timeout": 15000,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -1210,7 +1217,22 @@
                 ],
                 "template": "Utils/Tips.png"
             }
-        }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    652,
+                    512,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "_Done"
+        ]
     },
 
     "VioletMedalRedeemRecordFound": {
