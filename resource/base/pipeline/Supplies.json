@@ -150,6 +150,7 @@
                     578
                 ],
                 "template": [
+                    "NewHome/Supplies.png",
                     "Homepage/Supplies_default.png",
                     "Homepage/Supplies_compact.png"
                 ]

@@ -340,6 +340,7 @@
                     578
                 ],
                 "template": [
+                    "NewHome/TheRoom.png",
                     "Homepage/TheRoom_default.png",
                     "Homepage/TheRoom_compact.png"
                 ]

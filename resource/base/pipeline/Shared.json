@@ -2308,6 +2308,7 @@
                     578
                 ],
                 "template": [
+                    "NewHome/BCR.png",
                     "Homepage/BCR_default.png",
                     "Homepage/BCR_compact.png"
                 ]
@@ -4676,10 +4677,13 @@
                 "roi": [
                     741,
                     590,
-                    146,
+                    190,
                     130
                 ],
-                "template": "Homepage/Mission.png"
+                "template": [
+                    "NewHome/Mission.png",
+                    "Homepage/Mission.png"
+                ]
             }
         },
         "action": "Click",
@@ -4769,12 +4773,15 @@
             "type": "TemplateMatch",
             "param": {
                 "roi": [
-                    121,
-                    79,
-                    59,
-                    60
+                    95,
+                    60,
+                    90,
+                    95
                 ],
-                "template": "Homepage/Event.png"
+                "template": [
+                    "NewHome/Event.png",
+                    "Homepage/Event.png"
+                ]
             }
         },
         "action": "Click",

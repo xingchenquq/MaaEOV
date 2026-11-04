@@ -245,13 +245,17 @@
             "time": 1200,
             "threshold": 0.85
         },
+        // 2026-11-03：末位原本是 [JumpBack]CrisisMissionTicketsSelectLevel（重试选关）。
+        // 扫荡是一次性把全部调令打完（设置次数=调令数），结算后已经回到主界面，
+        // 此时再「选关」在主界面找不到关卡 → 一路回落到导航 → 任务被判 FAIL
+        // （实测 94.6s、35 节点、调令已消耗）。改为直接走 Skipped 收尾。
         "next": [
             "CrisisMissionTicketsSweepStrategy",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmSweepResult",
             "[JumpBack]_LevelUp",
-            "[JumpBack]CrisisMissionTicketsSelectLevel"
+            "CrisisMissionTicketsSkipped"
         ]
     },
 

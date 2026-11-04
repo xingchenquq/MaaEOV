@@ -115,6 +115,7 @@
 
     // Exception
     "FarmOutOfStamina": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -129,9 +130,13 @@
                 ]
             }
         },
+        // 2026-11-03：体力不足、又没快到期的道具时，先关掉「使用体力道具」弹窗再停，
+        // 否则任务结束时界面停在弹窗上，后续任务/手动接手都要先手动点掉。
+        // ⚠ 不能直接复用 Shared 的 CloseUseStaminaItem —— 它 next 为空，会弹栈回
+        //   FarmFromLevel 重新扫荡，实测进入「扫荡→体力不足→关窗→再扫荡」死循环（120s 超时）。
         "next": [
             "FarmUseExpiringItem",
-            "_StopTask"
+            "_CloseStaminaAndStop"
         ]
     },
 
@@ -166,6 +171,40 @@
         },
         "next": [
             "ConfirmUseStaminaItem"
+        ]
+    },
+
+    // 体力不足收尾专用：关掉弹窗后直接停止任务（区别于通用 CloseUseStaminaItem 的弹栈续跑）。
+    "_CloseStaminaAndStop": {
+        "timeout": 15000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    452,
+                    12,
+                    207,
+                    125
+                ],
+                "expected": [
+                    "下次恢复时间"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    1080,
+                    327,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_wait_freezes": 1000,
+        "next": [
+            "_StopTask"
         ]
     }
 }

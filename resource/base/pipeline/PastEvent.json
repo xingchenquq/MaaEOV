@@ -69,8 +69,11 @@
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 正在选择活动入口"
         },
+        // 2026-11-03：改用 OCR 识别活动名。原 TemplateMatch 指向
+        // 「往期活动/在月光之下.png」，而 option 里其余 6 个活动引用的模板文件根本不存在
+        // （实际文件名带关卡后缀，如 谜案回首GB112.png），选中就必失败。
         "recognition": {
-            "type": "TemplateMatch",
+            "type": "OCR",
             "param": {
                 "roi": [
                     0,
@@ -78,8 +81,9 @@
                     1280,
                     442
                 ],
-                "template": "往期活动/在月光之下.png",
-                "threshold": 0.8
+                "expected": [
+                    "在月光之下"
+                ]
             }
         },
         "action": "Click",
@@ -176,8 +180,11 @@
 
     "选择往期活动_重试2": {
         "timeout": 30000,
+        // 2026-11-03：改用 OCR 识别活动名。原 TemplateMatch 指向
+        // 「往期活动/在月光之下.png」，而 option 里其余 6 个活动引用的模板文件根本不存在
+        // （实际文件名带关卡后缀，如 谜案回首GB112.png），选中就必失败。
         "recognition": {
-            "type": "TemplateMatch",
+            "type": "OCR",
             "param": {
                 "roi": [
                     0,
@@ -185,8 +192,9 @@
                     1280,
                     442
                 ],
-                "template": "往期活动/在月光之下.png",
-                "threshold": 0.8
+                "expected": [
+                    "在月光之下"
+                ]
             }
         },
         "action": "Click",
@@ -466,8 +474,11 @@
 
     "选择往期活动_重试4": {
         "timeout": 30000,
+        // 2026-11-03：改用 OCR 识别活动名。原 TemplateMatch 指向
+        // 「往期活动/在月光之下.png」，而 option 里其余 6 个活动引用的模板文件根本不存在
+        // （实际文件名带关卡后缀，如 谜案回首GB112.png），选中就必失败。
         "recognition": {
-            "type": "TemplateMatch",
+            "type": "OCR",
             "param": {
                 "roi": [
                     0,
@@ -475,8 +486,9 @@
                     1280,
                     442
                 ],
-                "template": "往期活动/在月光之下.png",
-                "threshold": 0.8
+                "expected": [
+                    "在月光之下"
+                ]
             }
         },
         "action": "Click",
@@ -759,8 +771,11 @@
 
     "选择往期活动_重试3": {
         "timeout": 30000,
+        // 2026-11-03：改用 OCR 识别活动名。原 TemplateMatch 指向
+        // 「往期活动/在月光之下.png」，而 option 里其余 6 个活动引用的模板文件根本不存在
+        // （实际文件名带关卡后缀，如 谜案回首GB112.png），选中就必失败。
         "recognition": {
-            "type": "TemplateMatch",
+            "type": "OCR",
             "param": {
                 "roi": [
                     0,
@@ -768,8 +783,9 @@
                     1280,
                     442
                 ],
-                "template": "往期活动/在月光之下.png",
-                "threshold": 0.8
+                "expected": [
+                    "在月光之下"
+                ]
             }
         },
         "action": "Click",
@@ -843,6 +859,9 @@
         "focus": {
             "Node.PipelineNode.Starting": "往期活动 · 正在读取调令数量"
         },
+        // 2026-11-03：expected 原本是空数组 → best_result 拿到的是 ROI 里任意一段文字
+        // （实测读到「福」score 0.30），解析成 0 → 明明有 6 个调令却走了「调令为零」跳过。
+        // 必须给数字正则过滤，否则整个往期活动任务永远不扫荡。
         "recognition": {
             "type": "OCR",
             "param": {
@@ -852,7 +871,9 @@
                     173,
                     48
                 ],
-                "expected": []
+                "expected": [
+                    "[0-9]"
+                ]
             }
         },
         "action": {

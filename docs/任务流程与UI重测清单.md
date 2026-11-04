@@ -4,7 +4,7 @@
 
 > 基准分辨率：1280×720。所有坐标、ROI 均为该基准下的像素值，UI 改版后需逐项复核。
 
-> 共解析到 **16** 个任务入口、**633** 个节点。
+> 共解析到 **16** 个任务入口、**634** 个节点。
 
 ## 公共约定（所有任务共用）
 
@@ -500,10 +500,10 @@
 |----|------|------------------|------|--------------------------|
 | 0 | `当期活动` | — | —(仅路由) | `当前无活动` / `进入活动页` |
 | &nbsp;&nbsp;1 | `当前无活动` | 模板[Homepage/SystemButton.png] roi=[32, 562, 137, 145] thr=0.8 | —(仅路由) | `当前无活动确认` / `进入活动页` |
-| &nbsp;&nbsp;&nbsp;&nbsp;2 | `当前无活动确认` | OCR['剩余'] roi=[1045, 212, 235, 194] | —(仅路由) | `_StopTask` |
+| &nbsp;&nbsp;&nbsp;&nbsp;2 | `当前无活动确认` | OCR['剩余'] roi=[790, 80, 240, 170] | —(仅路由) | `_StopTask` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `_StopTask` | — | Custom['记录任务中止'] | `_HaltTask` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `_HaltTask` | — | StopTask | （结束） |
-| &nbsp;&nbsp;&nbsp;&nbsp;2 | `进入活动页` | OCR['剩余'] roi=[1045, 212, 235, 194] | Click | `关闭活动提示` / `进入关卡章节` |
+| &nbsp;&nbsp;&nbsp;&nbsp;2 | `进入活动页` | OCR['剩余'] roi=[790, 80, 240, 170] | Click | `关闭活动提示` / `进入关卡章节` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `关闭活动提示` | OCR['今日获得', '硬币', '注意'] roi=[400, 180, 520, 180] | Click@[640, 380, 1, 1] | `进入关卡章节` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `进入关卡章节` | OCR['在光消失的地方', '消失的地方'] roi=[950, 460, 330, 90] | Click | `选择关卡` / `_关卡地图平移1` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `选择关卡` | OCR['WN108'] roi=[0, 150, 1280, 480] | Click | `点击快速完成` |
@@ -539,23 +539,23 @@
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 | `~已切换到往期活动` | 模板[往期活动/往期活动标志.png] roi=[47, 65, 484, 89] thr=0.85 | —(仅路由) | `进入往期活动内部流程` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4 | `进入往期活动内部流程` | DirectHit | —(仅路由) | `~识别往日行动调令` / `选择往期活动` / `往左滑动` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 | `~识别往日行动调令` | OCR['[0-6]'] roi=[351, 92, 173, 48] | —(仅路由) | `记录往日行动调令数` / `选择往期活动` / `往左滑动` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `记录往日行动调令数` | OCR[] roi=[351, 92, 173, 48] | Custom['记录往日行动调令数'] | `~调令为零` / `选择往期活动` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `记录往日行动调令数` | OCR['[0-9]'] roi=[351, 92, 173, 48] | Custom['记录往日行动调令数'] | `~调令为零` / `选择往期活动` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `~调令为零` | Custom['调令为零'] | —(仅路由) | `退出往期活动失败` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `退出往期活动失败` | 模板[当期活动/主界面图标.png] roi=[11, 2, 413, 84] thr=0.85 | Click | `_NavigateHomepage` / `~Homepage` |
 | · | `_NavigateHomepage` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `~Homepage` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `选择往期活动` | 模板[往期活动/在月光之下.png] roi=[0, 147, 1280, 442] thr=0.8 | Click | `进入该往期活动事件` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `选择往期活动` | OCR['在月光之下'] roi=[0, 147, 1280, 442] | Click | `进入该往期活动事件` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `进入该往期活动事件` | DirectHit | —(仅路由) | `进入该往期活动事件_未适配` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `进入该往期活动事件_未适配` | DirectHit | —(仅路由) | （结束） |
 | · | `选择往期活动` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6 | `往左滑动` | — | Swipe | `选择往期活动_重试2` / `往左滑动2` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `选择往期活动_重试2` | 模板[往期活动/在月光之下.png] roi=[0, 147, 1280, 442] thr=0.8 | Click | `进入该往期活动事件` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `选择往期活动_重试2` | OCR['在月光之下'] roi=[0, 147, 1280, 442] | Click | `进入该往期活动事件` |
 | · | `进入该往期活动事件` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `往左滑动2` | — | Swipe | `选择往期活动_重试3` / `往左滑动3` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `选择往期活动_重试3` | 模板[往期活动/在月光之下.png] roi=[0, 147, 1280, 442] thr=0.8 | Click | `进入该往期活动事件` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `选择往期活动_重试3` | OCR['在月光之下'] roi=[0, 147, 1280, 442] | Click | `进入该往期活动事件` |
 | · | `进入该往期活动事件` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8 | `往左滑动3` | — | Swipe | `选择往期活动_重试4` / `退出往期活动失败` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `选择往期活动_重试4` | 模板[往期活动/在月光之下.png] roi=[0, 147, 1280, 442] thr=0.8 | Click | `进入该往期活动事件` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 | `选择往期活动_重试4` | OCR['在月光之下'] roi=[0, 147, 1280, 442] | Click | `进入该往期活动事件` |
 | · | `进入该往期活动事件` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `退出往期活动失败` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 | · | `选择往期活动` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
