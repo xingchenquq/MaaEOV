@@ -83,8 +83,10 @@
             "SoCInspirationNodeOCR",
             "SoCState_GB1",
             "SoCState_GB0",
+            "_SoCTicketLow",
             "SoCStartDive",
             "SoCContinueDive",
+            "SoCTicketGateFree",
             "SoCDeepDive",
             "SoCDeepDiveFree",
             "SoCFallbackStart",
@@ -93,6 +95,37 @@
             "[JumpBack]_ConfirmMiddle",
             "[JumpBack]_LevelUp",
             "[JumpBack]_NavigateBCR"
+        ]
+    },
+
+    // ---------- 券不足 → 引导走自由探索（不耗券） ----------
+    // ⚠️ 2026-11-10 新增，让「券不足」任务有自然终态：
+    //   旧行为：券 <2 且补不满 1000 分 → _SoCTicketLow 直接收工，免费模式也没得打；
+    //           或被 override 硬放行 → 无限循环打下去，只能靠测试超时停。
+    //   新状态机（agent/_FREE_ROUND）：券不足 → SoCTicketLow 放行并占位 →
+    //     本节点命中（跳过深潜指引，防烧券/防「入场券不足」弹窗）→ 走自由探索 →
+    //     选卡置 picked → 探索打完回选层 → SoCTicketLow 收工 → _SoCReturnHome。
+    //   探索打完回选层后本节点必须排在 _SoCTicketLow **之后**被扫描（收工优先于再开一轮）。
+    //   本节点 next **不含** SoCDeepDive / SoCDeepDiveFallback —— 引导后绝不回头点深潜。
+    "SoCTicketGateFree": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "券不足 → 走自由探索（不耗券）"
+        },
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "SoCTicketFreeGate"
+            }
+        },
+        "action": "DoNothing",
+        "post_delay": 300,
+        "next": [
+            "SoCDeepDiveFree",
+            "[JumpBack]_ServerMaintenance",
+            "[JumpBack]_ConfirmReconnect",
+            "[JumpBack]_ConfirmMiddle",
+            "[JumpBack]_LevelUp"
         ]
     },
 
@@ -173,15 +206,18 @@
         "next": ["_SoCScoreFull", "SoCSelectLayer"]
     },
 
-    // ---------- 入场券不足 2 张 → 收尾 ----------
-    // 一层只有 500 分，打满 1000 需要 2 轮 = 2 张券。只剩 1 张时开新一轮必然打不满，
+    // ---------- 入场券不足 2 张且补不满 → 收尾 ----------
+    // 一层只有 500 分，打满 1000 需要 2 轮 = 2 张券。只剩 1 张时开新一轮通常打不满，
     // 白亏一张券和 8~19 分钟，不如直接结束等下期刷新。
+    // ⚠️ 2026-11-09：不要「券 < 2 就一刀切收工」——券 1 张但只差一点点分时是误伤。
+    //   现在券不足时会再读左下角「意识碎片 N/1000」，按每轮保守 355 分折算：
+    //   只要 券数×355 ≥ 1000−当前分 就放行继续打；读不到积分才退回原行为（收工）。
     // 券数在选层界面右上角（券图标 + 数字，约 (1114,36)），只在选层后挂，不在 Resume 首位，
     // 避免在主界面把右上角资源数误读成 1。
     "_SoCTicketLow": {
         "timeout": 30000,
         "focus": {
-            "Node.PipelineNode.Starting": "入场券不足 2 张 → 无法打满，收尾结束"
+            "Node.PipelineNode.Starting": "券不足且补不满（自由探索已完成）→ 收尾结束"
         },
         "recognition": {
             "type": "Custom",
@@ -674,12 +710,19 @@
         ]
     },
 
-    // ---------- 全局 Buff：横排 Carousel，共 5 次选取（仅一次，每局开头） ----------
+    // ---------- 全局 Buff：横排 Carousel，每个战斗节点前都会进一次 ----------
+    // ⚠️ 2026-11-09 实机修正「仅一次」的说法：自由探索连打 3 个节点，
+    //   21:00 / 21:04 / 21:07 各进一次全局 Buff 界面（3/3），不是「每局开头只一次」。
+    //   界面上部分卡已是「固化灵感」（上一轮选过、已固化的），其余是新的「未激发」卡。
+    //   → 本轮起按「每个节点前都可能出现」设计：不能假设只出现一次，也不能把
+    //     「固化灵感」当成界面异常。
     // ⚠️ 本节注释于 2026-09-14 更正：早期「按优先级逐个 TemplateMatch」方案已被实机日志否定
     //   （卡标题模板匹配分数仅 0.18~0.53，已选/未选卡标题一致 → 点已选卡无效），实现已改为：
     //   SoCGBPickAvailable（agent/soc_actions.py，CustomAction）：
-    //     Step1 OCR["未激发","未激活","可激发","待激发"] 在 label_roi 找标签 → Step2 点标签上方卡片主体。
-    //     收敛式终止：同屏可点卡点完才左滑一次；视野内卡都已点过 → 视为选满 → BREAK。
+    //     Step1 OCR 同时找「未激发」（候选）与「固化灵感」（已选/不可选）；
+    //     Step2 按 x 带剔除已固化卡上的「未激发」误读框 → 点标签上方图标区；
+    //     Step3 单击一次，用**点击前/后像素差分**确认是否真的选中（金边+✓）；
+    //     Step4 收敛式终止：本屏候选点完/失败才左滑，连续无新候选或连续点击不生效 → BREAK。
     // 布局：5 张 Buff 卡横排（≈y230-530），屏幕只能同时显示 ~2.5 张 → 需**左滑**才能看到右侧卡。
     // 📁 卡面模板**并未入库**（2026-10-31 核对：resource/base/image/SeaOfCognition/ 下只有
     //   BuffContinue / QiFa / 剩余可选灵感0 / 局内buff选择 / 战斗完成继续 / 认知海域图标 /
@@ -719,8 +762,10 @@
     },
 
     // ---------- 全局 Buff：单节点选卡（CustomAction 内部轮询） ----------
-    // 只 OCR「未激发」标签点可激活卡，已选卡无标签 → 天然排除 → 不死循环。
-    // 名额耗尽（剩余可选灵感0）或视野无可点卡(左滑兜底) 或达 max_iter → 返回去点「继续」。
+    // 只 OCR「未激发」标签点可激活卡；已固化的卡由「固化灵感」标签按 x 带剔除。
+    // 终止：连续点击不生效（名额满）/ 连续无新候选（左滑兜底）/ 达 max_iter → 返回去点「继续」。
+    // ⚠️ 2026-11-09：「剩余可选灵感 N」的数字 OCR 读不出（文字能读到、数字整块丢失），
+    //   所以不再拿它当终止信号，改用**点击前后像素差分**判定是否选中（默认 use_quota=false）。
     "SoCGBPickAvailable": {
         "timeout": 30000,
         "focus": {

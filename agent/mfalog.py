@@ -83,7 +83,11 @@ def _redact(v):
 
 # Agent 子进程的 stdout 会被 MFA GUI 丢弃（不进 GUI 日志、也不进 maafw.log），
 # 因此同步落盘一份到 debug/mfa_agent.log 作为唯一可靠的明细载体；超 5MB 轮转一次。
-_LOG_PATH = os.path.join("debug", "mfa_agent.log")
+# ⚠️ 落盘路径可用环境变量 MFAEOV_AGENT_LOG 覆盖；设为 off/none/0 则**不落盘**
+#   （单元测试用：否则测试产生的日志会混进真实运行日志，排障时误导）。
+_LOG_PATH = os.environ.get("MFAEOV_AGENT_LOG") or os.path.join("debug", "mfa_agent.log")
+if _LOG_PATH.strip().lower() in ("off", "none", "0"):
+    _LOG_PATH = None
 _MAX_LOG_BYTES = 5 * 1024 * 1024
 
 # 进程内自增序号 + 当前任务上下文（由 task_trace 维护，自动并入每条日志）
@@ -121,7 +125,9 @@ def _emit(rec: dict) -> None:
         line = "[MFA]" + json.dumps({"ts": _now(), "module": "mfalog", "event": "serialize", "result": "fail", "msg": "<unserializable record>"}, ensure_ascii=False)
     # 单行 + 立即 flush，确保 MFA 主程序捕获到每一条
     print(line, flush=True)
-    # 落盘（GUI 内看不到 agent stdout，文件是排查的唯一明细来源）
+    # 落盘（GUI 内看不到 agent stdout，文件是排查的唯一明细来源）；MFAEOV_AGENT_LOG=off 时不落盘
+    if not _LOG_PATH:
+        return
     try:
         os.makedirs(os.path.dirname(_LOG_PATH) or ".", exist_ok=True)
         if os.path.exists(_LOG_PATH) and os.path.getsize(_LOG_PATH) > _MAX_LOG_BYTES:
@@ -206,11 +212,12 @@ def configure_stdlib_logging(level: int = logging.INFO) -> None:
     if not any(isinstance(h, logging.StreamHandler) and isinstance(h.formatter, _StructFormatter) for h in root.handlers):
         root.addHandler(handler)
     # stdlib 日志同样落盘到 debug/mfa_agent.log（MaaFW 内部 log.info 等在 GUI 下不可见）
-    try:
-        os.makedirs("debug", exist_ok=True)
-        _fh = logging.FileHandler(_LOG_PATH, encoding="utf-8")
-        _fh.setFormatter(_StructFormatter())
-        root.addHandler(_fh)
-    except Exception:
-        pass
+    if _LOG_PATH:
+        try:
+            os.makedirs(os.path.dirname(_LOG_PATH) or ".", exist_ok=True)
+            _fh = logging.FileHandler(_LOG_PATH, encoding="utf-8")
+            _fh.setFormatter(_StructFormatter())
+            root.addHandler(_fh)
+        except Exception:
+            pass
     # 关闭 propagation 噪音：保留 MaaFW 自己的 logger 输出，只是统一格式

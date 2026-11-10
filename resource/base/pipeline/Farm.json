@@ -204,7 +204,27 @@
         },
         "post_wait_freezes": 1000,
         "next": [
-            "_StopTask"
+            "_FarmStop"
+        ]
+    },
+
+    // 体力不足收尾（2026-11-07 改）：
+    // 原来 `_CloseStaminaAndStop` 关掉弹窗后直接 `_StopTask` → `_HaltTask`，任务停在关卡界面，
+    // 日志记「任务完成（中途中止）」，下一个任务要 6 个节点 / 10 秒才摸回主界面。
+    // 现在保留「记录任务中止」留痕，但先回主界面再收工。
+    // ⚠ 必须用 `~TaskExitStop`（到家焊死 StopTask）而非 `~TaskExit`：本节点是从
+    //   `[JumpBack]FarmOutOfStamina` 调起来的，收尾若"自然结束"会弹回 Farm 的 next 列表，
+    //   而体力读数为 0 仍能命中 FarmOutOfStamina → 26 秒一轮死循环（实测）。
+    "_FarmStop": {
+        "timeout": 30000,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "记录任务中止"
+            }
+        },
+        "next": [
+            "~TaskExitStop"
         ]
     }
 }

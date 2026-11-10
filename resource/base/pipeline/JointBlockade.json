@@ -217,6 +217,7 @@
 
     // Success
     "JointBlockadeCompleteFromSystem": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -230,10 +231,15 @@
                     "108/108"
                 ]
             }
-        }
+        },
+        // 2026-11-07：原为隐式终止，任务停在系统菜单；改接统一收尾。
+        "next": [
+            "~TaskExit"
+        ]
     },
 
     "JointBlockadeCompleteFromLevel": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -247,10 +253,14 @@
                     "108/108"
                 ]
             }
-        }
+        },
+        "next": [
+            "~TaskExit"
+        ]
     },
 
     "JointBlockadeTicketsCompleteFromLevel": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -264,6 +274,9 @@
                     "^0"
                 ]
             }
-        }
+        },
+        "next": [
+            "~TaskExit"
+        ]
     }
 }

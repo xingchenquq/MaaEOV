@@ -380,6 +380,7 @@
     },
 
     "ProtocolFullLevel": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -395,7 +396,10 @@
             }
         },
         // 应对协议已满级：原来是 _StopTask，聚合后改为自然结束（同 _ProtocolNA）。
-        "next": []
+        // 2026-11-07：接统一收尾，避免把「应对协议」页留给下一个任务。
+        "next": [
+            "~TaskExit"
+        ]
     },
 
     "CollectProtocolWeekly": {
@@ -473,6 +477,7 @@
     },
 
     "CollectProtocolReward": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "一键领取 · 领取协议奖励"
         },
@@ -499,6 +504,10 @@
                 ]
             }
         },
-        "post_wait_freezes": 1000
+        "post_wait_freezes": 1000,
+        // 2026-11-07：原来是终点（停在应对协议奖励页），改接统一收尾。
+        "next": [
+            "~TaskExit"
+        ]
     }
 }

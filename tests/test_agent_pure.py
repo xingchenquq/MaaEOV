@@ -12,6 +12,7 @@
 运行：python\\python.exe -m unittest discover -s tests -v
 """
 import os
+os.environ.setdefault("MFAEOV_AGENT_LOG", "off")   # 单测日志不落盘（防污染 debug/mfa_agent.log）
 import sys
 import unittest
 

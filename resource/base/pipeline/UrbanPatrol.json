@@ -352,7 +352,24 @@
         "next": [
             "_False",
             "[JumpBack]_ConfirmMiddle",
-            "[JumpBack]_StopTask"
+            "_UrbanPatrolStop"
+        ]
+    },
+
+    // 次数不足收尾（2026-11-07 改）：
+    // 原来 `[JumpBack]_StopTask` 直接停，任务停在「购买次数」弹窗上，
+    // 下一个任务（外部招募）要 6 个节点 / 10.4 秒才摸回主界面。
+    // 现在先关弹窗回主界面，再停。
+    "_UrbanPatrolStop": {
+        "timeout": 30000,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "记录任务中止"
+            }
+        },
+        "next": [
+            "~TaskExitStop"
         ]
     }
 }

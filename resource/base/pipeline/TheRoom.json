@@ -1155,9 +1155,15 @@
     // 必要性：「分解剩余护符」=No（默认）会把 SellAmulet 置 enabled=false，
     // 若收尾节点的 next 只剩 SellAmulet，MaaFramework 会报
     // 「no valid/enabled node in next」→ invalid node id → 任务误判失败。
+    // 2026-11-07：改为接统一收尾 `~TaskExit`（先回主界面再结束）。
+    // 原来这里是 `next: []`，任务停在事务所内，下一个任务要 `_ExitTheRoom → _ConfirmExitTheRoom
+    // → _Confirm → _ConfirmGeneral → _Loading` 才能回来，实测 14 节点 / 20.3 秒且触发一次场景重载。
     "RitualDone": {
+        "timeout": 30000,
         "recognition": "DirectHit",
-        "next": []
+        "next": [
+            "~TaskExit"
+        ]
     },
 
     // Exception

@@ -252,6 +252,7 @@
 
     // Success
     "LiminalZoneCompletedFromSystem": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -265,10 +266,15 @@
                     "480/480"
                 ]
             }
-        }
+        },
+        // 2026-11-07：原为隐式终止，任务停在系统菜单；改接统一收尾。
+        "next": [
+            "~TaskExit"
+        ]
     },
 
     "LiminalZoneCompletedFromLevel": {
+        "timeout": 30000,
         "recognition": {
             "type": "OCR",
             "param": {
@@ -282,7 +288,10 @@
                     "480/480"
                 ]
             }
-        }
+        },
+        "next": [
+            "~TaskExit"
+        ]
     },
 
     // Exception

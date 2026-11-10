@@ -7,6 +7,7 @@
 3. `prune_evidence` 真的会删过期与超量文件（否则用户磁盘被取证图吃光）。
 """
 import os
+os.environ.setdefault("MFAEOV_AGENT_LOG", "off")   # 单测日志不落盘（防污染 debug/mfa_agent.log）
 import shutil
 import struct
 import sys

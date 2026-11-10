@@ -123,14 +123,40 @@
         "timeout": 30000,
         "next": [
             "CollectShortTermCheckIn",
-            "~ShortTermCheckIn",
+            "_ShortTermCheckInDone",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_NavigateShortTermCheckIn"
         ]
     },
 
+    // 2026-11-07：签到已完成（界面已是「短期支援」且没有可领）时的收尾。
+    // 原来直接挂 `~ShortTermCheckIn` 当终点，任务停在签到页；
+    // 这里复制同一识别条件、换成统一收尾，避免影响 `_NavigateShortTermCheckIn` 里
+    // 把 `~ShortTermCheckIn` 当「已到达」判据的用法。
+    "_ShortTermCheckInDone": {
+        "timeout": 30000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    254,
+                    377,
+                    396,
+                    190
+                ],
+                "expected": [
+                    "短期支援"
+                ]
+            }
+        },
+        "next": [
+            "~TaskExit"
+        ]
+    },
+
     "CollectShortTermCheckIn": {
+        "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "活动领取 · 领取短期支援补贴"
         },
@@ -149,6 +175,10 @@
             }
         },
         "action": "Click",
-        "post_wait_freezes": 1000
+        "post_wait_freezes": 1000,
+        // 2026-11-07：原来是终点（停在签到页），改接统一收尾。
+        "next": [
+            "~TaskExit"
+        ]
     }
 }

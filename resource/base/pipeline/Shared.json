@@ -1677,8 +1677,63 @@
     // 在 next 末尾挂上本节点，避免出现
     // 「no valid/enabled node in next」→ invalid node id → 任务被误判失败。
     "_Done": {
+        "timeout": 30000,
         "recognition": "DirectHit",
-        "next": []
+        "next": [
+            "~TaskExit"
+        ]
+    },
+
+    // 统一任务收尾：先回主界面，再结束。
+    // 背景：MaaEOV 绝大多数任务干完就停在原地（事务所 / 系统菜单 / 关卡 / 补给站…），
+    // 由下一个任务的开场导航去"擦屁股"。实测一次边界多花 8~20 秒，事务所那次还会触发场景重载。
+    // 用法：把本节点挂到各任务末节点的 next 上即可，业务逻辑零改动。
+    // 回不去时退回 `_NavigateHomepage`（那张 27 条的兜底清单）继续拆。
+    // 2026-11-07 实测：事务所 → 阈限禁区的边界由 14 节点 / 20.3s 降到 3 节点 / 1.5s。
+    // ⚠ timeout 60s（不是 nav 档默认 30s）：要覆盖 `~Homepage` 首轮不命中 + 一整轮
+    //   `_NavigateHomepage`（最长的「退出事务所」链实测 20.3s，含一次 _Loading）后再回来重扫。
+    //   30s 只够跑一轮，中途超时会把本该成功的任务判成败。
+    "~TaskExit": {
+        "timeout": 60000,
+        "recognition": "DirectHit",
+        "next": [
+            "~Homepage",
+            "[JumpBack]_NavigateHomepage"
+        ]
+    },
+
+    // 强停类任务的收尾（清体力 / 市区巡逻 用 `_StopTask` 结束，会把购买弹窗留给下一个任务）。
+    // 关键：这类任务是从 `[JumpBack]` 里被调起来的（如 `[JumpBack]FarmOutOfStamina`），
+    // 如果收尾只是"自然结束"，控制权会弹回调用方的 next 列表并重新命中同一个节点 → 死循环。
+    // 实测（2026-11-07 12:43）第一版就是这么翻车的：FarmOutOfStamina → _FarmStop → 回主界面
+    // → 弹回 FarmSelectLevel 的 next → 又命中 FarmOutOfStamina，26 秒一轮无限转。
+    // 所以这里必须"到家后立刻 StopTask"，用 `~HomepageThenHalt` 把「回家」和「停止」焊在一起。
+    "~HomepageThenHalt": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    32,
+                    562,
+                    137,
+                    145
+                ],
+                "template": "Homepage/SystemButton.png",
+                "threshold": 0.8
+            }
+        },
+        "next": [
+            "_HaltTask"
+        ]
+    },
+
+    "~TaskExitStop": {
+        "recognition": "DirectHit",
+        "next": [
+            "~HomepageThenHalt",
+            "[JumpBack]_NavigateHomepage",
+            "_HaltTask"
+        ]
     },
 
     // Wrappers ========================================
