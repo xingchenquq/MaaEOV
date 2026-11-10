@@ -361,6 +361,14 @@ class TestTicketLow(unittest.TestCase):
         soc_actions._FREE_ROUND.update(picked=False, at=0.0)
         self.assertIsNone(self._analyze("1", None))
 
+    def test_score_full_does_not_touch_free_round(self):
+        """积分已满 + 券不足 → 返回 miss 且**不设占位**，交给 _SoCScoreFull 收工。
+        若这里误设占位，SoCTicketFreeGate 会把已满的号引去白打一轮自由探索。"""
+        soc_actions._FREE_ROUND.update(picked=False, at=0.0)
+        self.assertIsNone(self._analyze("1", (1000, 1000)))
+        self.assertEqual(soc_actions._FREE_ROUND["at"], 0.0,
+                         "积分已满时不该设置免费轮占位")
+
     def test_min_tickets_param_overrides_threshold(self):
         """pipeline recognition.param 可传 min_tickets 覆盖阈值（实机测试券 1 张时传 1）。"""
         img = np.zeros((720, 1280, 3), dtype=np.uint8)
@@ -415,6 +423,26 @@ class TestFreeGate(unittest.TestCase):
         import time as _t
         soc_actions._FREE_ROUND.update(picked=False, at=_t.time() - 31 * 60)
         self.assertIsNone(self._gate(), "占位过期不应命中")
+
+    def test_gate_misses_when_score_already_full(self):
+        """积分已满 → 即使有占位也不引导免费轮（防 OCR 抖动导致白打一轮）。"""
+        import time as _t
+        soc_actions._FREE_ROUND.update(picked=False, at=_t.time())
+        img = np.zeros((720, 1280, 3), dtype=np.uint8)
+        with mock.patch.object(soc_actions.SoCTicketLow, "_read_score",
+                               classmethod(lambda cls, ctx, im: (1000, 1000))):
+            res = soc_actions.SoCTicketFreeGate().analyze(_ScoreCtx(""), _AnalyzeArg(img))
+        self.assertIsNone(res, "积分满时 Gate 必须 miss，让 _SoCScoreFull 收工")
+
+    def test_gate_hits_when_score_not_full(self):
+        """积分未满 → 占位有效时正常引导。"""
+        import time as _t
+        soc_actions._FREE_ROUND.update(picked=False, at=_t.time())
+        img = np.zeros((720, 1280, 3), dtype=np.uint8)
+        with mock.patch.object(soc_actions.SoCTicketLow, "_read_score",
+                               classmethod(lambda cls, ctx, im: (0, 1000))):
+            res = soc_actions.SoCTicketFreeGate().analyze(_ScoreCtx(""), _AnalyzeArg(img))
+        self.assertIsNotNone(res, "积分未满时 Gate 应正常引导")
 
 
 if __name__ == "__main__":

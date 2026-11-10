@@ -389,6 +389,20 @@ class SoCTicketFreeGate(CustomRecognition):
         fresh = time.time() - _FREE_ROUND["at"] < _FREE_ROUND_TTL
         if not (_FREE_ROUND["at"] > 0 and fresh and not _FREE_ROUND["picked"]):
             return None
+
+        # 加固（2026-11-10）：积分已满时**绝不**引导免费轮。
+        # 防的是「SoCTicketLow 那句积分 OCR 恰好失败 → 按免费轮放行」时，
+        # 实际积分已经 1000/1000 却被引去白打一轮。读不到积分不拦（那是正常路径）。
+        img = getattr(argv, "image", None)
+        if img is None:
+            img = _screencap(context)
+        if img is not None:
+            score = SoCTicketLow._read_score(context, img)
+            if score is not None and score[0] >= score[1]:
+                mfa_log(_MODULE, "free_gate", "ok",
+                        f"积分已满（{score[0]}/{score[1]}）→ 不引导自由探索，交给完成判定收工")
+                return None
+
         mfa_log(_MODULE, "free_gate", "info",
                 "券不足放行标记生效 → 引导走自由探索（跳过深潜指引）")
         return CustomRecognition.AnalyzeResult(
