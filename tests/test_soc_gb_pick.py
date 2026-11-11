@@ -397,6 +397,70 @@ class TestTicketLow(unittest.TestCase):
         self.assertIsNone(res, "默认阈值 2 + 券不足 → 状态机放行免费轮")
 
 
+class TestTicketParse(unittest.TestCase):
+    """券数 OCR 文本解析（用户 v2.0.0 反馈 §9：'8 1' 被拼成 81 → 误判券够 → 烧券）。"""
+
+    def _parse(self, text):
+        img = np.zeros((720, 1280, 3), dtype=np.uint8)
+        with mock.patch.object(soc_actions.SoCGBPickAvailable, "_ocr_blocks",
+                               staticmethod(lambda ctx, im, roi, threshold=0.3:
+                                            [((0, 0, 10, 10), text)])):
+            return soc_actions.SoCTicketLow._read_tickets(_ScoreCtx(""), img)
+
+    def test_plain_digit(self):
+        self.assertEqual(self._parse("1")[0], 1)
+
+    def test_digit_with_icon_noise(self):
+        """实机真实读数：'电 1' / 'B 0' —— 图标被识别成一个字符，数字才是券数。"""
+        self.assertEqual(self._parse("电 1")[0], 1)
+        self.assertEqual(self._parse("B 0")[0], 0)
+
+    def test_split_digits_do_not_concatenate(self):
+        """实机 '8 1' 曾按字符拼接成 81 → 被判券够 → 走深潜烧券。取最右一段。"""
+        self.assertEqual(self._parse("8 1")[0], 1)
+
+    def test_oversized_number_voids_reading(self):
+        """框到主界面资源数（'20,290'）= 两万多张券，不可能 → 整条读数作废。"""
+        self.assertIsNone(self._parse("20,290")[0])
+        self.assertIsNone(self._parse("20290")[0])
+
+    def test_two_digit_overflow_voids_reading(self):
+        """真被粘成 81（无空格）时也不能当券数用。"""
+        self.assertIsNone(self._parse("81")[0])
+
+    def test_no_digit(self):
+        self.assertIsNone(self._parse("")[0])
+
+
+class TestBattleFailLimit(unittest.TestCase):
+    """战斗失败计数与「达上限就收工」（用户 v2.0.0 反馈 §0/§6）。"""
+
+    def setUp(self):
+        soc_actions._BATTLE_FAILS["n"] = 0
+
+    def tearDown(self):
+        soc_actions._BATTLE_FAILS["n"] = 0
+
+    def _give_up(self):
+        return soc_actions.SoCBattleFailGiveUp().analyze(
+            _ScoreCtx(""), _AnalyzeArg(np.zeros((720, 1280, 3), dtype=np.uint8)))
+
+    def test_no_fail_keeps_retrying(self):
+        self.assertIsNone(self._give_up(), "没失败过就不该收工")
+
+    def test_below_limit_keeps_retrying(self):
+        soc_actions._BATTLE_FAILS["n"] = soc_actions.MAX_BATTLE_FAILS - 1
+        self.assertIsNone(self._give_up(), "未达上限应继续重开")
+
+    def test_at_limit_gives_up(self):
+        soc_actions._BATTLE_FAILS["n"] = soc_actions.MAX_BATTLE_FAILS
+        self.assertIsNotNone(self._give_up(), "达到上限应停止重开、收工")
+
+    def test_battle_fail_roi_constant(self):
+        """失败标题 ROI 来自用户实测截图，改动必须显式（防手滑）。"""
+        self.assertEqual(soc_actions._BATTLE_FAIL_ROI, (872, 186, 270, 72))
+
+
 class TestFreeGate(unittest.TestCase):
     """SoCTicketFreeGate：占位标记有效 → 命中引导走自由探索。"""
 

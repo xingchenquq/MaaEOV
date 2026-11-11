@@ -146,7 +146,12 @@
         "recognition": {
             "type": "OCR",
             "param": {
-                "roi": [790, 610, 240, 70],
+                // ⚠️ 2026-11-11：ROI 从 [790,610,240,70] 放宽到覆盖两处「终止下潜」——
+                //   · 选层界面（进行中的下潜）：约 x 878~980
+                //   · 战斗失败页：约 x 961~1214，中心 (1087,625)
+                //   原来只覆盖前者，失败页复用本节点时 OCR 框不到文字。
+                //   expected 写得很严（终止/終止 + 下潜），放宽不会误命中。
+                "roi": [790, 595, 440, 80],
                 "expected": ["[终終][止比]下[潜潛]"],
                 "threshold": 0.8
             }
@@ -202,8 +207,59 @@
         },
         "post_delay": 2000,
         // 放弃后回到选层界面（此时未选中层、两个按钮都消失）：
-        // 先判满分（已满则收尾回主界面，不留进行中的垃圾状态），否则重新选层开始。
-        "next": ["_SoCScoreFull", "SoCSelectLayer"]
+        // 先判满分（已满则收尾回主界面，不留进行中的垃圾状态），
+        // 再判「战斗失败是否已达上限」（达到则收工，不重开），否则重新选层开始。
+        "next": ["_SoCScoreFull", "_SoCBattleFailStop", "SoCSelectLayer"]
+    },
+
+    // ---------- 战斗失败：交给「终止下潜」链退出本轮（2026-11-11 新增） ----------
+    // 背景（用户 v2.0.0 实机反馈）：v2.0.0 只实现了「胜利结算」一条出口。
+    //   战斗失败后界面停在「战斗失败 / 重新开始 / 终止下潜」，
+    //   SoCAwaitBattle 等不到「继续」→ 白等满 max_wait（实测 541s，占整轮 21%）
+    //   → on_error → _StopTask 掐掉整个任务，而且 task_end 仍记 ok。
+    // 现在：agent 检测到失败只计数并返回 False → 本节点（再确认一次是失败页）
+    //   → 复用 _SoCAbandonDive 点「终止下潜」→ 确认 → 结算 → 回选层。
+    //   on_error 里本节点排在 _StopTask 之前：命中即自愈，miss（非失败页的真异常）才停任务。
+    // 📌 为什么选「终止下潜」而不是「重新开始」（用户确认 2026-11-11）：
+    //   · 终止**不会清零**已积累的意识碎片 → 只损失重打的时间，碎片继续累计；
+    //   · 重新开始是用同一套阵容重打同一节点，输的通常是练度/阵容问题，大概率再输；
+    //   · 终止是换一条路线，能绕开打不过的节点。
+    // ⚠️ 不给失败分支加 [JumpBack]：它要改变主干走向，JumpBack 结束后会弹回调用方重算
+    //   （11-09 踩过：已回主界面却多执行了一次点击）。
+    "_SoCBattleFailed": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "步骤 10b／战斗失败 → 终止下潜重开一轮"
+        },
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [872, 186, 270, 72],
+                "expected": ["战斗失败", "戰鬥失敗"],
+                "threshold": 0.7
+            }
+        },
+        "action": "DoNothing",
+        "post_delay": 300,
+        "next": ["_SoCAbandonDive"]
+    },
+
+    // ---------- 战斗失败达上限 → 收工（不重开） ----------
+    // 挂在 _SoCAbandonResult.next 里 SoCSelectLayer 之前。
+    // 判定看 agent 侧累计失败次数：未达上限 miss（正常重开），达到则命中 → 回主界面。
+    "_SoCBattleFailStop": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "战斗失败已达上限 → 收工回主界面"
+        },
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "SoCBattleFailGiveUp"
+            }
+        },
+        "action": "DoNothing",
+        "next": ["_SoCReturnHome"]
     },
 
     // ---------- 入场券不足 2 张且补不满 → 收尾 ----------
@@ -1074,10 +1130,12 @@
         },
         "reco_timeout": 600000,
         "timeout": 600000,
-        // CustomAction 超过 max_wait(540s) 仍未等到「继续」时返回 False（v1.14.7 前是
-        // return True 假装结算完成，会导致在错误界面继续点击）。失败后明确停止任务，
-        // 取证件（截图 + JSON）落在 debug/evidence/，便于定位是"没结算完"还是 ROI 错位。
+        // CustomAction 超过 max_wait(540s) 仍未等到「继续」时返回 False。
+        // ⚠️ 2026-11-11：on_error 先给 `_SoCBattleFailed`——战斗失败页能被它识别并自愈
+        //   （终止下潜 → 回选层重开）；识别不到（真异常/卡在别的界面）才落 `_StopTask` 收尾。
+        //   取证件（截图 + JSON）落在 debug/evidence/。
         "on_error": [
+            "_SoCBattleFailed",
             "_StopTask"
         ],
         "next": [

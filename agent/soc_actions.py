@@ -88,6 +88,15 @@ _adb_cache: dict = {}
 _FREE_ROUND = {"picked": False, "at": 0.0}
 _FREE_ROUND_TTL = 30 * 60      # 秒
 
+# 战斗失败累计次数（模块级：跨 pipeline 重开保持）。
+# v2.0.0 只实现了「胜利结算」一条出口，失败页会白等满 max_wait（实测 541s）后中止任务。
+# 现在失败即退出本轮并重开；累计到 MAX 次说明是练度/阵容问题，重开也打不过 → 收工，
+# 避免无限「失败→重开→失败」烧时间（11-09 那次同一界面循环 8 次烧掉 9 张券就是没上限）。
+# 📌 用户确认（2026-11-11）：「终止下潜」**不会清零**已积累的意识碎片 → 失败后终止重开
+#    只损失重打的时间，碎片继续累计。所以不需要「先试重新开始节省进度」的软化策略。
+_BATTLE_FAILS = {"n": 0}
+MAX_BATTLE_FAILS = 2
+
 
 def _adb_target():
     """解析 (adb 可执行文件, 序列号)；任一项缺失返回 ("", "")。
@@ -222,6 +231,8 @@ _CONTINUE_TPL = "SeaOfCognition/战斗完成继续.png"
 _TAP = (1250, 510)                   # 跳过空白界面用的安全点击点（右下偏上，避开按钮）
 _TASK_DONE_ROI = (88, 592, 247, 83)   # 左下角「意识碎片 N/1000」区域 —— 出现 "1000" 即任务完成
 _LAYER_BACK_ROI = (820, 545, 460, 175)  # 选层界面右下「开始下潜／继续下潜」—— 命中即已退出战斗
+# 战斗失败界面：「战斗失败」标题（2026-11-11 用户实测，简繁两种文案，布局不随角色/关卡变化）
+_BATTLE_FAIL_ROI = (872, 186, 270, 72)
 
 
 @AgentServer.custom_recognition("SoCTicketLow")
@@ -246,6 +257,9 @@ class SoCTicketLow(CustomRecognition):
     # 券图标 + 数字只在右上角这么一小块（实测原图约 (1175,28)-(1225,52)，数字高仅 ~18px）
     TICKET_ROI = (1168, 20, 76, 40)
     MIN_TICKETS = 2
+    # 本期入场券上限（实测一期 10 张）。留一倍余量：读到比这更大的数，
+    # 说明 ROI 框到了相邻的资源数字（实机 2026-11-11 读到过 20290 / 81），整条作废。
+    MAX_SANE_TICKETS = 20
     # 单轮保守得分：实测一轮 355~500 分，取最差值做下界，避免高估导致白跑一轮
     MIN_GAIN = 355
     # 左下角「意识碎片 N/1000」（与 _SoCScoreFull 同一 ROI，该区域已实测可读）
@@ -317,7 +331,16 @@ class SoCTicketLow(CustomRecognition):
 
     @classmethod
     def _read_tickets(cls, context, img):
-        """读右上角券数 → (数字|None, 原始文本)。识别异常返回 (None, None)。"""
+        """读右上角券数 → (数字|None, 原始文本)。识别异常返回 (None, None)。
+
+        ⚠️ 2026-11-11 实机（用户反馈 §9）：`TICKET_ROI=(1168,20,76,40)` 会框到**相邻字符**，
+        原实现把所有数字字符直接拼接，于是：
+          OCR='20,290'（框到了主界面资源数）→ 读成 20290
+          OCR='8 1'                          → 读成 81   → 误判「券够」→ 走深潜烧券
+          OCR='电 1'                         → 读成 1    （侥幸正确）
+        修法：按独立数字段解析 + **上界校验**，任何一个数字段超过本期上限就整条作废
+        （说明框到了别的数字），否则取最右一段（券图标在左、数字在右）。
+        """
         roi = cls.TICKET_ROI
         try:
             import numpy as np
@@ -332,14 +355,17 @@ class SoCTicketLow(CustomRecognition):
         except Exception as e:
             mfa_err(_MODULE, "ticket_low", "券数识别异常", error=e)
             return None, None
+
         text = " ".join(t for _b, t in blocks).strip()
-        digits = "".join(ch for ch in text if ch.isdigit())
-        if not digits:
+        vals = [int(t) for t in re.findall(r"\d+", text)]
+        if not vals:
             return None, text
-        try:
-            return int(digits), text
-        except ValueError:
+        if any(v > cls.MAX_SANE_TICKETS for v in vals):
+            mfa_warn(_MODULE, "ticket_low",
+                     f"券数区域读到超上限数字 {vals}（上限 {cls.MAX_SANE_TICKETS}，OCR={text!r}）"
+                     f"→ 判为框错，不判定")
             return None, text
+        return vals[-1], text
 
     @classmethod
     def _read_score(cls, context, img):
@@ -410,6 +436,34 @@ class SoCTicketFreeGate(CustomRecognition):
         )
 
 
+@AgentServer.custom_recognition("SoCBattleFailGiveUp")
+class SoCBattleFailGiveUp(CustomRecognition):
+    """战斗失败累计已达上限 → 命中 → 退出本轮后**不再重开**，直接收工。
+
+    链路（2026-11-11 新增）：
+      SoCAwaitBattle 检测到失败 → 计数 +1 → return False
+      → SoCAutoBattle.on_error = [_SoCBattleFailed, _StopTask]
+      → _SoCBattleFailed（OCR 失败页）→ _SoCAbandonDive（终止下潜 → 确认 → 结算）
+      → _SoCAbandonResult.next 里本节点排在 SoCSelectLayer 之前：
+            命中（失败已达上限）→ _SoCReturnHome 收工
+            miss（还能再试）    → 正常重新选层重开一轮
+
+    上限存在的意义：失败多半是练度/阵容问题，重开也可能继续输。
+    没有上限就是「失败 → 重开 → 再失败 → …」无限循环（11-09 同一界面循环 8 次
+    烧掉 9 张券就是这么来的）。
+    """
+
+    def analyze(self, context: Context, argv: CustomRecognition.AnalyzeArg):
+        n = _BATTLE_FAILS["n"]
+        if n < MAX_BATTLE_FAILS:
+            return None
+        mfa_log(_MODULE, "battle_fail", "skip",
+                f"战斗失败已达上限（{n}/{MAX_BATTLE_FAILS}）→ 不再重开，收工回主界面")
+        return CustomRecognition.AnalyzeResult(
+            box=(0, 0, 1, 1), detail=f"battle_fails={n}"
+        )
+
+
 @AgentServer.custom_action("SoCAwaitBattle")
 class SoCAwaitBattle(CustomAction):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
@@ -476,9 +530,40 @@ class SoCAwaitBattle(CustomAction):
                 img,
             )
             if back is not None and back.hit:
+                # 本轮正常打完 → 失败计数归零：只有「连续/同一轮内反复失败」才该收工，
+                # 上一轮失败过、这一轮打赢了不算。
+                if _BATTLE_FAILS["n"]:
+                    mfa_log(_MODULE, "await_battle", "info",
+                            f"本轮正常结束 → 战斗失败计数 {_BATTLE_FAILS['n']} → 归零")
+                    _BATTLE_FAILS["n"] = 0
                 mfa_log(_MODULE, "await_battle", "ok",
                         "已退回选层界面 → 本轮节点已全部完成，正常结束等待")
                 return True
+
+            # c3) 战斗失败（2026-11-11 用户反馈 §0：v2.0.0 只有胜利出口）
+            # 失败界面停在「战斗失败 / 重新开始 / 终止下潜」，下面 d) 的「继续」永远等不到，
+            # 原实现会白等满 max_wait（实测 541s，占整轮 21%）后才中止任务，且失败被记成成功。
+            # 这里只**检测 + 计数**，不点任何按钮：把界面留给 pipeline 的 _SoCBattleFailed
+            # （点「终止下潜」→ 确认 → 结算 → 回选层），避免 agent 与 pipeline 各点一次。
+            fail = context.run_recognition_direct(
+                JRecognitionType.OCR,
+                JOCR(expected=["战斗失败", "戰鬥失敗"], roi=_BATTLE_FAIL_ROI, threshold=0.7),
+                img,
+            )
+            if fail is not None and fail.hit:
+                _BATTLE_FAILS["n"] += 1
+                n = _BATTLE_FAILS["n"]
+                shot = evidence.save_evidence(
+                    img, "battle_failed", roi=_BATTLE_FAIL_ROI,
+                    meta={"fail_count": n, "elapsed_s": round(time.time() - start, 1),
+                          "max_battle_fails": MAX_BATTLE_FAILS},
+                )
+                mfa_log(_MODULE, "await_battle", "skip",
+                        f"检测到「战斗失败」（第 {n}/{MAX_BATTLE_FAILS} 次，已等待 "
+                        f"{time.time() - start:.0f}s）→ 交 pipeline 终止下潜"
+                        f"（取证: {shot or '未落盘'}）",
+                        fail_count=n)
+                return False
 
             # d) 结算「继续」+ 任务完成判定
             cont = context.run_recognition_direct(

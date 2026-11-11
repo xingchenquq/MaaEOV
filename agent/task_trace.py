@@ -44,9 +44,15 @@ class TaskTrace(TaskerEventSink):
             ok = msg.endswith(".Succeeded")
             cost = round(time.time() - _START_TS.pop(tid, time.time()), 1)
             # aborted：本次任务是否经 `_StopTask` 中止收尾（由 diagnostics 打的标记）。
-            # StopTask 让任务判成功，光看 result 分不出「真的做完了」和「中途被迫中止」。
+            # ⚠️ 2026-11-11 用户反馈 §4：`_StopTask` 让任务判成功，于是「中途崩了」在
+            #   task_end 里也是 result=ok，调度侧据此判 SUCCESS，监控完全失效
+            #   （实测一天两次认知海域战斗失败→中止，两次都被记成成功）。
+            #   现在：有 aborted 标记就**不许**报 ok，统一报 fail，让上层能看见。
             aborted = bool(context().get("aborted"))
-            mfa_log("trace", "task_end", "ok" if ok else "fail",
+            result = "ok" if ok else "fail"
+            if ok and aborted:
+                result = "fail"
+            mfa_log("trace", "task_end", result,
                     f"任务{'完成' if ok else '失败'}{'（中途中止）' if aborted else ''} "
                     f"entry={entry} 耗时={cost}s",
                     entry=entry, task_id=tid, cost_s=cost, aborted=aborted)
