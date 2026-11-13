@@ -5,7 +5,7 @@
     //
     // 玩法：双周本 · 自走棋式自动战斗。3 层递进：朦胧层→深潜层→梦渊层。
     //       只有「深潜指引」入口给意识碎片奖励（自由探索无奖励）。
-    //       每 14 天刷新 7 张入场券；梦渊层单次 355 分，约 2 次跑满奖励。
+    //       每 14 天刷新 7 张入场券；梦渊层单次（1 张券）满额 500 分，2 次跑满 1000 奖励。
     //
     // 真实流程（按用户提供截图 + 操作描述）：
     //   主界面 → 导航到 BCR → 点「认知海域」图标（层选择界面）
@@ -83,6 +83,7 @@
             "SoCInspirationNodeOCR",
             "SoCState_GB1",
             "SoCState_GB0",
+            "_SoCTicketLowNoFree",
             "_SoCTicketLow",
             "SoCStartDive",
             "SoCContinueDive",
@@ -108,6 +109,9 @@
     //   探索打完回选层后本节点必须排在 _SoCTicketLow **之后**被扫描（收工优先于再开一轮）。
     //   本节点 next **不含** SoCDeepDive / SoCDeepDiveFallback —— 引导后绝不回头点深潜。
     "SoCTicketGateFree": {
+        // 默认禁用：配合「认知海域-券不足时自由探索」= No（默认）。
+        // 关掉后本节点在 next 扫描里被跳过，不会去点「自由探索」二选一项。
+        "enabled": false,
         "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "券不足 → 走自由探索（不耗券）"
@@ -266,11 +270,15 @@
     // 一层只有 500 分，打满 1000 需要 2 轮 = 2 张券。只剩 1 张时开新一轮通常打不满，
     // 白亏一张券和 8~19 分钟，不如直接结束等下期刷新。
     // ⚠️ 2026-11-09：不要「券 < 2 就一刀切收工」——券 1 张但只差一点点分时是误伤。
-    //   现在券不足时会再读左下角「意识碎片 N/1000」，按每轮保守 355 分折算：
-    //   只要 券数×355 ≥ 1000−当前分 就放行继续打；读不到积分才退回原行为（收工）。
+    //   现在券不足时会再读左下角「意识碎片 N/1000」，按每轮 500 分（一整轮满额）折算：
+    //   只要 券数×500 ≥ 1000−当前分 就放行继续打；读不到积分才退回原行为（收工）。
     // 券数在选层界面右上角（券图标 + 数字，约 (1114,36)），只在选层后挂，不在 Resume 首位，
     // 避免在主界面把右上角资源数误读成 1。
     "_SoCTicketLow": {
+        // 默认禁用：券不足时不再打无奖励的「自由探索」轮。
+        // 由 interface.json「认知海域-券不足时自由探索」= Yes 时经 pipeline_override 打开，
+        // 打开后本节点与 SoCTicketGateFree 一起生效，走「打一轮探索再收工」的原行为。
+        "enabled": false,
         "timeout": 30000,
         "focus": {
             "Node.PipelineNode.Starting": "券不足且补不满（自由探索已完成）→ 收尾结束"
@@ -279,6 +287,23 @@
             "type": "Custom",
             "param": {
                 "custom_recognition": "SoCTicketLow"
+            }
+        },
+        "next": ["_SoCReturnHome"]
+    },
+
+    // ---------- 券不足（自由探索关闭版，默认启用） ----------
+    // 与 _SoCTicketLow 互斥：券不足且折算后补不满 → 直接收工，不进免费轮状态机。
+    // agent 侧是 SoCTicketLowNoFree（继承 SoCTicketLow，只砍掉免费轮那一段）。
+    "_SoCTicketLowNoFree": {
+        "timeout": 30000,
+        "focus": {
+            "Node.PipelineNode.Starting": "券不足且补不满 → 收尾结束（未开启自由探索）"
+        },
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "SoCTicketLowNoFree"
             }
         },
         "next": ["_SoCReturnHome"]
@@ -447,6 +472,7 @@
         "next": [
             "_SoCNoticeClose",
             "_SoCRewardPanelClose",
+            "_SoCTicketLowNoFree",
             "_SoCTicketLow",
             "_SoCScoreFull",
             "SoCSelectLayer",
@@ -531,6 +557,7 @@
         "post_delay": 800,
         "next": [
             "_SoCAbandonDive",
+            "_SoCTicketLowNoFree",
             "_SoCTicketLow",
             "_SoCScoreFull",
             "SoCStartDive",
@@ -1171,6 +1198,7 @@
         },
         "next": [
             "_SoCScoreFull",
+            "_SoCTicketLowNoFree",
             "_SoCTicketLow",
             "SoCStartDive"
         ]

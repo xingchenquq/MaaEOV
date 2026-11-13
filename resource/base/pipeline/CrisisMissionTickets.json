@@ -152,9 +152,36 @@
                 "custom_action": "记录危机行动调令数"
             }
         },
+        // 2026-11-12 修正「扫完一轮后空转失败」：
+        //   原 next 是 ["~危机行动调令为零", "[JumpBack]CrisisMissionTicketsSelectLevel"]，
+        //   调令 >0 时进入选关，扫荡结束已回到主界面 → [JumpBack] 弹栈回本节点重扫 →
+        //   第一项 ~危机行动调令为零 用的是**上一轮记录的旧值**（仍 >0，不会变 0）→ 第二项
+        //   CrisisMissionTicketsSelectLevel 命中（原本无识别 = DirectHit，永远命中）→ 在主界面上
+        //   "凭空"走选关 → 下游 _NavigateS30x / _NavigateOngoingMission / _NavigateCrisisMission
+        //   都是 inverse 门控（自身不点击）→ 30s 扫不到入口 → 任务 FAIL（实测 2026-11-12 92.6s）。
+        //   现在：选关节点带「危机行动界面标志」识别（在界面才命中），不在界面时落到第三项
+        //   _ReenterCrisisMission 重新导航回危机行动界面并**重新 OCR 读数**：
+        //   读到 0 → 走 ~危机行动调令为零 → Skipped 收尾（判成功）；仍 >0 → 再打一轮。
         "next": [
             "~危机行动调令为零",
-            "[JumpBack]CrisisMissionTicketsSelectLevel"
+            "CrisisMissionTicketsSelectLevel",
+            "[JumpBack]_ReenterCrisisMission"
+        ]
+    },
+
+    // 扫完一轮后从任意界面重新回到「危机行动」界面，让 检测危机行动调令HUD 重新 OCR。
+    // 必须重新读：~危机行动调令为零 判的是 agent 侧记录的数值，不重新识别永远是旧值。
+    // ⚠️ 实现上直接复用入口门控 CrisisMissionTickets（FromBCR → EnterCM → _NavigateCrisisMission），
+    //   它自带「不在 BCR 就先 [JumpBack]_NavigateBCR」的兜底，从主界面/关卡页都能回到界面内。
+    //   不要在这里只写 [JumpBack]_NavigateCrisisMission：实测从主界面直接调它会在
+    //   _NavigateSpecialOps 处卡死（该节点要求已在 BCR 根屏），33.5s 后 FAIL。
+    "_ReenterCrisisMission": {
+        "timeout": 120000,
+        "focus": {
+            "Node.PipelineNode.Starting": "危机行动 · 重新进入危机行动界面核对调令"
+        },
+        "next": [
+            "CrisisMissionTickets"
         ]
     },
 
@@ -204,11 +231,29 @@
     //    CrisisMissionTicketsFromLevel；未在目标关卡 → 导航点击 → 到达后 ~Sxxx 命中弹回本节点
     //    重扫 → gate 不动作 → 落到 FromLevel。option 的每个 case 也同样带第二项。
     // timeout 120000：须覆盖下游「点击出发」+「等待结果」整条扫荡链（最长约 70s）。
+    // ⚠️ 2026-11-12：本节点改为**有识别**（危机行动界面标志，纯 B.R.C 图标，不含调令数字）。
+    //   原来是 DirectHit（无识别 → 永远命中），导致 [JumpBack] 弹栈回 检测危机行动调令HUD 后
+    //   在**主界面**上也会命中，凭空走选关 → 下游全是 inverse 门控不点击 → 30s 空转 FAIL。
+    //   现在只在「危机行动」界面内命中；在主界面不命中 → 落到 _ReenterCrisisMission 重新导航+重读调令。
+    //   ROI/模板与「确认在危机行动界面」一致（同屏同元素），改一处需同步改另一处。
     "CrisisMissionTicketsSelectLevel": {
         "focus": {
             "Node.PipelineNode.Starting": "危机行动调令 · 选择关卡"
         },
         "timeout": 120000,
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1122,
+                    0,
+                    142,
+                    130
+                ],
+                "template": "BCR/危机行动_界面标志.png",
+                "threshold": 0.8
+            }
+        },
         "next": [
             "_NavigateS502",
             "CrisisMissionTicketsFromLevel"

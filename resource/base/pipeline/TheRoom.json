@@ -201,6 +201,45 @@
         ]
     },
 
+    // 「解读结果」结算页收尾（仪式点「开始仪式」后直接弹出）。
+    // 2026-11-13 实测：该界面底部提示「请点击任意空白处关闭界面」，但 RitualRewardSelect 的 next
+    // 里没有任何出口 → 全部未命中 → MaaFW 判 failed（93s 卡死）。
+    // 不能复用 _CloseRitualResult：它 next 接 _Escape，_Escape 会扫到 ~Homepage 终止，
+    // 弹回 RitualRewardSelect 后 next 仍耗尽 → 依旧 failed。故这里直接接 RitualDone → ~TaskExit 收尾。
+    // 必须排在 RitualRewardSelect.next 首位：同界面下 RitualRewardSelect 的 OCR 会误命中「探员需求」
+    // （ROI 从 x=187 起截到「结果」右半，实测 0.9392），靠本节点 score 更高来抢先。
+    "RitualResultExit": {
+        "timeout": 10000,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    46,
+                    43,
+                    361,
+                    172
+                ],
+                "expected": [
+                    "解读结果"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    640,
+                    665,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "RitualDone"
+        ]
+    },
+
     // Exit The Room -> Storage
     "_ExitTheRoomStorage": {
         "recognition": {
@@ -643,6 +682,7 @@
             }
         },
         "next": [
+            "RitualResultExit",
             "RitualAgent1",
             "RitualAgent2",
             "RitualAgent3",

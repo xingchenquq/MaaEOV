@@ -64,6 +64,8 @@ __pycache__/
 # ---- 本地设备 / 运行期配置（每台机器不同，不入库） ----
 /config/maa_pi_config.json
 config/instances/*.json
+# 配置漂移监测的本机基线快照（含采集时间戳，每台机器不同）
+/config/monitor_baseline.json
 
 # ---- 操作系统 / 编辑器 ----
 .DS_Store

@@ -49,6 +49,9 @@
 
     // Logic
     "Farm": {
+        "focus": {
+            "Node.PipelineNode.Starting": "清体力 · 正在前往作战准备"
+        },
         "timeout": 30000,
         "next": [
             "SelectLevelFromBCR",
@@ -57,6 +60,9 @@
     },
 
     "SelectLevelFromBCR": {
+        "focus": {
+            "Node.PipelineNode.Starting": "清体力 · 选择目标关卡"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
@@ -83,6 +89,9 @@
         // timeout 80000：扫荡 gate。[JumpBack] 弹栈（_SweepFromLevel 点击后回本节点续扫 _SweepMax 等）沿用本节点
         // timeout 作为续扫窗口，须覆盖「开弹窗 → 设次数 → 出发」耗时，防默认 20s 提前掐断（同 v1.14.6 根因）。
         "timeout": 80000,
+        "focus": {
+            "Node.PipelineNode.Starting": "清体力 · 扫荡中"
+        },
         "recognition": {
             "type": "OCR",
             "param": {
@@ -106,6 +115,10 @@
             "[JumpBack]_ConfirmSweepResult",
             "[JumpBack]_ConfirmLiminalZoneOverflow",
             "[JumpBack]FarmOutOfStamina",
+            // 2026-11-13：体力「够但不够这一把」（如 14 < 消耗 20）时游戏不显示恢复倒计时，
+            // FarmOutOfStamina 会 miss；本节点读右上体力与「出发 ⚡N」比较后收尾。
+            // 必须排在 _SweepFromLevel 之前，否则会又去点一次扫荡然后空转。
+            "FarmStaminaShort",
             "[JumpBack]_LevelUp",
             "[JumpBack]_SweepMax",
             "[JumpBack]_SweepFromLevel",
@@ -115,6 +128,9 @@
 
     // Exception
     "FarmOutOfStamina": {
+        "focus": {
+            "Node.PipelineNode.Starting": "清体力 · 体力不足，准备收尾"
+        },
         "timeout": 30000,
         "recognition": {
             "type": "OCR",
@@ -140,8 +156,29 @@
         ]
     },
 
+    // 关卡详情页：体力够但不够本次消耗（实测 14 < 消耗 20，游戏不显示恢复倒计时）。
+    // 判据在 agent/farm.py 的 FarmStaminaShort：读右上体力 vs 右下「出发 ⚡N」。
+    "FarmStaminaShort": {
+        "timeout": 20000,
+        "focus": {
+            "Node.PipelineNode.Starting": "清体力 · 体力不足本次消耗，收尾"
+        },
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "FarmStaminaShort"
+            }
+        },
+        "next": [
+            "_FarmStop"
+        ]
+    },
+
     // Optional
     "FarmUseExpiringItem": {
+        "focus": {
+            "Node.PipelineNode.Starting": "清体力 · 使用即将过期的体力道具"
+        },
         "timeout": 30000,
         // "enabled": false,
         "recognition": {
@@ -176,6 +213,9 @@
 
     // 体力不足收尾专用：关掉弹窗后直接停止任务（区别于通用 CloseUseStaminaItem 的弹栈续跑）。
     "_CloseStaminaAndStop": {
+        "focus": {
+            "Node.PipelineNode.Starting": "清体力 · 关闭体力弹窗"
+        },
         "timeout": 15000,
         "recognition": {
             "type": "OCR",
@@ -216,6 +256,9 @@
     //   `[JumpBack]FarmOutOfStamina` 调起来的，收尾若"自然结束"会弹回 Farm 的 next 列表，
     //   而体力读数为 0 仍能命中 FarmOutOfStamina → 26 秒一轮死循环（实测）。
     "_FarmStop": {
+        "focus": {
+            "Node.PipelineNode.Starting": "清体力 · 已停止（体力耗尽）"
+        },
         "timeout": 30000,
         "action": {
             "type": "Custom",

@@ -27,6 +27,7 @@ except Exception:  # noqa: BLE001
 try:
     import auto_battle
     import crisis_mission
+    import farm  # noqa: F401  注册 custom_recognition「FarmStaminaShort」（清体力体力不足判据）
     import past_event
     import soc_actions
     # 2026-10-22：任务级日志上下文 + 中止留痕（诊断用，无业务逻辑）

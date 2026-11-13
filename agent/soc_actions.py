@@ -245,8 +245,8 @@ class SoCTicketLow(CustomRecognition):
 
     ⚠️ 2026-11-09 修正（原实现是纯固定阈值，会误伤）：
       只按「券 < 2 就收工」判会漏掉「券 1 张但只差一点点就满」的情况。
-      现在券数不足时**再读左下角当前积分**，按每轮保守 `MIN_GAIN`(=355，实测最差一轮)
-      折算：只要 `券数 × 355 ≥ 1000 − 当前分` 就放行，继续打。
+      现在券数不足时**再读左下角当前积分**，按每轮 `MIN_GAIN`(=500，一整轮满额)
+      折算：只要 `券数 × 500 ≥ 1000 − 当前分` 就放行，继续打。
       读不到积分时退回原行为（收工），不会因为新增判据变得更冒险。
 
     券数的显示：选层界面**右上角**「券图标 + 数字」（约 1280×720 的 (1114, 36)）。
@@ -257,11 +257,16 @@ class SoCTicketLow(CustomRecognition):
     # 券图标 + 数字只在右上角这么一小块（实测原图约 (1175,28)-(1225,52)，数字高仅 ~18px）
     TICKET_ROI = (1168, 20, 76, 40)
     MIN_TICKETS = 2
-    # 本期入场券上限（实测一期 10 张）。留一倍余量：读到比这更大的数，
-    # 说明 ROI 框到了相邻的资源数字（实机 2026-11-11 读到过 20290 / 81），整条作废。
-    MAX_SANE_TICKETS = 20
-    # 单轮保守得分：实测一轮 355~500 分，取最差值做下界，避免高估导致白跑一轮
-    MIN_GAIN = 355
+    # 本期入场券上限（实测一期 10 张）。读到比这更大的数说明 ROI 框到了相邻资源，
+    # 整条作废（实机 2026-11-11 读到过 20290 / 81）。
+    # 2026-11-12 由 20 收紧到 12：实测读到过 **19** 这种脏值（ROI 附近有其它计数），
+    # 20 的余量让它蒙混过关 → 19 >= MIN_TICKETS 于是「券很多，继续打」被放行，
+    # 白绕一轮 20 秒才在下一次读到 0 收工。券真实上限 10，12 已够留余量。
+    MAX_SANE_TICKETS = 12
+    # 单轮得分：**一整轮（消耗 1 张券）满额 500 分**（梦渊层）。
+    # 2026-11-12 由 355 上调 —— 355 是早期某次没打满的实测值，当作下界会让
+    # 「券 1 张、只差 400~500 分」被误判成补不满而提前收工。
+    MIN_GAIN = 500
     # 左下角「意识碎片 N/1000」（与 _SoCScoreFull 同一 ROI，该区域已实测可读）
     SCORE_ROI = (20, 630, 250, 82)
     ZOOM = 4          # 小字直接 OCR 读不出（实测返回空），先放大再识别
@@ -391,6 +396,60 @@ class SoCTicketLow(CustomRecognition):
                 if 0 <= cur <= full:
                     return cur, full
         return None
+
+
+@AgentServer.custom_recognition("SoCTicketLowNoFree")
+class SoCTicketLowNoFree(SoCTicketLow):
+    """券不足判定（**自由探索关闭版**，默认启用）。
+
+    与父类 SoCTicketLow 的唯一差别：券不足且折算后仍补不满时**直接收工**，
+    不进「免费轮」状态机，也不放行给 SoCTicketFreeGate 去点自由探索。
+
+    对应 interface.json 的「认知海域-券不足时自由探索」开关，默认 No：
+      No（默认）= 本节点启用，_SoCTicketLow 与 SoCTicketGateFree 被 override 禁用
+      Yes      = 反转，回到「打一轮自由探索再收工」的原行为
+
+    为什么另开一个 recognition 而不加参数：pipeline_override 对 Custom recognition
+    的 param 是整体覆盖，加参数要重写整个 recognition 块；用 enabled 互斥两个节点
+    更简单，也和 Supplies / TheRoom 的既有写法一致。
+    """
+
+    def analyze(self, context: Context, argv: CustomRecognition.AnalyzeArg):
+        roi = self.TICKET_ROI
+        img = getattr(argv, "image", None)
+        if img is None:
+            img = _screencap(context)
+        if img is None:
+            return None
+
+        n, text = self._read_tickets(context, img)
+        if n is None:
+            if text is not None:
+                mfa_warn(_MODULE, "ticket_low", f"券数读不到（roi={roi}，OCR={text!r}）→ 不判定")
+            return None
+        mfa_log(_MODULE, "ticket_low", "info",
+                f"券数读数={n}（阈值 {self.MIN_TICKETS}，OCR={text!r}）")
+        if n >= self.MIN_TICKETS:
+            return None
+
+        score = self._read_score(context, img)
+        if score is not None:
+            cur, full = score
+            need = full - cur
+            if need <= 0:
+                # 已满：交给 _SoCScoreFull 收工，这里不重复判
+                return None
+            if n * self.MIN_GAIN >= need:
+                mfa_log(_MODULE, "ticket_low", "info",
+                        f"券不足 {self.MIN_TICKETS} 但可补满"
+                        f"（{n * self.MIN_GAIN} ≥ {need}）→ 放行继续打")
+                return None
+
+        mfa_log(_MODULE, "ticket_low", "ok",
+                "券不足且补不满，未开启自由探索 → 收尾结束并返回主界面")
+        return CustomRecognition.AnalyzeResult(
+            box=tuple(roi), detail=f"tickets={n},no_free_round"
+        )
 
 
 @AgentServer.custom_recognition("SoCTicketFreeGate")
