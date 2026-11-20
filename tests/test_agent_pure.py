@@ -6,7 +6,7 @@
 
 覆盖：
 * `crisis_mission._parse_ticket` / `_clamp_tickets` —— OCR 误读兜底（本次修复的缺陷）
-* `auto_battle._parse_param` —— custom_action_param 的四种形态
+* `common._parse_param` —— custom_action_param 的四种形态
 * `mfalog._redact` / `_redact_str` —— 凭证打码（日志是唯一明细载体，打码失效等于泄漏）
 
 运行：python\\python.exe -m unittest discover -s tests -v
@@ -23,7 +23,7 @@ for p in (AGENT, os.path.join(ROOT, "scripts")):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-import auto_battle  # noqa: E402
+import common  # noqa: E402
 import crisis_mission  # noqa: E402
 import mfalog  # noqa: E402
 
@@ -80,17 +80,17 @@ class TestParseParam(unittest.TestCase):
 
     def test_dict_passthrough(self):
         p = {"max_wait": 10}
-        self.assertIs(auto_battle._parse_param(p), p)
+        self.assertIs(common._parse_param(p), p)
 
     def test_json_string(self):
-        self.assertEqual(auto_battle._parse_param('{"poll": 5}'), {"poll": 5})
+        self.assertEqual(common._parse_param('{"poll": 5}'), {"poll": 5})
 
     def test_double_encoded(self):
-        self.assertEqual(auto_battle._parse_param('"{\\"poll\\": 5}"'), {"poll": 5})
+        self.assertEqual(common._parse_param('"{\\"poll\\": 5}"'), {"poll": 5})
 
     def test_invalid_returns_empty(self):
         for raw in (None, "", "oops", "[1,2]", 123):
-            self.assertEqual(auto_battle._parse_param(raw), {}, f"raw={raw!r}")
+            self.assertEqual(common._parse_param(raw), {}, f"raw={raw!r}")
 
 
 class TestRedact(unittest.TestCase):

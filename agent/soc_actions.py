@@ -47,7 +47,7 @@ from maa.context import Context
 from maa.pipeline import JRecognitionType, JOCR, JTemplateMatch
 
 import evidence
-from auto_battle import _parse_param, _screencap
+from common import _parse_param, _screencap
 from mfalog import mfa_log, mfa_err, mfa_warn
 
 _MODULE = "SoC"

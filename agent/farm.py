@@ -18,7 +18,7 @@ from maa.agent.agent_server import AgentServer
 from maa.custom_recognition import CustomRecognition
 from maa.pipeline import JRecognitionType, JOCR
 
-from auto_battle import _screencap
+from common import _screencap
 from mfalog import mfa_log, mfa_warn
 
 _MODULE = "Farm"

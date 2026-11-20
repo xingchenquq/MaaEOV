@@ -54,7 +54,7 @@ OUT_DIR = os.path.join(ROOT, "debug", "task_runs")
 PI_CONFIG = os.path.join(ROOT, "config", "maa_pi_config.json")
 
 # 冒烟顺序：从轻到重，退出游戏收尾。
-# 「认知海域」「自动推图」按当前进度挂起，未纳入（需要时用 --only 单独跑）。
+# 「认知海域」按当前进度挂起，未纳入（需要时用 --only 单独跑）。
 SMOKE_ORDER = [
     "启动游戏",
     "一键领取",

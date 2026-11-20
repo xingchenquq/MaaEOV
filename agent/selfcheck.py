@@ -15,7 +15,7 @@ import os
 
 #: 缺一不可的 agent 模块（main.py 自身不列，它正在运行）
 REQUIRED_AGENT_FILES = (
-    "mfalog.py", "auto_battle.py", "soc_actions.py",
+    "mfalog.py", "common.py", "soc_actions.py",
     "crisis_mission.py", "past_event.py", "imaging.py", "evidence.py",
 )
 

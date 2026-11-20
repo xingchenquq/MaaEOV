@@ -1,10 +1,10 @@
 {
   "name": "MaaEOV",
   "interface_version": 2,
-  "version": "v2.1.0",
+  "version": "v2.1.1",
   "url": "https://github.com/xingchenquq/MaaEOV",
   "github": "https://github.com/xingchenquq/MaaEOV",
-  "custom_title": "MaaEOV v2.1.0 | 异象回声小助手",
+  "custom_title": "MaaEOV v2.1.1 | 异象回声小助手",
   "message": "异象回声小助手",
   "welcome": [
     {
@@ -58,12 +58,6 @@
       "label": "活动",
       "description": "限时活动与活动关卡，换期后可能失效或改名。",
       "default_expand": true
-    },
-    {
-      "name": "Challenge",
-      "label": "挑战",
-      "description": "长耗时、高消耗，建议单独跑。",
-      "default_expand": false
     },
     {
       "name": "System",
@@ -269,18 +263,6 @@
         "System"
       ],
       "description": "退出游戏。"
-    },
-    {
-      "name": "自动推图",
-      "entry": "#自动推图",
-      "icon": "image/ui/icons/task_push.png",
-      "group": [
-        "Challenge"
-      ],
-      "option": [
-        "出战队伍"
-      ],
-      "description": "自动找未通关（0 星）的主线关卡，依次推图直到全部打完。\n\n流程：识别未完成关卡 → 出发 → 战斗准备 → 选队伍 → 开始作战 → 开 AUTO → 等结算 → 退出 → 下一关。\n\n[color:red]不做自动吃体力，请确保体力充足。[/color]\n倍速由游戏自身维持。需要翻页才可见的关卡暂不支持。"
     }
   ],
   "preset": [
@@ -347,10 +329,6 @@
         },
         {
           "name": "退出游戏",
-          "enabled": false
-        },
-        {
-          "name": "自动推图",
           "enabled": false
         }
       ]
@@ -419,10 +397,6 @@
         {
           "name": "退出游戏",
           "enabled": false
-        },
-        {
-          "name": "自动推图",
-          "enabled": false
         }
       ]
     },
@@ -490,10 +464,6 @@
         {
           "name": "退出游戏",
           "enabled": false
-        },
-        {
-          "name": "自动推图",
-          "enabled": true
         }
       ]
     }
@@ -2054,104 +2024,6 @@
         }
       ],
       "default_case": "处理时间奇物的三项建议"
-    },
-    "出战队伍": {
-      "cases": [
-        {
-          "name": "队伍1（默认）",
-          "pipeline_override": {
-            "选择出战队伍": {
-              "recognition": {
-                "param": {
-                  "template": "自动推图/战斗编队1.png",
-                  "roi": [
-                    166,
-                    350,
-                    146,
-                    80
-                  ]
-                }
-              }
-            },
-            "选择出战队伍_重试": {
-              "recognition": {
-                "param": {
-                  "template": "自动推图/战斗编队1.png",
-                  "roi": [
-                    166,
-                    350,
-                    146,
-                    80
-                  ]
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "队伍2",
-          "pipeline_override": {
-            "选择出战队伍": {
-              "recognition": {
-                "param": {
-                  "template": "自动推图/战斗编队2.png",
-                  "roi": [
-                    166,
-                    487,
-                    146,
-                    80
-                  ]
-                }
-              }
-            },
-            "选择出战队伍_重试": {
-              "recognition": {
-                "param": {
-                  "template": "自动推图/战斗编队2.png",
-                  "roi": [
-                    166,
-                    487,
-                    146,
-                    80
-                  ]
-                }
-              }
-            }
-          }
-        },
-        {
-          "name": "队伍3",
-          "pipeline_override": {
-            "选择出战队伍": {
-              "recognition": {
-                "param": {
-                  "template": "自动推图/战斗编队3.png",
-                  "roi": [
-                    166,
-                    624,
-                    146,
-                    80
-                  ]
-                }
-              }
-            },
-            "选择出战队伍_重试": {
-              "recognition": {
-                "param": {
-                  "template": "自动推图/战斗编队3.png",
-                  "roi": [
-                    166,
-                    624,
-                    146,
-                    80
-                  ]
-                }
-              }
-            }
-          }
-        }
-      ],
-      "default_case": "队伍1（默认）"
     },
     "认知海域-目标层": {
       "cases": [

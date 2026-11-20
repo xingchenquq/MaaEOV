@@ -25,7 +25,6 @@ except Exception:  # noqa: BLE001
 # import my_action
 # import my_reco
 try:
-    import auto_battle
     import crisis_mission
     import farm  # noqa: F401  注册 custom_recognition「FarmStaminaShort」（清体力体力不足判据）
     import past_event

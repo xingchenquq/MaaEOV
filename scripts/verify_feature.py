@@ -167,13 +167,6 @@ def main() -> int:
     else:
         print("  [OK] 全部任务挂载的 option 均已定义")
 
-    hit = next((t for t in iface.get("task", []) if t.get("name") == "自动推图"), None)
-    if hit:
-        opts = hit.get("option", [])
-        print(f"  「自动推图」挂的选项: {opts}")
-        if "出战队伍" not in opts:
-            print("  [NOTE] 未挂「出战队伍」选项（推图.json 注释里计划通过 pipeline_override 实现）")
-
     # ------------------------------------------------------------------
     section("4) 跨文件同名节点检测（硬性失败）")
     dups = {}
