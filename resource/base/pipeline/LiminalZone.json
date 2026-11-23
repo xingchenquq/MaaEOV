@@ -6,7 +6,7 @@
     // 说明：进行每周的阈限禁区扫荡，直到达到黑胶上限（480/480），已达上限则跳过。 [color:red]目标关卡需通关过一次开放扫荡。[/color]
     // 由 scripts/split_pipeline.py 从 Tasks.json 拆分生成；请勿跨文件重复定义同名节点。
     // 本文件节点数 = 15
-    // 依赖 Shared.json 节点数 = 15（示例：ConfirmUseStaminaItem, FarmSelectLevel, _Cancel, _ConfirmMiddle, _ConfirmReconnect, _LevelUp）
+    // 依赖 Shared.json 节点数 = 14（示例：ConfirmUseStaminaItem, _SweepFromLevel, _Cancel, _ConfirmMiddle, _ConfirmReconnect, _LevelUp）
     // ============================================================
 
     // 2026-10-29 修复（第二轮，实机核对）：
@@ -234,9 +234,14 @@
             "[JumpBack]LiminalZoneOutOfStamina",
             "[JumpBack]_LevelUp",
             "[JumpBack]_SweepMax",
-            "[JumpBack]_SweepFromLevel",
-            "[JumpBack]FarmSelectLevel"
+            "[JumpBack]_SweepFromLevel"
         ]
+        // 2026-11-23 移除末位钩子 [JumpBack]FarmSelectLevel（扫完顺手用剩余体力去刷
+        // 清体力的目标关卡）：该钩子会借用「清体力-选择关卡」option 的全局 override，
+        // 构成任务间隐式数据传递，且正是「诡形物语」编队页死循环的入口
+        // （详见 Shared.json ~DustStageBrief 注释）。剩余体力由独立的「清体力」任务
+        // 自行负责；本链自身收敛路径不变：480/480 -> TaskExit / 体力耗尽 ->
+        // LiminalZoneOutOfStamina / 还有体力 -> _SweepFromLevel 继续扫。
     },
 
     // Option

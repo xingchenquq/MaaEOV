@@ -422,6 +422,33 @@
         }
     },
 
+    // 2026-11-23 修复「诡形物语」分支死循环：
+    // 作战准备页点「诡形物语」卡片后直接进入关卡详情/编队页（无独立列表页）。
+    // 该页顶部 120px 只有货币/体力数字，「诡形物语」标题在右上 y≈116-150，
+    // box 跨出 ~PreparedDust 的 ROI 底边 -> 永不命中 -> JumpBack 阶梯降级
+    // 回主页再点同一张卡，无限循环（实测 04:47/12:44 两次各烧 80+ 分钟）。
+    // 本节点作为第二到达终态：命中即结束链路弹回父节点
+    // （FarmFromLevel / LiminalZoneFromLevel 认右下「快速完成」按钮 -> 直接扫荡收敛）。
+    // 判据为详情页独有文字（实机截图核对，box 来自当日 OCR 原文）：
+    //   等级同步 [693,274,117,24] / 三星条件（需一次性完成） [836,279,180,18]
+    "~DustStageBrief": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    660,
+                    236,
+                    400,
+                    112
+                ],
+                "expected": [
+                    "等级同步",
+                    "三星条件"
+                ]
+            }
+        }
+    },
+
     "~AppraisalDisc": {
         "recognition": {
             "type": "OCR",
@@ -2542,6 +2569,7 @@
         "inverse": true,
         "next": [
             "~PreparedDust",
+            "~DustStageBrief",
             "[JumpBack]_ServerMaintenance",
             "[JumpBack]_ConfirmReconnect",
             "[JumpBack]_ConfirmMiddle",

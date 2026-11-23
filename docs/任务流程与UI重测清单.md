@@ -4,7 +4,7 @@
 
 > 基准分辨率：1280×720。所有坐标、ROI 均为该基准下的像素值，UI 改版后需逐项复核。
 
-> 共解析到 **15** 个任务入口、**608** 个节点。
+> 共解析到 **15** 个任务入口、**609** 个节点。
 
 ## 公共约定（所有任务共用）
 
@@ -207,7 +207,7 @@
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 | `LiminalZoneCompletedFromLevel` | OCR['480/480'] roi=[92, 620, 225, 100] | —(仅路由) | `~TaskExit` |
 | · | `~TaskExit` | ↺ 回到已访问节点（循环/重复，已在上文展开） | | |
 
-> 该任务挂载的中断保底：`[JumpBack]_ServerMaintenance`, `[JumpBack]_ConfirmReconnect`, `[JumpBack]_ConfirmLiminalZoneResult`, `[JumpBack]LiminalZoneOutOfStamina`, `[JumpBack]_LevelUp`, `[JumpBack]_SweepMax`, `[JumpBack]_SweepFromLevel`, `[JumpBack]FarmSelectLevel`, `[JumpBack]_ConfirmMiddle`, `[JumpBack]_LiminalZoneBackToSelect`, `[JumpBack]_ObsoleteNexusFromLiminalZone`, `[JumpBack]_LiminalZoneHead`, `[JumpBack]_NavigateLiminalZone`, `[JumpBack]_NavigateSystem`
+> 该任务挂载的中断保底：`[JumpBack]_ServerMaintenance`, `[JumpBack]_ConfirmReconnect`, `[JumpBack]_ConfirmLiminalZoneResult`, `[JumpBack]LiminalZoneOutOfStamina`, `[JumpBack]_LevelUp`, `[JumpBack]_SweepMax`, `[JumpBack]_SweepFromLevel`, `[JumpBack]_ConfirmMiddle`, `[JumpBack]_LiminalZoneBackToSelect`, `[JumpBack]_ObsoleteNexusFromLiminalZone`, `[JumpBack]_LiminalZoneHead`, `[JumpBack]_NavigateLiminalZone`, `[JumpBack]_NavigateSystem`
 
 
 ## `#TheRoom`（事务所（解读仪式））
