@@ -43,16 +43,22 @@ jobs:
         with:
           python-version: "3.12"
 
-      # ⚠️ 下面产出的是【增量】资源包（仅 interface.json + resource/），
-      #    当前策略已不再向用户发布；仅手动触发、临时需要时才使用。
-      #    包内 interface.json 的 version 会被改写为 tag，确保与 release tag 一致。
-      - name: Build resource package (legacy / incremental)
+      # ⚠️ 2026-11-24 修复：此前调用 pack_resource.py（不含 agent/ 的旧增量包形态）——
+      #    MFA「检查更新」为全量更新，会先删用户 resource/ 与 agent/ 再按包复制，
+      #    缺 agent/ 会把用户 agent/ 删空、程序失效（见 build_resource_zip.py 头部约束）。
+      #    现改用 build_resource_zip.py：interface.json + resource/ + 完整 agent/ + pipeline 清单，
+      #    包名带 win-x64（GetAssetPriority 100），构建后自带程序文件泄漏阻断。
+      - name: Build resource package (must include agent/)
         run: |
-          python3 scripts/pack_resource.py \
-            --version "${{ steps.tag.outputs.tag }}" \
-            --out MaaEOV-resource.zip
+          # 包内 version 取自 interface.json，必须与 release tag 一致
+          iface_ver=$(python3 -c "import json;print(json.load(open('interface.json',encoding='utf-8'))['version'])")
+          if [ "v$iface_ver" != "${{ steps.tag.outputs.tag }}" ] && [ "$iface_ver" != "${{ steps.tag.outputs.tag#v }}" ]; then
+            echo "::error::interface.json version ($iface_ver) 与 tag (${{ steps.tag.outputs.tag }}) 不一致，请先对齐再触发打包"
+            exit 1
+          fi
+          python3 scripts/build_resource_zip.py
 
-      # ⚠️ 该步骤会把 MaaEOV-resource.zip 作为 asset 挂到该 tag 的 Release 上。
+      # ⚠️ 该步骤会把资源包作为 asset 挂到该 tag 的 Release 上。
       #    当前「仅完整包」策略下请勿自动运行本工作流。
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -62,6 +68,6 @@ jobs:
           # Release 正文会作为 MFAAvalonia 的更新日志/公告展示，可发布后在网页上再编辑
           generate_release_notes: true
           files: |
-            MaaEOV-resource.zip
+            dist/MaaEOV-*-resource-win-x64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

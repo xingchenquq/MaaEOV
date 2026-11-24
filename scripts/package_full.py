@@ -47,7 +47,26 @@ def keep(rel):
         return False
     if rel == 'config/maa_pi_config.json':
         return False
+    # monitor_baseline.json 含采集时间戳等本机信息（见 .gitignore）
+    if rel == 'config/monitor_baseline.json':
+        return False
     return True
+
+
+def _sanitize_walk(node, removed, path=''):
+    """递归剔除所有层级的密钥类键（2026-11-24 修复：此前只扫顶层，
+    MFA 通知配置若以嵌套 dict 存储（如 {"Notification": {"Token": ...}}）会漏剔）。"""
+    if isinstance(node, dict):
+        for k in list(node.keys()):
+            p = '.'.join(filter(None, (path, str(k))))
+            if isinstance(k, str) and SECRET_KEY_RE.search(k):
+                removed.append(p)
+                node.pop(k, None)
+            else:
+                _sanitize_walk(node[k], removed, p)
+    elif isinstance(node, list):
+        for i, item in enumerate(node):
+            _sanitize_walk(item, removed, '%s[%d]' % (path, i))
 
 
 def sanitize_json(fp, rel):
@@ -56,29 +75,29 @@ def sanitize_json(fp, rel):
     背景：MFAAvalonia 的全局配置里可能保存 GitHubToken（私有库 OTA 用的只读 PAT）、
     DownloadCDK（Mirror酱 CDK）、以及外部通知的 Token/Secret/Password 等。
     这些是「每个用户自己的凭据」，**绝不能随发布包发出去**。
+
+    2026-11-24 修复：JSON 解析失败此前只打 warn 并原样打包（消毒开路），
+    现改为硬失败中止打包——消毒不可跳过。
     """
     try:
         with open(fp, encoding='utf-8') as f:
             obj = json.load(f)
     except Exception as e:
-        print('  [warn] 消毒跳过 %s（JSON 解析失败：%r）' % (rel, e))
-        return None, []
-    if not isinstance(obj, dict):
-        return None, []
-    removed = [k for k in obj if isinstance(k, str) and SECRET_KEY_RE.search(k)]
+        raise SystemExit('密钥消毒中止：%s JSON 解析失败（%r）；禁止原样打包未消毒文件，请先修复该文件' % (rel, e))
+    removed = []
+    _sanitize_walk(obj, removed)
     if not removed:
         return None, []
-    for k in removed:
-        obj.pop(k, None)
     return (json.dumps(obj, ensure_ascii=False, indent=2) + '\n').encode('utf-8'), removed
 
 
 # 可能藏凭据的全局配置（MFA 把全局设置写在 config/config.json 与 appsettings.json）
 # 覆盖：GitHubToken（私有库 OTA 的只读 PAT）、DownloadCDK（Mirror酱 CDK）、
 #       各类外部通知的 Token/Secret/Password/WebhookUrl/QmsgKey/OneBotKey/ServerChanKey。
+# （config/config.template.json 曾列于此，仓库与磁盘均无此文件，2026-11-24 移除死条目）
 SECRET_KEY_RE = re.compile(
     r'(?i)(token|secret|password|passwd|cdk|api_?key|(qmsg|onebot|serverchan)key|webhookurl)')
-SANITIZE_FILES = ['config/config.json', 'config/config.template.json', 'appsettings.json']
+SANITIZE_FILES = ['config/config.json', 'appsettings.json']
 
 n = 0
 total = 0
@@ -117,6 +136,22 @@ if sanitized:
 else:
     print('  无需要剔除的密钥键（本机配置里没有 GitHubToken / CDK / 通知凭据等）')
 
+def _find_secret_leaks(node, path=''):
+    """递归查找密钥类键名残留（与 _sanitize_walk 同判据，双向一致才有效）。"""
+    leaks = []
+    if isinstance(node, dict):
+        for k, v in node.items():
+            p = '.'.join(filter(None, (path, str(k))))
+            if isinstance(k, str) and SECRET_KEY_RE.search(k):
+                leaks.append(p)
+            else:
+                leaks.extend(_find_secret_leaks(v, p))
+    elif isinstance(node, list):
+        for i, item in enumerate(node):
+            leaks.extend(_find_secret_leaks(item, '%s[%d]' % (path, i)))
+    return leaks
+
+
 leftover = []
 with zipfile.ZipFile(OUT) as z:
     names = set(z.namelist())
@@ -128,8 +163,5 @@ with zipfile.ZipFile(OUT) as z:
         except Exception as e:
             leftover.append('%s（解析失败 %r）' % (rel, e))
             continue
-        if isinstance(obj, dict):
-            for k in obj:
-                if isinstance(k, str) and SECRET_KEY_RE.search(k):
-                    leftover.append('%s → %s' % (rel, k))
+        leftover.extend('%s → %s' % (rel, p) for p in _find_secret_leaks(obj))
 print('  复核：' + ('⚠️ 发现残留密钥 → %s' % leftover if leftover else 'OK，包内无密钥残留'))

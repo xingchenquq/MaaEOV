@@ -18,14 +18,23 @@
 | `check_graph.py` | 任务图护栏（CI 强制 `--strict`）：悬空引用、陷阱自环、「从任务入口不可达」的孤儿节点、终止可达性 | 删除/重连节点后；CI 每次跑 |
 | `check_levels.py` | **关卡自洽校验**（CI 强制）：以 `resource/base/data/level_groups.json` 为真值，反查 interface case 名 / pipeline 节点 ID / 卡片归属 三者是否一致。2026-10-22「G501 错标巅峰时刻」即由它拦下 | 增删关卡、改 case 名后 |
 | `run_tasks.py` | **逐任务实机冒烟 / 回归驱动**：按任务跑一遍并输出「真实节点路径 + 每个识别节点的 text/score/box + 失败截图」，产出 `debug/task_runs/report_*.json`。支持 `--only / --smoke / --override / --disable`。adb 配置读 `config/maa_pi_config.json`，换机免改代码 | 改完 pipeline 后逐任务验证；**需模拟器 + 游戏状态，不进 CI** |
-| `gen_flow_doc.py` | 从 pipeline 再生 `docs/任务流程与UI重测清单.md`（CI 校验文档同步，勿手改该文档） | 每次改 pipeline 后 |
-| `package_full.py` | **完整包打包**（发版唯一通道）：前置自动跑 `verify_feature.py` → 按排除规则收集 → 密钥消毒 → 包内复核，产出 `dist/MaaEOV-<版本>-full-package.zip`。发布流程见 `docs/release.md` | 每次发版 |
-| `build_resource_zip.py` | **资源 OTA 包**：`interface.json` + `resource/` + `agent/`，构建后做 `LEAK_MARKERS` 程序文件泄漏阻断，产出 `dist/MaaEOV-<版本>-resource-win-x64.zip` | 发版需增量更新时 |
-| `migrate_layout.py` | **目录整理工具**（默认只读）：`report` 盘点 / `images` 散图归位 / `archive` 归档一次性脚本 / `purge` 清理过期产物。方案见 `docs/重构与目录整理方案-2026-10-20.md` | 目录维护时 |
-| `pack_resource.py` | 打增量资源包 `MaaEOV-resource.zip`（interface.json + resource/，不含 agent/）。**当前策略仅发完整包**，此脚本仅配合 `.github/workflows/release_resource.yml` 手动触发产出旧版增量包 | 仅临时需要增量包时 |
+| `gen_flow_doc.py` | 从 pipeline 再生 `docs/internal/任务流程与UI重测清单.md`（内部文档不入库，CI 不比对；pipeline 变更后本地重跑即可） | 每次改 pipeline 后 |
+| `package_full.py` | **完整包打包**（发版唯一通道）：前置自动跑 `verify_feature.py` → 按排除规则收集 → 密钥消毒（递归键名匹配）→ 包内复核，产出 `dist/MaaEOV-<版本>-full-package.zip`。发布流程见 `docs/release.md` | 每次发版 |
+| `build_resource_zip.py` | **资源 OTA 包**：`interface.json` + `resource/` + `agent/`，构建后做 `LEAK_MARKERS` 程序文件泄漏阻断，产出 `dist/MaaEOV-<版本>-resource-win-x64.zip`。`.github/workflows/release_resource.yml` 手动触发时也用它（2026-11-24 起，替代 pack_resource.py） | 发版需增量更新时 |
 | `build_gui_mfa.sh` | MFAAvalonia GUI（MaaEOV.exe）构建脚本 | 升级 GUI 宿主时（产出物不入库） |
 
 ## `legacy/` · 历史一次性脚本（入库，参考勿盲跑）
+
+### v2.1.x · 2026-11-24 归档（审查结论：重跑有回滚风险或使命已完成）
+
+| 脚本 | 归档原因 |
+|---|---|
+| `legacy/apply_descriptions.py` | 内容停留在 v2.1.0 换期前（当期活动描述/默认关卡 AE110），重跑会静默回滚 interface.json 的任务描述 |
+| `legacy/apply_ui_p0.py` | 同上：`DEFAULT_CASES` 写死 `AE110`，且当前文案已由换期更新覆盖 |
+| `legacy/apply_case_labels.py` | case label 已写入 interface.json，一次性迁移完成 |
+| `legacy/apply_icon_color.py` | 图标已刷色完成；依赖 PATH 上的 ffmpeg |
+| `legacy/migrate_layout.py` | `archive`/`images`/`purge` 清单已全部消费，仅 `report` 尚有盘点价值 |
+| `legacy/pack_resource.py` | 产出不含 `agent/` 的旧增量包形态——MFA 全量更新会清空用户 agent/（见 `build_resource_zip.py` 头部约束）；已被 build_resource_zip.py 取代 |
 
 ### v1.14.3 · Tasks.json 拆分（`4010cba` / `4fa9b99`）
 
