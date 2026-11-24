@@ -24,7 +24,7 @@ if os.path.exists(OUT):
 # vendor/：MFA 源码独立副本（scripts/sync_mfa_src.sh 生成，1GB，含 obj/ 构建中间物），
 #          只是开发期参考，发行包不需要；且其中 Avalonia 生成物的路径会导致 zipfile 写入失败。
 SKIP_DIRS = {'.git', '.github', '.workbuddy', '.mimosa', 'temp', 'debug', 'docs', 'scripts',
-             '__pycache__', '.nicegui', 'backup', '.mfa_build', 'logs', 'dist', 'vendor'}
+             'tests', '__pycache__', '.nicegui', 'backup', '.mfa_build', 'logs', 'dist', 'vendor'}
 # 排除文件（开发产物/打包脚本自身）
 SKIP_FILES = {'MaaEOV-resource.zip',
               'DependencySetup_依赖库安装_win.bat',
