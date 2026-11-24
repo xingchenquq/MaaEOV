@@ -22,11 +22,11 @@ try:
 except Exception:  # noqa: BLE001
     pass
 
-# import my_action
 # import my_reco
 try:
     import crisis_mission
     import farm  # noqa: F401  注册 custom_recognition「FarmStaminaShort」（清体力体力不足判据）
+    import my_action  # noqa: F401  注册 custom_action「地图拖动」（关卡地图拖动兜底，2026-11-24）
     import past_event
     import soc_actions
     # 2026-10-22：任务级日志上下文 + 中止留痕（诊断用，无业务逻辑）
