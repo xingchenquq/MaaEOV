@@ -26,7 +26,7 @@ if os.path.exists(OUT):
 SKIP_DIRS = {'.git', '.github', '.workbuddy', '.mimosa', 'temp', 'debug', 'docs', 'scripts',
              '__pycache__', '.nicegui', 'backup', '.mfa_build', 'logs', 'dist', 'vendor'}
 # 排除文件（开发产物/打包脚本自身）
-SKIP_FILES = {'MaaEOV-resource.zip', '开发记录.md',
+SKIP_FILES = {'MaaEOV-resource.zip',
               'DependencySetup_依赖库安装_win.bat',
               'package_full.py', 'package_full_log.txt'}
 

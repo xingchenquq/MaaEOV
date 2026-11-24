@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """MaaEOV 任务流程文档生成器：从 pipeline 生成「任务流程与UI重测清单」。
 
-输出 docs/任务流程与UI重测清单.md，供游戏客户端 UI 改版后逐项重测识别依赖
+输出 docs/internal/任务流程与UI重测清单.md，供游戏客户端 UI 改版后逐项重测识别依赖（内部文档，不随公开仓库分发）
 （模板切图 / OCR 文案 / ROI 坐标）。**本文件为唯一权威生成入口，文档请勿手改**——
 改完 pipeline 后重跑本脚本即可，CI（verify.yml）会比对文档是否与 pipeline 同步。
 
@@ -22,7 +22,9 @@ _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(_SCRIPT_DIR)                    # 仓库根目录
 PIPELINE_DIR = os.path.join(ROOT, "resource", "base", "pipeline")
 INTERFACE = os.path.join(ROOT, "interface.json")
-OUT = os.path.join(ROOT, "docs", "任务流程与UI重测清单.md")
+OUT_DIR = os.path.join(ROOT, "docs", "internal")
+os.makedirs(OUT_DIR, exist_ok=True)
+OUT = os.path.join(OUT_DIR, "任务流程与UI重测清单.md")
 
 
 def _ensure_inside_root(path: str) -> str:

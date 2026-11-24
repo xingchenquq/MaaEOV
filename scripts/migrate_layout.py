@@ -42,7 +42,7 @@ RUNTIME_REQUIRED = {
     "libonigwrap.dll", "miniaudio.dll", "uiohook.dll",
     "DependencySetup_依赖库安装_win.bat",
 }
-DEV_ASSETS = {"scripts", "docs", "开发记录.md", "README.md", "LICENSE", ".github", ".gitignore",
+DEV_ASSETS = {"scripts", "docs", "README.md", "LICENSE", ".github", ".gitignore",
               "package_full.py", "build_resource_zip.py"}
 RUNTIME_OUTPUT = {"debug", "logs", "temp", "backup", "dist", ".mfa_build", ".nicegui", ".mimosa", ".workbuddy"}
 VCS_ONLY = {".git"}

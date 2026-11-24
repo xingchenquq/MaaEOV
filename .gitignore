@@ -83,3 +83,6 @@ Thumbs.db
 
 # ---- MFA 源码独立副本（scripts/sync_mfa_src.sh 生成，不入库） ----
 /vendor/
+
+# 内部开发文档与本机开发工具，不随公开仓库分发
+/docs/internal/

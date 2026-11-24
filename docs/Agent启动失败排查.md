@@ -54,7 +54,7 @@ python\python.exe agent\main.py
 
 1. **重解压完整包覆盖**：重新解压 `MaaEOV-v<版本>-full-package.zip`，使 `agent/` + `python/` + `maa` 包 + MFA 同源同版本。
 2. **手动验证 agent**（见第 4 节）确认 python/`maa` 层 OK。
-3. **更新走完整包**：本项目目前仅发布完整包（GitHub Release），版本由完整包统一保证；不要手动把不同版本的 `resource/` 与 `agent/` 混装。私有库在 `设置 → 更新 → GitHub Token` 填有效的只读 PAT（权限仅 `Contents: Read-only`）才能拉取 Release。
+3. **更新走完整包**：本项目目前仅发布完整包（GitHub Release），版本由完整包统一保证；不要手动把不同版本的 `resource/` 与 `agent/` 混装。
 4. 任务管理器结束残留 `python.exe` 再重试，避免旧 socket 占用。
 5. 仍不行则查看 MFA 主机日志中的 traceback 定位具体缺失模块。
 
