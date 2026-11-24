@@ -267,6 +267,11 @@ class TestGbPick(unittest.TestCase):
 
     # -- 6. adb 目标解析 ---------------------------------------------------
     def test_adb_target_from_config(self):
+        # 依赖本机 config/instances/default.json（gitignore，CI checkout 没有）：
+        # 无该文件时跳过，避免 CI 假失败（2026-11-24：verify 在 GitHub 上长期 failure 的根因之一）。
+        inst = os.path.join(ROOT, "config", "instances", "default.json")
+        if not os.path.exists(inst):
+            self.skipTest("本机配置 config/instances/default.json 不存在（CI 环境无 adb 实例配置）")
         soc_actions._adb_cache.clear()
         path, serial = soc_actions._adb_target()
         self.assertTrue(path, "应从 config/instances/default.json 读到 AdbPath")
